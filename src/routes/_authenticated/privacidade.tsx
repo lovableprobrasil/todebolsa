@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/perfil/privacidade")({
+export const Route = createFileRoute("/_authenticated/privacidade")({
   component: PrivacyPage,
 });
 

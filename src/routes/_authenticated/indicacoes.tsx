@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/perfil/indicacoes")({
+export const Route = createFileRoute("/_authenticated/indicacoes")({
   component: ReferralPage,
 });
 
