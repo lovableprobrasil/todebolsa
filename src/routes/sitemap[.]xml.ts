@@ -93,18 +93,48 @@ export const Route = createFileRoute("/sitemap.xml")({
           /* ignore */
         }
 
+        let citySlugs: string[] = [];
         try {
           const { data: units } = await supabase
             .from("institution_units")
             .select("city")
             .limit(5000);
-          const cities = Array.from(
+          citySlugs = Array.from(
             new Set((units ?? []).map((u) => u.city).filter(Boolean) as string[]),
-          );
-          for (const c of cities) {
+          ).map(citySlug);
+          for (const c of citySlugs) {
             entries.push({
-              path: `/bolsas/cidade/${citySlug(c)}`,
+              path: `/bolsas/cidade/${c}`,
               changefreq: "weekly",
+              priority: "0.6",
+            });
+          }
+        } catch {
+          /* ignore */
+        }
+
+        // Programmatic combo pages: /bolsas/curso/:level/cidade/:city
+        for (const l of LEVELS.map((s) => s.toUpperCase().replace(/-/g, "_"))) {
+          for (const c of citySlugs.slice(0, 50)) {
+            entries.push({
+              path: `/bolsas/curso/${l}/cidade/${c}`,
+              changefreq: "weekly",
+              priority: "0.5",
+            });
+          }
+        }
+
+        try {
+          const { data: posts } = await supabase
+            .from("blog_posts")
+            .select("slug, updated_at")
+            .eq("is_published", true)
+            .limit(1000);
+          for (const p of posts ?? []) {
+            entries.push({
+              path: `/guia/${p.slug}`,
+              lastmod: p.updated_at ? new Date(p.updated_at).toISOString().slice(0, 10) : undefined,
+              changefreq: "monthly",
               priority: "0.6",
             });
           }
