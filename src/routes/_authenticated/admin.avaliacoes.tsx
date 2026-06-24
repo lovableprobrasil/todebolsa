@@ -55,7 +55,7 @@ function AvaliacoesPage() {
       const { error } = await supabase.rpc("moderate_review", {
         p_review_id: input.id,
         p_approve: input.approve,
-        p_notes: input.notes ?? null,
+        p_notes: input.notes ?? undefined,
       });
       if (error) throw error;
     },

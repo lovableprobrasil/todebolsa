@@ -39,6 +39,7 @@ import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
+import { Route as AuthenticatedAdminAvaliacoesRouteImport } from './routes/_authenticated/admin.avaliacoes'
 import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
 import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
@@ -207,6 +208,12 @@ const AuthenticatedAdminBolsasRoute =
     path: '/bolsas',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminAvaliacoesRoute =
+  AuthenticatedAdminAvaliacoesRouteImport.update({
+    id: '/avaliacoes',
+    path: '/avaliacoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminFinanceiroIndexRoute =
   AuthenticatedAdminFinanceiroIndexRouteImport.update({
     id: '/',
@@ -274,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas/': typeof BolsasIndexRoute
+  '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
@@ -312,6 +320,7 @@ export interface FileRoutesByTo {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas': typeof BolsasIndexRoute
+  '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
@@ -351,6 +360,7 @@ export interface FileRoutesById {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas/': typeof BolsasIndexRoute
+  '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
@@ -392,6 +402,7 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas/'
+    | '/admin/avaliacoes'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/crm'
@@ -430,6 +441,7 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas'
+    | '/admin/avaliacoes'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/instituicoes'
@@ -468,6 +480,7 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas/'
+    | '/_authenticated/admin/avaliacoes'
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
     | '/_authenticated/admin/crm'
@@ -716,6 +729,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBolsasRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/avaliacoes': {
+      id: '/_authenticated/admin/avaliacoes'
+      path: '/avaliacoes'
+      fullPath: '/admin/avaliacoes'
+      preLoaderRoute: typeof AuthenticatedAdminAvaliacoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/financeiro/': {
       id: '/_authenticated/admin/financeiro/'
       path: '/'
@@ -820,6 +840,7 @@ const AuthenticatedAdminFinanceiroRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAvaliacoesRoute: typeof AuthenticatedAdminAvaliacoesRoute
   AuthenticatedAdminBolsasRoute: typeof AuthenticatedAdminBolsasRoute
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRouteWithChildren
@@ -831,6 +852,7 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAvaliacoesRoute: AuthenticatedAdminAvaliacoesRoute,
   AuthenticatedAdminBolsasRoute: AuthenticatedAdminBolsasRoute,
   AuthenticatedAdminBootstrapRoute: AuthenticatedAdminBootstrapRoute,
   AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRouteWithChildren,
