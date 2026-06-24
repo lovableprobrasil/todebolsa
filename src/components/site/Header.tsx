@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { GraduationCap, Menu, Search, X } from "lucide-react";
+import { GraduationCap, LayoutDashboard, Menu, Search, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth-context";
 
 const NAV = [
   { to: "/bolsas", label: "Bolsas" },
@@ -13,6 +14,13 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const navigate = useNavigate();
+  const { user, profile } = useAuth();
+  const initials = (profile?.name ?? user?.email ?? "?")
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,12 +66,26 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2 shrink-0">
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/bolsas">Entrar</Link>
-          </Button>
-          <Button size="sm" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
-            <Link to="/bolsas">Cadastrar</Link>
-          </Button>
+          {user ? (
+            <Button size="sm" asChild className="gap-2">
+              <Link to="/painel">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 text-[11px] font-bold">
+                  {initials}
+                </span>
+                <span>Meu painel</span>
+                <LayoutDashboard className="h-4 w-4" />
+              </Link>
+            </Button>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/auth" search={{ tab: "login" }}>Entrar</Link>
+              </Button>
+              <Button size="sm" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
+                <Link to="/auth" search={{ tab: "signup" }}>Cadastrar</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         <button
@@ -98,12 +120,20 @@ export function Header() {
               </Link>
             ))}
             <div className="grid grid-cols-2 gap-2 mt-2">
-              <Button variant="outline" asChild>
-                <Link to="/bolsas">Entrar</Link>
-              </Button>
-              <Button className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
-                <Link to="/bolsas">Cadastrar</Link>
-              </Button>
+              {user ? (
+                <Button className="col-span-2" asChild>
+                  <Link to="/painel" onClick={() => setOpen(false)}>Meu painel</Link>
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" asChild>
+                    <Link to="/auth" search={{ tab: "login" }} onClick={() => setOpen(false)}>Entrar</Link>
+                  </Button>
+                  <Button className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
+                    <Link to="/auth" search={{ tab: "signup" }} onClick={() => setOpen(false)}>Cadastrar</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
