@@ -7,6 +7,8 @@ import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { Button } from "@/components/ui/button";
 import { getInstitutionBySlug, type ScholarshipListItem } from "@/lib/scholarships";
 import { supabase } from "@/integrations/supabase/client";
+import { ReviewsSection } from "@/components/reviews/ReviewsSection";
+import { ReviewStars } from "@/components/reviews/ReviewStars";
 
 export const Route = createFileRoute("/instituicoes/$slug")({
   loader: async ({ params }) => {
