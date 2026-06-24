@@ -61,6 +61,8 @@ function HomePage() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <HomeSearch />
+        <TrustBadges />
         <PopularBar />
         <CategorySection />
         <StatsBar />
@@ -70,6 +72,7 @@ function HomePage() {
         <HowItWorks />
         <UgeCallout />
         <BenefitsSection />
+        <StudentTestimonials />
         <CitiesSection />
         <FaqSection />
         <CtaInstitution />
@@ -78,6 +81,17 @@ function HomePage() {
     </div>
   );
 }
+
+function HomeSearch() {
+  return (
+    <section id="busca-bolsas" className="relative bg-gradient-to-b from-hero to-background -mt-px scroll-mt-24">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pt-2 pb-10">
+        <SearchBar />
+      </div>
+    </section>
+  );
+}
+
 
 function Hero() {
   return (
