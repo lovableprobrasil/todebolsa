@@ -207,6 +207,7 @@ function BolsasPage() {
                 setModality(undefined);
                 setMaxPrice(0);
                 setSort("relevance");
+                setInstitutionId(undefined);
               }}
             >
               Limpar filtros
