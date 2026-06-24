@@ -14,9 +14,11 @@ type AuthCtx = {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
+  institutionAdminOf: string[];
   loading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  refreshRoles: () => Promise<void>;
 };
 
 const Ctx = createContext<AuthCtx | null>(null);
@@ -25,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [institutionAdminOf, setInstitutionAdminOf] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   async function loadProfile(uid: string) {
@@ -34,6 +37,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .eq("id", uid)
       .maybeSingle();
     setProfile((data as Profile | null) ?? null);
+  }
+
+  async function loadRoles(uid: string) {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role, institution_id")
+      .eq("user_id", uid)
+      .eq("role", "INSTITUTION_ADMIN");
+    setInstitutionAdminOf((data ?? []).map((r) => r.institution_id).filter((x): x is string => !!x));
   }
 
   useEffect(() => {
