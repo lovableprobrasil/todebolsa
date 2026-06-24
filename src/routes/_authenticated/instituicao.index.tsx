@@ -18,7 +18,22 @@ const STATUS: Record<string, { label: string; tone: string; icon: React.Componen
 };
 
 function InstitutionPortalIndex() {
-  const { institutionAdminOf } = useAuth();
+  const { institutionAdminOf, user } = useAuth();
+
+  const { data: pendingApp } = useQuery({
+    enabled: !!user && institutionAdminOf.length === 0,
+    queryKey: ["my-pending-app", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("institution_applications")
+        .select("id, status")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data;
+    },
+  });
 
   const { data: institutions, isLoading } = useQuery({
     enabled: institutionAdminOf.length > 0,
