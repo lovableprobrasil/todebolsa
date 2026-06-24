@@ -12,6 +12,15 @@ export const Route = createFileRoute("/_authenticated/admin/usuarios")({
 });
 
 const ROLES = ["STUDENT", "GUARDIAN", "INSTITUTION_USER", "INSTITUTION_ADMIN", "PLATFORM_SALES", "PLATFORM_ADMIN"] as const;
+const ROLE_LABELS: Record<string, string> = {
+  STUDENT: "Estudante",
+  GUARDIAN: "Responsável",
+  INSTITUTION_USER: "Usuário da instituição",
+  INSTITUTION_ADMIN: "Administrador da instituição",
+  PLATFORM_SALES: "Comercial da plataforma",
+  PLATFORM_ADMIN: "Administrador da plataforma",
+};
+const roleLabel = (r: string) => ROLE_LABELS[r] ?? r;
 
 function AdminUsers() {
   const qc = useQueryClient();
@@ -72,7 +81,7 @@ function AdminUsers() {
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {(u.roles ?? []).map((r: string) => (
-                    <Badge key={r} className="bg-secondary text-foreground border-0">{r}</Badge>
+                    <Badge key={r} className="bg-secondary text-foreground border-0">{roleLabel(r)}</Badge>
                   ))}
                 </div>
               </div>
@@ -81,7 +90,7 @@ function AdminUsers() {
                 <RoleSelector currentRoles={u.roles ?? []} onGrant={(role) => grant.mutate({ uid: u.id, role: role as Role })} />
                 {(u.roles ?? []).filter((r: string) => r !== "STUDENT").map((r: string) => (
                   <Button key={r} size="sm" variant="ghost" onClick={() => revoke.mutate({ uid: u.id, role: r as Role })}>
-                    <ShieldOff className="h-3.5 w-3.5 mr-1" /> Remover {r}
+                    <ShieldOff className="h-3.5 w-3.5 mr-1" /> Remover {roleLabel(r)}
                   </Button>
                 ))}
               </div>
@@ -114,7 +123,7 @@ function RoleSelector({ currentRoles, onGrant }: { currentRoles: string[]; onGra
             {available.map((r) => (
               <button key={r} onClick={() => { onGrant(r); setOpen(false); }}
                 className="block w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-secondary">
-                {r}
+                {roleLabel(r)}
               </button>
             ))}
           </div>
