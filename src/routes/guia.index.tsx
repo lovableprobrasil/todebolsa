@@ -99,6 +99,7 @@ function GuiaIndex() {
                       src={p.cover_url}
                       alt={p.title}
                       loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
