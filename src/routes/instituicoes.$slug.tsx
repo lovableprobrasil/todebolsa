@@ -9,12 +9,37 @@ import { getInstitutionBySlug, type ScholarshipListItem } from "@/lib/scholarshi
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/instituicoes/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `Instituição ${params.slug} | Tô de Bolsa` },
-      { name: "description", content: "Veja cursos, bolsas e unidades desta instituição parceira do Tô de Bolsa." },
-    ],
-  }),
+  loader: async ({ params }) => {
+    try {
+      const inst = await getInstitutionBySlug(params.slug);
+      return { institution: inst };
+    } catch {
+      return { institution: null };
+    }
+  },
+  head: ({ params, loaderData }) => {
+    const inst = loaderData?.institution as { trade_name?: string; description?: string | null; logo_url?: string | null } | null | undefined;
+    const url = `https://todebolsa.lovable.app/instituicoes/${params.slug}`;
+    const name = inst?.trade_name ?? params.slug;
+    const title = `${name} — bolsas de estudo | Tô de Bolsa`;
+    const desc = inst?.description ?? `Veja cursos, bolsas e unidades de ${name} no Tô de Bolsa.`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        ...(inst?.logo_url ? [
+          { property: "og:image", content: inst.logo_url },
+          { name: "twitter:image", content: inst.logo_url },
+        ] : []),
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   notFoundComponent: () => (
     <div className="min-h-screen flex flex-col">
       <Header />
