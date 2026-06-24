@@ -62,6 +62,7 @@ export type SearchFilters = {
   minDiscount?: number;
   maxPrice?: number;
   featuredOnly?: boolean;
+  institutionId?: string;
   sort?: SortMode;
   limit?: number;
 };
@@ -82,6 +83,8 @@ export async function listScholarships(filters: SearchFilters = {}): Promise<Sch
   if (filters.city) q = q.ilike("course_offering.institution_unit.city", `%${filters.city}%`);
   if (filters.state) q = q.eq("course_offering.institution_unit.state", filters.state);
   if (filters.query) q = q.ilike("course_offering.course.name", `%${filters.query}%`);
+  if (filters.institutionId) q = q.eq("course_offering.course.institution.id", filters.institutionId);
+
 
   switch (filters.sort) {
     case "price-asc":
