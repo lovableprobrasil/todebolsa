@@ -216,6 +216,14 @@ function ReservationDetailPage() {
         </section>
       )}
 
+      {r.status === "ENROLLMENT_APPROVED" && user && r.institution_id && (
+        <ReviewForm
+          reservationId={r.id}
+          institutionId={r.institution_id}
+          userId={user.id}
+        />
+      )}
+
       {isFinal && (
         <section className="rounded-3xl border border-border bg-card p-6 text-center">
           <p className="text-muted-foreground">Esta reserva foi finalizada como <strong>{STATUS_LABEL[r.status]}</strong>.</p>
