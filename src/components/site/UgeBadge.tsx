@@ -12,7 +12,7 @@ export function UgeBadge({
     return (
       <div
         className={cn(
-          "inline-flex items-center gap-2 rounded-full bg-brand-blue text-brand-blue-foreground px-3 py-1.5 text-sm font-semibold",
+          "inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-3 py-1.5 text-sm font-semibold",
           className,
         )}
       >
@@ -24,7 +24,7 @@ export function UgeBadge({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 rounded-full bg-brand-blue-soft text-brand-blue px-3 py-1 text-xs font-medium",
+        "inline-flex items-center gap-2 rounded-full bg-accent/20 text-accent-foreground px-3 py-1 text-xs font-medium",
         className,
       )}
     >

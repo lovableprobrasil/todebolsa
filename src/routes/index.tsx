@@ -1,21 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Sparkles, IdCard, ShieldCheck, Users, Award, Star } from "lucide-react";
+import { ArrowRight, IdCard, ShieldCheck, Users, Award, Star, Percent, Search, Sparkles, Building2, MapPin } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { SearchBar } from "@/components/site/SearchBar";
 import { CategoryGrid } from "@/components/site/CategoryGrid";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { listScholarships, listFeaturedInstitutions, listFaqs } from "@/lib/scholarships";
-import heroImg from "@/assets/hero-students.jpg";
+import heroStudent from "@/assets/hero-student-card.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Tô de Bolsa — Bolsas de estudo com até 90% de desconto" },
-      { name: "description", content: "Encontre bolsas de estudo para escolas, faculdades, técnicos, idiomas e mais. Até 90% de desconto e carteira de estudante digital UGE." },
+      { title: "Tô de Bolsa — Educação acessível com até 90% de desconto" },
+      { name: "description", content: "Encontre bolsas para faculdade, escola, técnico e idiomas. Oportunidades para todas as idades e carteira de estudante digital UGE." },
       { property: "og:title", content: "Tô de Bolsa — Até 90% de desconto em bolsas de estudo" },
       { property: "og:description", content: "Marketplace nacional de bolsas de estudo para todas as idades e níveis de ensino." },
     ],
@@ -23,18 +22,32 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
+const POPULAR = [
+  "Direito", "Administração", "Psicologia", "Pedagogia", "Enfermagem", "Engenharia de Software",
+];
+
+const CITIES = [
+  "São Paulo", "Rio de Janeiro", "Belo Horizonte", "Brasília",
+  "Curitiba", "Porto Alegre", "Salvador", "Fortaleza",
+];
+
 function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
         <Hero />
+        <PopularBar />
         <CategorySection />
+        <StatsBar />
         <FeaturedSection />
-        <InstitutionsSection />
+        <HowItWorks />
+        <UgeCallout />
         <BenefitsSection />
+        <InstitutionsSection />
+        <CitiesSection />
         <FaqSection />
-        <CtaSection />
+        <CtaInstitution />
       </main>
       <Footer />
     </div>
@@ -43,86 +56,71 @@ function HomePage() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div
-        className="absolute inset-0 opacity-[0.07]"
-        style={{ backgroundImage: "var(--gradient-hero)" }}
-        aria-hidden
-      />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-10 md:pt-20 md:pb-16">
-        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-center">
+    <section className="relative overflow-hidden bg-hero text-hero-foreground">
+      {/* glow */}
+      <div aria-hidden className="pointer-events-none absolute -top-40 -left-40 h-[480px] w-[480px] rounded-full bg-primary/20 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 h-[420px] w-[420px] rounded-full bg-brand-blue/40 blur-3xl" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-16 md:pt-20 md:pb-24">
+        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary mb-5">
-              <Sparkles className="h-3.5 w-3.5" />
-              Bolsas para todas as idades
-            </div>
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight">
-              Estude pagando menos com{" "}
-              <span className="relative inline-block">
-                <span
-                  className="bg-clip-text text-transparent"
-                  style={{ backgroundImage: "var(--gradient-discount)" }}
-                >
-                  até 90% de desconto
+            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur px-4 py-3">
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                  <Percent className="h-5 w-5" />
                 </span>
-              </span>
+                <div className="min-w-0">
+                  <div className="font-display text-base font-extrabold text-primary leading-none">ATÉ 90% OFF</div>
+                  <div className="text-xs text-hero-muted mt-1">nas melhores instituições · 50 mil+ bolsas</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur px-4 py-3">
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                  <IdCard className="h-5 w-5" />
+                </span>
+                <div className="min-w-0">
+                  <div className="font-display text-base font-extrabold leading-none">Carteira Digital</div>
+                  <div className="text-xs text-hero-muted mt-1">Emitida pela UGE · Meia-entrada garantida</div>
+                </div>
+              </div>
+            </div>
+
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.04] tracking-tight">
+              Educação acessível{" "}
+              <span className="text-primary">para transformar</span>{" "}
+              seu futuro
             </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-xl">
-              Encontre bolsas em escolas, faculdades, técnicos, idiomas, EJA, MBA e muito mais.
-              Compare ofertas, reserve sua vaga e transforme sua vida com educação.
+            <p className="mt-5 text-lg text-hero-muted max-w-xl">
+              Encontre bolsas para faculdade, escola, técnico, idiomas e muito mais.
+              Oportunidades para todas as idades e fases da vida.
             </p>
 
-            <div className="mt-7 flex flex-wrap gap-3 text-sm">
-              <span className="inline-flex items-center gap-2 rounded-full bg-brand-blue-soft text-brand-blue px-3 py-1.5 font-semibold">
-                <IdCard className="h-4 w-4" />
-                Matriculou? Garante sua carteira UGE
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1.5 text-foreground/80">
-                <ShieldCheck className="h-4 w-4 text-success" />
-                Instituições verificadas
-              </span>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button size="lg" className="rounded-xl h-12 px-6 text-base" asChild>
+                <Link to="/bolsas">
+                  Encontrar minha bolsa <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-xl h-12 px-6 text-base bg-transparent border-white/25 text-hero-foreground hover:bg-white/10 hover:text-hero-foreground"
+                asChild
+              >
+                <Link to="/bolsas">Criar conta grátis</Link>
+              </Button>
             </div>
-
-            <div className="mt-10">
-              <SearchBar />
-            </div>
-
-            <dl className="mt-8 grid grid-cols-3 gap-4 max-w-md">
-              <Stat value="+500" label="bolsas ativas" />
-              <Stat value="13" label="níveis de ensino" />
-              <Stat value="90%" label="desconto máximo" />
-            </dl>
           </div>
 
           <div className="relative">
-            <div
-              className="absolute -inset-6 rounded-[2rem] -z-10 opacity-30 blur-2xl"
-              style={{ backgroundImage: "var(--gradient-hero)" }}
-              aria-hidden
+            <div aria-hidden className="absolute inset-x-8 bottom-6 h-40 rounded-[3rem] bg-primary/20 blur-3xl" />
+            <img
+              src={heroStudent}
+              alt="Estudante sorrindo segurando carteira de estudante digital e física"
+              width={896}
+              height={1152}
+              className="relative w-full h-auto max-h-[640px] object-contain object-bottom mx-auto drop-shadow-2xl"
             />
-            <div className="relative rounded-3xl overflow-hidden border-8 border-card shadow-[var(--shadow-elegant)]">
-              <img
-                src={heroImg}
-                alt="Estudantes brasileiros de diferentes idades e etnias sorrindo juntos"
-                width={1536}
-                height={1024}
-                className="w-full h-auto"
-              />
-            </div>
-            <div className="absolute -bottom-5 -left-5 rounded-2xl bg-card shadow-[var(--shadow-card)] border border-border p-4 flex items-center gap-3">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue text-brand-blue-foreground">
-                <IdCard className="h-5 w-5" />
-              </span>
-              <div>
-                <div className="text-xs text-muted-foreground">Benefício exclusivo</div>
-                <div className="text-sm font-bold">Carteira UGE digital</div>
-              </div>
-            </div>
-            <div className="absolute -top-4 -right-4 rounded-2xl bg-primary text-primary-foreground shadow-[var(--shadow-elegant)] p-4">
-              <div className="text-xs opacity-90">Até</div>
-              <div className="text-3xl font-extrabold leading-none">90%</div>
-              <div className="text-xs opacity-90">OFF</div>
-            </div>
           </div>
         </div>
       </div>
@@ -130,11 +128,26 @@ function Hero() {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function PopularBar() {
   return (
-    <div>
-      <dt className="font-display text-2xl font-extrabold text-primary">{value}</dt>
-      <dd className="text-xs text-muted-foreground">{label}</dd>
+    <div className="relative -mt-8 md:-mt-10 z-10">
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="rounded-2xl bg-card border border-border shadow-[var(--shadow-card)] px-4 py-3 flex items-center gap-3 flex-wrap">
+          <span className="text-sm font-semibold text-muted-foreground shrink-0">Popular:</span>
+          <div className="flex flex-wrap gap-2">
+            {POPULAR.map((p) => (
+              <Link
+                key={p}
+                to="/bolsas"
+                search={{ q: p }}
+                className="inline-flex items-center rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground px-3 py-1.5 text-sm font-medium transition-colors"
+              >
+                {p}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -147,10 +160,33 @@ function CategorySection() {
           O que deseja estudar?
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Escolha sua categoria e descubra bolsas em todos os níveis de ensino.
+          Encontre bolsas por categoria, curso e cidade
         </p>
       </div>
       <CategoryGrid />
+    </section>
+  );
+}
+
+function StatsBar() {
+  const stats = [
+    { value: "50.000+", label: "Bolsas disponíveis" },
+    { value: "200.000+", label: "Alunos beneficiados" },
+    { value: "500+", label: "Instituições parceiras" },
+    { value: "Até 90%", label: "De desconto" },
+  ];
+  return (
+    <section className="bg-brand-blue text-brand-blue-foreground">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-14">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {stats.map((s) => (
+            <div key={s.label} className="text-center">
+              <div className="font-display text-3xl md:text-4xl font-extrabold text-primary">{s.value}</div>
+              <div className="mt-1 text-sm opacity-80">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -168,15 +204,15 @@ function FeaturedSection() {
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-primary mb-2">
               <Star className="h-3.5 w-3.5 fill-primary" />
-              Em destaque
+              Bolsas em destaque
             </div>
             <h2 className="font-display text-3xl md:text-4xl font-extrabold">
-              Bolsas selecionadas para você
+              As melhores oportunidades selecionadas para você
             </h2>
           </div>
           <Button variant="outline" asChild>
             <Link to="/bolsas">
-              Ver todas as bolsas <ArrowRight className="h-4 w-4 ml-1" />
+              Ver todas <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
           </Button>
         </div>
@@ -197,6 +233,96 @@ function FeaturedSection() {
   );
 }
 
+function HowItWorks() {
+  const steps = [
+    { n: "01", icon: Search, title: "Busque seu curso", text: "Pesquise por curso, cidade ou instituição e encontre a bolsa ideal." },
+    { n: "02", icon: Sparkles, title: "Compare ofertas", text: "Compare preços, descontos e avaliações para fazer a melhor escolha." },
+    { n: "03", icon: Award, title: "Garanta sua bolsa", text: "Reserve sua vaga com poucos cliques e comece sua jornada acadêmica." },
+  ];
+  return (
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-20">
+      <div className="text-center mb-10">
+        <h2 className="font-display text-3xl md:text-4xl font-extrabold">Como funciona</h2>
+        <p className="mt-3 text-muted-foreground">Em 3 passos simples você garante sua bolsa</p>
+      </div>
+      <div className="grid gap-6 md:grid-cols-3">
+        {steps.map((s) => (
+          <div key={s.n} className="relative rounded-2xl border border-border bg-card p-6">
+            <div className="font-display text-5xl font-extrabold text-primary/20 leading-none">{s.n}</div>
+            <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary mt-4 mb-3">
+              <s.icon className="h-5 w-5" />
+            </span>
+            <h3 className="font-bold text-lg mb-1">{s.title}</h3>
+            <p className="text-sm text-muted-foreground">{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function UgeCallout() {
+  return (
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14 md:pb-20">
+      <div className="relative overflow-hidden rounded-3xl bg-hero text-hero-foreground p-8 md:p-12">
+        <div aria-hidden className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
+        <div aria-hidden className="absolute -left-10 bottom-0 h-60 w-60 rounded-full bg-accent/20 blur-3xl" />
+        <div className="relative grid md:grid-cols-[auto_1fr_auto] gap-6 items-center">
+          <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-accent text-accent-foreground shrink-0">
+            <IdCard className="h-8 w-8" />
+          </span>
+          <div className="min-w-0">
+            <h3 className="font-display text-2xl md:text-3xl font-extrabold mb-2">
+              Carteira de Estudante Digital — UGE
+            </h3>
+            <p className="text-hero-muted max-w-2xl">
+              Ao realizar sua matrícula pelo Tô de Bolsa, você garante automaticamente a
+              <strong className="text-hero-foreground"> Carteira de Estudante Digital</strong> emitida pela
+              <strong className="text-hero-foreground"> UGE — União Geral dos Estudantes do Brasil</strong>.
+              Meia-entrada em cinemas, shows, teatros e muito mais!
+            </p>
+          </div>
+          <Button size="lg" className="shrink-0" asChild>
+            <Link to="/bolsas">Quero minha bolsa</Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BenefitsSection() {
+  const items = [
+    { icon: Percent, title: "Até 90% de desconto", text: "Economize na mensalidade com bolsas exclusivas em todo o Brasil." },
+    { icon: Search, title: "Busca rápida e fácil", text: "Encontre por curso, cidade, modalidade e categoria em segundos." },
+    { icon: Users, title: "Para todas as idades", text: "Crianças, jovens, adultos e idosos — oportunidades para todos." },
+    { icon: IdCard, title: "Carteira digital UGE", text: "Ao concluir a matrícula, receba sua carteira digital emitida pela UGE." },
+  ];
+  return (
+    <section className="bg-secondary/40 py-14 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="font-display text-3xl md:text-4xl font-extrabold">
+            Por que escolher o Tô de Bolsa?
+          </h2>
+          <p className="mt-3 text-muted-foreground">Benefícios exclusivos para quem busca educação com economia</p>
+        </div>
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {items.map((b) => (
+            <div key={b.title} className="rounded-2xl bg-card border border-border p-6 hover:border-primary/40 hover:-translate-y-0.5 transition-all">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary mb-4">
+                <b.icon className="h-5 w-5" />
+              </span>
+              <h3 className="font-bold mb-2">{b.title}</h3>
+              <p className="text-sm text-muted-foreground">{b.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function InstitutionsSection() {
   const { data } = useQuery({
     queryKey: ["institutions", "featured"],
@@ -206,9 +332,7 @@ function InstitutionsSection() {
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-20">
       <div className="text-center mb-10">
-        <h2 className="font-display text-3xl md:text-4xl font-extrabold">
-          Instituições parceiras
-        </h2>
+        <h2 className="font-display text-3xl md:text-4xl font-extrabold">Instituições parceiras</h2>
         <p className="mt-3 text-muted-foreground">
           Escolas, faculdades e centros de ensino credenciados em todo o Brasil.
         </p>
@@ -219,10 +343,10 @@ function InstitutionsSection() {
             key={i.id}
             to="/instituicoes/$slug"
             params={{ slug: i.slug }}
-            className="group rounded-2xl border border-border bg-card p-6 hover:border-brand-blue hover:bg-brand-blue-soft/40 transition-all"
+            className="group rounded-2xl border border-border bg-card p-6 hover:border-primary hover:bg-primary-soft/40 transition-all"
           >
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue-soft text-brand-blue font-bold">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary font-bold">
                 {i.trade_name.slice(0, 2).toUpperCase()}
               </span>
               <div className="min-w-0">
@@ -243,30 +367,31 @@ function InstitutionsSection() {
   );
 }
 
-function BenefitsSection() {
-  const items = [
-    { icon: IdCard, title: "Carteira de estudante UGE", text: "Após a matrícula confirmada, você garante sua carteira digital emitida pela União Geral dos Estudantes do Brasil." },
-    { icon: ShieldCheck, title: "Instituições verificadas", text: "Trabalhamos com escolas e faculdades credenciadas. Aprovamos cada parceiro antes de publicar bolsas." },
-    { icon: Award, title: "Até 90% de desconto", text: "Bolsas reais com descontos imperdíveis em mensalidade, em todos os níveis de ensino." },
-    { icon: Users, title: "Para todas as idades", text: "Do ensino fundamental ao mestrado. Bolsas para crianças, jovens, adultos e idosos." },
-  ];
+function CitiesSection() {
   return (
-    <section className="bg-gradient-to-b from-secondary/40 to-background py-14 md:py-20">
+    <section className="bg-secondary/40 py-14 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="font-display text-3xl md:text-4xl font-extrabold">
-            Por que usar o Tô de Bolsa?
-          </h2>
+        <div className="text-center mb-10">
+          <h2 className="font-display text-3xl md:text-4xl font-extrabold">Bolsas por cidade</h2>
+          <p className="mt-3 text-muted-foreground">Encontre oportunidades nas principais cidades do Brasil</p>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {items.map((b) => (
-            <div key={b.title} className="rounded-2xl bg-card border border-border p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary mb-4">
-                <b.icon className="h-5 w-5" />
-              </span>
-              <h3 className="font-bold mb-2">{b.title}</h3>
-              <p className="text-sm text-muted-foreground">{b.text}</p>
-            </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {CITIES.map((city) => (
+            <Link
+              key={city}
+              to="/bolsas"
+              search={{ city }}
+              className="group rounded-2xl border border-border bg-card p-5 hover:border-primary hover:-translate-y-0.5 transition-all"
+            >
+              <div className="flex items-center gap-2 text-muted-foreground text-xs mb-2">
+                <MapPin className="h-3.5 w-3.5" />
+                Cidade
+              </div>
+              <div className="font-display font-bold text-lg">{city}</div>
+              <div className="mt-2 text-sm text-primary font-semibold inline-flex items-center gap-1">
+                Ver bolsas <ArrowRight className="h-3.5 w-3.5" />
+              </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -300,35 +425,35 @@ function FaqSection() {
   );
 }
 
-function CtaSection() {
+function CtaInstitution() {
+  const benefits = ["Cadastro gratuito", "Painel completo de gestão", "Acompanhe suas vagas em tempo real"];
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
-      <div className="grid md:grid-cols-2 gap-6">
-        <div
-          className="rounded-3xl p-8 md:p-10 text-primary-foreground relative overflow-hidden"
-          style={{ backgroundImage: "var(--gradient-hero)" }}
-        >
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-20">
+      <div className="rounded-3xl border border-border bg-card p-8 md:p-12 grid md:grid-cols-[1fr_auto] gap-6 items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary-soft text-primary px-3 py-1 text-xs font-semibold mb-3">
+            <Building2 className="h-3.5 w-3.5" />
+            Para instituições
+          </div>
           <h3 className="font-display text-2xl md:text-3xl font-extrabold mb-3">
-            Pronto para sua bolsa?
+            É uma instituição de ensino?
           </h3>
-          <p className="opacity-90 mb-6 max-w-md">
-            Compare ofertas em segundos e garanta sua vaga com desconto.
+          <p className="text-muted-foreground mb-5 max-w-2xl">
+            Cadastre sua instituição e comece a oferecer bolsas para milhares de alunos em todo o Brasil.
+            Aumente suas matrículas e preencha suas vagas.
           </p>
-          <Button size="lg" variant="secondary" asChild>
-            <Link to="/bolsas">Buscar bolsas</Link>
-          </Button>
+          <ul className="grid sm:grid-cols-3 gap-3 max-w-2xl">
+            {benefits.map((b) => (
+              <li key={b} className="flex items-center gap-2 text-sm">
+                <ShieldCheck className="h-4 w-4 text-primary shrink-0" />
+                {b}
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="rounded-3xl border border-border bg-card p-8 md:p-10">
-          <h3 className="font-display text-2xl md:text-3xl font-extrabold mb-3">
-            Sua instituição quer crescer?
-          </h3>
-          <p className="text-muted-foreground mb-6 max-w-md">
-            Cadastre seus cursos, bolsas e campanhas. Receba alunos qualificados.
-          </p>
-          <Button size="lg" asChild>
-            <Link to="/para-instituicoes">Cadastrar instituição</Link>
-          </Button>
-        </div>
+        <Button size="lg" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90 shrink-0" asChild>
+          <Link to="/para-instituicoes">Cadastrar instituição</Link>
+        </Button>
       </div>
     </section>
   );
