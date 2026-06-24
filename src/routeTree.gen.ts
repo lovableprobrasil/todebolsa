@@ -21,8 +21,10 @@ import { Route as CarteiraUgeRouteImport } from './routes/carteira-uge'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuiaIndexRouteImport } from './routes/guia.index'
 import { Route as BolsasIndexRouteImport } from './routes/bolsas.index'
 import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
+import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticated/reservas'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
@@ -59,6 +61,7 @@ import { Route as AuthenticatedAdminFinanceiroInstituicoesRouteImport } from './
 import { Route as AuthenticatedAdminCrmLeadsRouteImport } from './routes/_authenticated/admin.crm.leads'
 import { Route as AuthenticatedAdminCrmInstituicoesRouteImport } from './routes/_authenticated/admin.crm.instituicoes'
 import { Route as AuthenticatedAdminCrmAtividadesRouteImport } from './routes/_authenticated/admin.crm.atividades'
+import { Route as BolsasCursoCourseCidadeCityRouteImport } from './routes/bolsas.curso.$course.cidade.$city'
 import { Route as ApiPublicUgeValidarCodigoRouteImport } from './routes/api/public/uge.validar.$codigo'
 
 const TermosRoute = TermosRouteImport.update({
@@ -120,6 +123,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuiaIndexRoute = GuiaIndexRouteImport.update({
+  id: '/guia/',
+  path: '/guia/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BolsasIndexRoute = BolsasIndexRouteImport.update({
   id: '/bolsas/',
   path: '/bolsas/',
@@ -128,6 +136,11 @@ const BolsasIndexRoute = BolsasIndexRouteImport.update({
 const InstituicoesSlugRoute = InstituicoesSlugRouteImport.update({
   id: '/instituicoes/$slug',
   path: '/instituicoes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuiaSlugRoute = GuiaSlugRouteImport.update({
+  id: '/guia/$slug',
+  path: '/guia/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BolsasIdRoute = BolsasIdRouteImport.update({
@@ -332,6 +345,12 @@ const AuthenticatedAdminCrmAtividadesRoute =
     path: '/atividades',
     getParentRoute: () => AuthenticatedAdminCrmRoute,
   } as any)
+const BolsasCursoCourseCidadeCityRoute =
+  BolsasCursoCourseCidadeCityRouteImport.update({
+    id: '/bolsas/curso/$course/cidade/$city',
+    path: '/bolsas/curso/$course/cidade/$city',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicUgeValidarCodigoRoute =
   ApiPublicUgeValidarCodigoRouteImport.update({
     id: '/api/public/uge/validar/$codigo',
@@ -361,8 +380,10 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof AuthenticatedPerfilRoute
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
+  '/guia/$slug': typeof GuiaSlugRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas/': typeof BolsasIndexRoute
+  '/guia/': typeof GuiaIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
@@ -390,6 +411,7 @@ export interface FileRoutesByFullPath {
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
   '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
+  '/bolsas/curso/$course/cidade/$city': typeof BolsasCursoCourseCidadeCityRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -412,8 +434,10 @@ export interface FileRoutesByTo {
   '/perfil': typeof AuthenticatedPerfilRoute
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
+  '/guia/$slug': typeof GuiaSlugRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas': typeof BolsasIndexRoute
+  '/guia': typeof GuiaIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
@@ -439,6 +463,7 @@ export interface FileRoutesByTo {
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroIndexRoute
   '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
+  '/bolsas/curso/$course/cidade/$city': typeof BolsasCursoCourseCidadeCityRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -464,8 +489,10 @@ export interface FileRoutesById {
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
+  '/guia/$slug': typeof GuiaSlugRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas/': typeof BolsasIndexRoute
+  '/guia/': typeof GuiaIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
@@ -493,6 +520,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/_authenticated/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
   '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
+  '/bolsas/curso/$course/cidade/$city': typeof BolsasCursoCourseCidadeCityRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -518,8 +546,10 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/reservas'
     | '/bolsas/$id'
+    | '/guia/$slug'
     | '/instituicoes/$slug'
     | '/bolsas/'
+    | '/guia/'
     | '/admin/analytics'
     | '/admin/avaliacoes'
     | '/admin/bolsas'
@@ -547,6 +577,7 @@ export interface FileRouteTypes {
     | '/admin/crm/'
     | '/admin/financeiro/'
     | '/api/public/uge/validar/$codigo'
+    | '/bolsas/curso/$course/cidade/$city'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -569,8 +600,10 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/reservas'
     | '/bolsas/$id'
+    | '/guia/$slug'
     | '/instituicoes/$slug'
     | '/bolsas'
+    | '/guia'
     | '/admin/analytics'
     | '/admin/avaliacoes'
     | '/admin/bolsas'
@@ -596,6 +629,7 @@ export interface FileRouteTypes {
     | '/admin/crm'
     | '/admin/financeiro'
     | '/api/public/uge/validar/$codigo'
+    | '/bolsas/curso/$course/cidade/$city'
   id:
     | '__root__'
     | '/'
@@ -620,8 +654,10 @@ export interface FileRouteTypes {
     | '/_authenticated/perfil'
     | '/_authenticated/reservas'
     | '/bolsas/$id'
+    | '/guia/$slug'
     | '/instituicoes/$slug'
     | '/bolsas/'
+    | '/guia/'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/avaliacoes'
     | '/_authenticated/admin/bolsas'
@@ -649,6 +685,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/crm/'
     | '/_authenticated/admin/financeiro/'
     | '/api/public/uge/validar/$codigo'
+    | '/bolsas/curso/$course/cidade/$city'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -665,11 +702,14 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermosRoute: typeof TermosRoute
   BolsasIdRoute: typeof BolsasIdRoute
+  GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
+  GuiaIndexRoute: typeof GuiaIndexRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
   ApiPublicUgeValidarCodigoRoute: typeof ApiPublicUgeValidarCodigoRoute
+  BolsasCursoCourseCidadeCityRoute: typeof BolsasCursoCourseCidadeCityRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -758,6 +798,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guia/': {
+      id: '/guia/'
+      path: '/guia'
+      fullPath: '/guia/'
+      preLoaderRoute: typeof GuiaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bolsas/': {
       id: '/bolsas/'
       path: '/bolsas'
@@ -770,6 +817,13 @@ declare module '@tanstack/react-router' {
       path: '/instituicoes/$slug'
       fullPath: '/instituicoes/$slug'
       preLoaderRoute: typeof InstituicoesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guia/$slug': {
+      id: '/guia/$slug'
+      path: '/guia/$slug'
+      fullPath: '/guia/$slug'
+      preLoaderRoute: typeof GuiaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bolsas/$id': {
@@ -1024,6 +1078,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCrmAtividadesRouteImport
       parentRoute: typeof AuthenticatedAdminCrmRoute
     }
+    '/bolsas/curso/$course/cidade/$city': {
+      id: '/bolsas/curso/$course/cidade/$city'
+      path: '/bolsas/curso/$course/cidade/$city'
+      fullPath: '/bolsas/curso/$course/cidade/$city'
+      preLoaderRoute: typeof BolsasCursoCourseCidadeCityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/uge/validar/$codigo': {
       id: '/api/public/uge/validar/$codigo'
       path: '/api/public/uge/validar/$codigo'
@@ -1174,11 +1235,14 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermosRoute: TermosRoute,
   BolsasIdRoute: BolsasIdRoute,
+  GuiaSlugRoute: GuiaSlugRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
   BolsasIndexRoute: BolsasIndexRoute,
+  GuiaIndexRoute: GuiaIndexRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
   ApiPublicUgeValidarCodigoRoute: ApiPublicUgeValidarCodigoRoute,
+  BolsasCursoCourseCidadeCityRoute: BolsasCursoCourseCidadeCityRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
