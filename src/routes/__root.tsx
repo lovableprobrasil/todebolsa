@@ -15,6 +15,7 @@ import { AuthProvider } from "../lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
 import { trackPageview } from "../lib/analytics";
 import { CookieBanner } from "@/components/site/CookieBanner";
+import { MobileSearchFab } from "@/components/site/MobileSearchFab";
 
 function NotFoundComponent() {
   return (
