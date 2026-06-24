@@ -12,8 +12,11 @@ Disallow: /reservas/
 Disallow: /notificacoes
 Disallow: /instituicao
 Disallow: /instituicao/
+Disallow: /meus-dados
+Disallow: /indicacoes
 Disallow: /auth
 Disallow: /recuperar-senha
 Disallow: /reset-password
+Disallow: /api/
 
-Sitemap: https://todebolsa.lovable.app/api/public/sitemap
+Sitemap: https://todebolsa.lovable.app/sitemap.xml

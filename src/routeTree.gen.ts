@@ -34,7 +34,6 @@ import { Route as AuthenticatedInstituicaoIndexRouteImport } from './routes/_aut
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$city'
 import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
-import { Route as ApiPublicSitemapRouteImport } from './routes/api/public/sitemap'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
 import { Route as AuthenticatedInstituicaoCadastrarRouteImport } from './routes/_authenticated/instituicao.cadastrar'
 import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
@@ -182,11 +181,6 @@ const BolsasCidadeCityRoute = BolsasCidadeCityRouteImport.update({
 const BolsasCategoriaLevelRoute = BolsasCategoriaLevelRouteImport.update({
   id: '/bolsas/categoria/$level',
   path: '/bolsas/categoria/$level',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicSitemapRoute = ApiPublicSitemapRouteImport.update({
-  id: '/api/public/sitemap',
-  path: '/api/public/sitemap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedReservasIdRoute = AuthenticatedReservasIdRouteImport.update({
@@ -355,7 +349,6 @@ export interface FileRoutesByFullPath {
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
-  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -401,7 +394,6 @@ export interface FileRoutesByTo {
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
-  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -452,7 +444,6 @@ export interface FileRoutesById {
   '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/_authenticated/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
-  '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -503,7 +494,6 @@ export interface FileRouteTypes {
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
     | '/reservas/$id'
-    | '/api/public/sitemap'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
     | '/admin/'
@@ -549,7 +539,6 @@ export interface FileRouteTypes {
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
     | '/reservas/$id'
-    | '/api/public/sitemap'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
     | '/admin'
@@ -599,7 +588,6 @@ export interface FileRouteTypes {
     | '/_authenticated/instituicao/$id'
     | '/_authenticated/instituicao/cadastrar'
     | '/_authenticated/reservas/$id'
-    | '/api/public/sitemap'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
     | '/_authenticated/admin/'
@@ -627,7 +615,6 @@ export interface RootRouteChildren {
   BolsasIdRoute: typeof BolsasIdRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
-  ApiPublicSitemapRoute: typeof ApiPublicSitemapRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
 }
@@ -807,13 +794,6 @@ declare module '@tanstack/react-router' {
       path: '/bolsas/categoria/$level'
       fullPath: '/bolsas/categoria/$level'
       preLoaderRoute: typeof BolsasCategoriaLevelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/sitemap': {
-      id: '/api/public/sitemap'
-      path: '/api/public/sitemap'
-      fullPath: '/api/public/sitemap'
-      preLoaderRoute: typeof ApiPublicSitemapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/reservas/$id': {
@@ -1112,7 +1092,6 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasIdRoute: BolsasIdRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
   BolsasIndexRoute: BolsasIndexRoute,
-  ApiPublicSitemapRoute: ApiPublicSitemapRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
 }

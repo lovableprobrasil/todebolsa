@@ -4,11 +4,32 @@ import { supabase } from "@/integrations/supabase/client";
 
 const BASE_URL = "https://todebolsa.lovable.app";
 
+const LEVELS = [
+  "fundamental",
+  "medio",
+  "tecnico",
+  "graduacao",
+  "pos-graduacao",
+  "mba",
+  "idiomas",
+  "preparatorios",
+  "extensao",
+];
+
 interface SitemapEntry {
   path: string;
   lastmod?: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
+}
+
+function citySlug(c: string) {
+  return c
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 export const Route = createFileRoute("/sitemap.xml")({
@@ -20,7 +41,16 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/bolsas", changefreq: "daily", priority: "0.9" },
           { path: "/para-instituicoes", changefreq: "monthly", priority: "0.6" },
           { path: "/faq", changefreq: "monthly", priority: "0.5" },
+          { path: "/privacidade", changefreq: "yearly", priority: "0.3" },
         ];
+
+        for (const l of LEVELS) {
+          entries.push({
+            path: `/bolsas/categoria/${l}`,
+            changefreq: "weekly",
+            priority: "0.7",
+          });
+        }
 
         try {
           const { data: scholarships } = await supabase
@@ -36,7 +66,9 @@ export const Route = createFileRoute("/sitemap.xml")({
               priority: "0.7",
             });
           }
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
 
         try {
           const { data: institutions } = await supabase
@@ -53,7 +85,28 @@ export const Route = createFileRoute("/sitemap.xml")({
               priority: "0.7",
             });
           }
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
+
+        try {
+          const { data: units } = await supabase
+            .from("institution_units")
+            .select("city")
+            .limit(5000);
+          const cities = Array.from(
+            new Set((units ?? []).map((u) => u.city).filter(Boolean) as string[]),
+          );
+          for (const c of cities) {
+            entries.push({
+              path: `/bolsas/cidade/${citySlug(c)}`,
+              changefreq: "weekly",
+              priority: "0.6",
+            });
+          }
+        } catch {
+          /* ignore */
+        }
 
         const urls = entries.map((e) =>
           [
@@ -63,7 +116,9 @@ export const Route = createFileRoute("/sitemap.xml")({
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
             `  </url>`,
-          ].filter(Boolean).join("\n"),
+          ]
+            .filter(Boolean)
+            .join("\n"),
         );
 
         const xml = [
