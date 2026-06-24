@@ -34,8 +34,13 @@ import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminReservasRouteImport } from './routes/_authenticated/admin.reservas'
 import { Route as AuthenticatedAdminInstituicoesRouteImport } from './routes/_authenticated/admin.instituicoes'
+import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
+import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
+import { Route as AuthenticatedAdminCrmLeadsRouteImport } from './routes/_authenticated/admin.crm.leads'
+import { Route as AuthenticatedAdminCrmInstituicoesRouteImport } from './routes/_authenticated/admin.crm.instituicoes'
+import { Route as AuthenticatedAdminCrmAtividadesRouteImport } from './routes/_authenticated/admin.crm.atividades'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -168,6 +173,11 @@ const AuthenticatedAdminInstituicoesRoute =
     path: '/instituicoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminCrmRoute = AuthenticatedAdminCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminBootstrapRoute =
   AuthenticatedAdminBootstrapRouteImport.update({
     id: '/bootstrap',
@@ -179,6 +189,30 @@ const AuthenticatedAdminBolsasRoute =
     id: '/bolsas',
     path: '/bolsas',
     getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCrmIndexRoute =
+  AuthenticatedAdminCrmIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminCrmRoute,
+  } as any)
+const AuthenticatedAdminCrmLeadsRoute =
+  AuthenticatedAdminCrmLeadsRouteImport.update({
+    id: '/leads',
+    path: '/leads',
+    getParentRoute: () => AuthenticatedAdminCrmRoute,
+  } as any)
+const AuthenticatedAdminCrmInstituicoesRoute =
+  AuthenticatedAdminCrmInstituicoesRouteImport.update({
+    id: '/instituicoes',
+    path: '/instituicoes',
+    getParentRoute: () => AuthenticatedAdminCrmRoute,
+  } as any)
+const AuthenticatedAdminCrmAtividadesRoute =
+  AuthenticatedAdminCrmAtividadesRouteImport.update({
+    id: '/atividades',
+    path: '/atividades',
+    getParentRoute: () => AuthenticatedAdminCrmRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -200,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
@@ -208,6 +243,10 @@ export interface FileRoutesByFullPath {
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
+  '/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
+  '/admin/crm/instituicoes': typeof AuthenticatedAdminCrmInstituicoesRoute
+  '/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
+  '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -235,6 +274,10 @@ export interface FileRoutesByTo {
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/instituicao': typeof AuthenticatedInstituicaoIndexRoute
+  '/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
+  '/admin/crm/instituicoes': typeof AuthenticatedAdminCrmInstituicoesRoute
+  '/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
+  '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -257,6 +300,7 @@ export interface FileRoutesById {
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/_authenticated/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/_authenticated/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
@@ -265,6 +309,10 @@ export interface FileRoutesById {
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
+  '/_authenticated/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
+  '/_authenticated/admin/crm/instituicoes': typeof AuthenticatedAdminCrmInstituicoesRoute
+  '/_authenticated/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
+  '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -287,6 +335,7 @@ export interface FileRouteTypes {
     | '/instituicoes/$slug'
     | '/admin/bolsas'
     | '/admin/bootstrap'
+    | '/admin/crm'
     | '/admin/instituicoes'
     | '/admin/reservas'
     | '/admin/usuarios'
@@ -295,6 +344,10 @@ export interface FileRouteTypes {
     | '/reservas/$id'
     | '/admin/'
     | '/instituicao/'
+    | '/admin/crm/atividades'
+    | '/admin/crm/instituicoes'
+    | '/admin/crm/leads'
+    | '/admin/crm/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -322,6 +375,10 @@ export interface FileRouteTypes {
     | '/reservas/$id'
     | '/admin'
     | '/instituicao'
+    | '/admin/crm/atividades'
+    | '/admin/crm/instituicoes'
+    | '/admin/crm/leads'
+    | '/admin/crm'
   id:
     | '__root__'
     | '/'
@@ -343,6 +400,7 @@ export interface FileRouteTypes {
     | '/instituicoes/$slug'
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
+    | '/_authenticated/admin/crm'
     | '/_authenticated/admin/instituicoes'
     | '/_authenticated/admin/reservas'
     | '/_authenticated/admin/usuarios'
@@ -351,6 +409,10 @@ export interface FileRouteTypes {
     | '/_authenticated/reservas/$id'
     | '/_authenticated/admin/'
     | '/_authenticated/instituicao/'
+    | '/_authenticated/admin/crm/atividades'
+    | '/_authenticated/admin/crm/instituicoes'
+    | '/_authenticated/admin/crm/leads'
+    | '/_authenticated/admin/crm/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -542,6 +604,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminInstituicoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/crm': {
+      id: '/_authenticated/admin/crm'
+      path: '/crm'
+      fullPath: '/admin/crm'
+      preLoaderRoute: typeof AuthenticatedAdminCrmRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/bootstrap': {
       id: '/_authenticated/admin/bootstrap'
       path: '/bootstrap'
@@ -556,12 +625,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBolsasRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/crm/': {
+      id: '/_authenticated/admin/crm/'
+      path: '/'
+      fullPath: '/admin/crm/'
+      preLoaderRoute: typeof AuthenticatedAdminCrmIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminCrmRoute
+    }
+    '/_authenticated/admin/crm/leads': {
+      id: '/_authenticated/admin/crm/leads'
+      path: '/leads'
+      fullPath: '/admin/crm/leads'
+      preLoaderRoute: typeof AuthenticatedAdminCrmLeadsRouteImport
+      parentRoute: typeof AuthenticatedAdminCrmRoute
+    }
+    '/_authenticated/admin/crm/instituicoes': {
+      id: '/_authenticated/admin/crm/instituicoes'
+      path: '/instituicoes'
+      fullPath: '/admin/crm/instituicoes'
+      preLoaderRoute: typeof AuthenticatedAdminCrmInstituicoesRouteImport
+      parentRoute: typeof AuthenticatedAdminCrmRoute
+    }
+    '/_authenticated/admin/crm/atividades': {
+      id: '/_authenticated/admin/crm/atividades'
+      path: '/atividades'
+      fullPath: '/admin/crm/atividades'
+      preLoaderRoute: typeof AuthenticatedAdminCrmAtividadesRouteImport
+      parentRoute: typeof AuthenticatedAdminCrmRoute
+    }
   }
 }
+
+interface AuthenticatedAdminCrmRouteChildren {
+  AuthenticatedAdminCrmAtividadesRoute: typeof AuthenticatedAdminCrmAtividadesRoute
+  AuthenticatedAdminCrmInstituicoesRoute: typeof AuthenticatedAdminCrmInstituicoesRoute
+  AuthenticatedAdminCrmLeadsRoute: typeof AuthenticatedAdminCrmLeadsRoute
+  AuthenticatedAdminCrmIndexRoute: typeof AuthenticatedAdminCrmIndexRoute
+}
+
+const AuthenticatedAdminCrmRouteChildren: AuthenticatedAdminCrmRouteChildren = {
+  AuthenticatedAdminCrmAtividadesRoute: AuthenticatedAdminCrmAtividadesRoute,
+  AuthenticatedAdminCrmInstituicoesRoute:
+    AuthenticatedAdminCrmInstituicoesRoute,
+  AuthenticatedAdminCrmLeadsRoute: AuthenticatedAdminCrmLeadsRoute,
+  AuthenticatedAdminCrmIndexRoute: AuthenticatedAdminCrmIndexRoute,
+}
+
+const AuthenticatedAdminCrmRouteWithChildren =
+  AuthenticatedAdminCrmRoute._addFileChildren(
+    AuthenticatedAdminCrmRouteChildren,
+  )
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBolsasRoute: typeof AuthenticatedAdminBolsasRoute
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
+  AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRouteWithChildren
   AuthenticatedAdminInstituicoesRoute: typeof AuthenticatedAdminInstituicoesRoute
   AuthenticatedAdminReservasRoute: typeof AuthenticatedAdminReservasRoute
   AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
@@ -571,6 +689,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminBolsasRoute: AuthenticatedAdminBolsasRoute,
   AuthenticatedAdminBootstrapRoute: AuthenticatedAdminBootstrapRoute,
+  AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRouteWithChildren,
   AuthenticatedAdminInstituicoesRoute: AuthenticatedAdminInstituicoesRoute,
   AuthenticatedAdminReservasRoute: AuthenticatedAdminReservasRoute,
   AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
