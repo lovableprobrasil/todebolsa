@@ -9,38 +9,127 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ParaInstituicoesRouteImport } from './routes/para-instituicoes'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as BolsasRouteImport } from './routes/bolsas'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
+import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 
+const ParaInstituicoesRoute = ParaInstituicoesRouteImport.update({
+  id: '/para-instituicoes',
+  path: '/para-instituicoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BolsasRoute = BolsasRouteImport.update({
+  id: '/bolsas',
+  path: '/bolsas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InstituicoesSlugRoute = InstituicoesSlugRouteImport.update({
+  id: '/instituicoes/$slug',
+  path: '/instituicoes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BolsasIdRoute = BolsasIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => BolsasRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bolsas': typeof BolsasRouteWithChildren
+  '/faq': typeof FaqRoute
+  '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/bolsas/$id': typeof BolsasIdRoute
+  '/instituicoes/$slug': typeof InstituicoesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bolsas': typeof BolsasRouteWithChildren
+  '/faq': typeof FaqRoute
+  '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/bolsas/$id': typeof BolsasIdRoute
+  '/instituicoes/$slug': typeof InstituicoesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bolsas': typeof BolsasRouteWithChildren
+  '/faq': typeof FaqRoute
+  '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/bolsas/$id': typeof BolsasIdRoute
+  '/instituicoes/$slug': typeof InstituicoesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/bolsas'
+    | '/faq'
+    | '/para-instituicoes'
+    | '/bolsas/$id'
+    | '/instituicoes/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/bolsas'
+    | '/faq'
+    | '/para-instituicoes'
+    | '/bolsas/$id'
+    | '/instituicoes/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/bolsas'
+    | '/faq'
+    | '/para-instituicoes'
+    | '/bolsas/$id'
+    | '/instituicoes/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BolsasRoute: typeof BolsasRouteWithChildren
+  FaqRoute: typeof FaqRoute
+  ParaInstituicoesRoute: typeof ParaInstituicoesRoute
+  InstituicoesSlugRoute: typeof InstituicoesSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/para-instituicoes': {
+      id: '/para-instituicoes'
+      path: '/para-instituicoes'
+      fullPath: '/para-instituicoes'
+      preLoaderRoute: typeof ParaInstituicoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bolsas': {
+      id: '/bolsas'
+      path: '/bolsas'
+      fullPath: '/bolsas'
+      preLoaderRoute: typeof BolsasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +137,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/instituicoes/$slug': {
+      id: '/instituicoes/$slug'
+      path: '/instituicoes/$slug'
+      fullPath: '/instituicoes/$slug'
+      preLoaderRoute: typeof InstituicoesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bolsas/$id': {
+      id: '/bolsas/$id'
+      path: '/$id'
+      fullPath: '/bolsas/$id'
+      preLoaderRoute: typeof BolsasIdRouteImport
+      parentRoute: typeof BolsasRoute
+    }
   }
 }
 
+interface BolsasRouteChildren {
+  BolsasIdRoute: typeof BolsasIdRoute
+}
+
+const BolsasRouteChildren: BolsasRouteChildren = {
+  BolsasIdRoute: BolsasIdRoute,
+}
+
+const BolsasRouteWithChildren =
+  BolsasRoute._addFileChildren(BolsasRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BolsasRoute: BolsasRouteWithChildren,
+  FaqRoute: FaqRoute,
+  ParaInstituicoesRoute: ParaInstituicoesRoute,
+  InstituicoesSlugRoute: InstituicoesSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
