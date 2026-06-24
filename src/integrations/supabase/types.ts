@@ -994,6 +994,8 @@ export type Database = {
           institution_id: string | null
           name: string
           phone: string | null
+          referral_code: string | null
+          referred_by_user_id: string | null
           updated_at: string
         }
         Insert: {
@@ -1006,6 +1008,8 @@ export type Database = {
           institution_id?: string | null
           name?: string
           phone?: string | null
+          referral_code?: string | null
+          referred_by_user_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -1018,6 +1022,8 @@ export type Database = {
           institution_id?: string | null
           name?: string
           phone?: string | null
+          referral_code?: string | null
+          referred_by_user_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1068,6 +1074,83 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referral_credits: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          referred_user_id: string | null
+          reservation_id: string | null
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          referred_user_id?: string | null
+          reservation_id?: string | null
+          source: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          referred_user_id?: string | null
+          reservation_id?: string | null
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_credits_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_payouts: {
+        Row: {
+          amount: number
+          id: string
+          notes: string | null
+          pix_key: string
+          pix_key_type: string
+          processed_at: string | null
+          processed_by: string | null
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          id?: string
+          notes?: string | null
+          pix_key: string
+          pix_key_type: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          id?: string
+          notes?: string | null
+          pix_key?: string
+          pix_key_type?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       refunds: {
         Row: {
@@ -1258,6 +1341,27 @@ export type Database = {
           },
         ]
       }
+      user_badges: {
+        Row: {
+          badge_code: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_code: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_code?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1439,6 +1543,7 @@ export type Database = {
       }
       funnel_overview: { Args: { p_days?: number }; Returns: Json }
       gen_reservation_code: { Args: never; Returns: string }
+      generate_referral_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1506,6 +1611,8 @@ export type Database = {
         Args: { p_institution_id: string }
         Returns: undefined
       }
+      referral_leaderboard: { Args: { p_limit?: number }; Returns: Json }
+      referral_summary: { Args: never; Returns: Json }
       request_account_deletion: {
         Args: { p_reason: string }
         Returns: {
@@ -1520,6 +1627,27 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "account_deletion_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      request_referral_payout: {
+        Args: { p_amount: number; p_pix_key: string; p_pix_type: string }
+        Returns: {
+          amount: number
+          id: string
+          notes: string | null
+          pix_key: string
+          pix_key_type: string
+          processed_at: string | null
+          processed_by: string | null
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "referral_payouts"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -1612,6 +1740,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      set_referrer: { Args: { p_code: string }; Returns: undefined }
       submit_enrollment_document: {
         Args: {
           p_doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
