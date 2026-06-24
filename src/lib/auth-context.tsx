@@ -53,17 +53,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(newSession);
       setUser(newSession?.user ?? null);
       if (newSession?.user) {
-        // defer to avoid deadlock inside callback
-        setTimeout(() => loadProfile(newSession.user.id), 0);
+        const uid = newSession.user.id;
+        setTimeout(() => { loadProfile(uid); loadRoles(uid); }, 0);
       } else {
         setProfile(null);
+        setInstitutionAdminOf([]);
       }
     });
 
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setUser(data.session?.user ?? null);
-      if (data.session?.user) loadProfile(data.session.user.id);
+      if (data.session?.user) {
+        loadProfile(data.session.user.id);
+        loadRoles(data.session.user.id);
+      }
       setLoading(false);
     });
 
@@ -73,14 +77,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signOut() {
     await supabase.auth.signOut();
     setProfile(null);
+    setInstitutionAdminOf([]);
   }
 
   async function refreshProfile() {
     if (user) await loadProfile(user.id);
   }
 
+  async function refreshRoles() {
+    if (user) await loadRoles(user.id);
+  }
+
   return (
-    <Ctx.Provider value={{ user, session, profile, loading, signOut, refreshProfile }}>
+    <Ctx.Provider value={{ user, session, profile, institutionAdminOf, loading, signOut, refreshProfile, refreshRoles }}>
       {children}
     </Ctx.Provider>
   );
@@ -91,3 +100,4 @@ export function useAuth() {
   if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
   return ctx;
 }
+
