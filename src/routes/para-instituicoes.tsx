@@ -41,7 +41,9 @@ function ForInstitutionsPage() {
               tudo de forma self-service.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Button size="lg">Solicitar credenciamento</Button>
+              <Button size="lg" asChild>
+                <Link to="/instituicao/cadastrar">Solicitar credenciamento</Link>
+              </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/bolsas">Ver como funciona para alunos</Link>
               </Button>
@@ -84,7 +86,9 @@ function ForInstitutionsPage() {
               ))}
             </ol>
             <div className="text-center mt-10">
-              <Button size="lg">Quero cadastrar minha instituição</Button>
+              <Button size="lg" asChild>
+                <Link to="/instituicao/cadastrar">Quero cadastrar minha instituição</Link>
+              </Button>
             </div>
           </div>
         </section>
