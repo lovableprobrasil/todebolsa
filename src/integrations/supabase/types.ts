@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          id: string
+          processed_at: string | null
+          reason: string | null
+          requested_at: string
+          scheduled_for: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      analytics_events: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          event_type: string
+          id: number
+          metadata: Json | null
+          path: string | null
+          referrer: string | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type: string
+          id?: number
+          metadata?: Json | null
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type?: string
+          id?: number
+          metadata?: Json | null
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author: string | null
@@ -122,6 +191,42 @@ export type Database = {
           name?: string
           start_at?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      consent_log: {
+        Row: {
+          consent_type: string
+          created_at: string
+          granted: boolean
+          id: number
+          ip_address: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+          version: string
+        }
+        Insert: {
+          consent_type: string
+          created_at?: string
+          granted: boolean
+          id?: number
+          ip_address?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          version?: string
+        }
+        Update: {
+          consent_type?: string
+          created_at?: string
+          granted?: boolean
+          id?: number
+          ip_address?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          version?: string
         }
         Relationships: []
       }
@@ -243,6 +348,102 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_export_requests: {
+        Row: {
+          completed_at: string | null
+          id: string
+          payload: Json | null
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          payload?: Json | null
+          requested_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          payload?: Json | null
+          requested_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      enrollment_documents: {
+        Row: {
+          created_at: string
+          doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          rejection_reason: string | null
+          reservation_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id?: string | null
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          rejection_reason?: string | null
+          reservation_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          doc_type?: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          rejection_reason?: string | null
+          reservation_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollment_documents_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollment_documents_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
             referencedColumns: ["id"]
           },
         ]
@@ -793,6 +994,8 @@ export type Database = {
           institution_id: string | null
           name: string
           phone: string | null
+          referral_code: string | null
+          referred_by_user_id: string | null
           updated_at: string
         }
         Insert: {
@@ -805,6 +1008,8 @@ export type Database = {
           institution_id?: string | null
           name?: string
           phone?: string | null
+          referral_code?: string | null
+          referred_by_user_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -817,6 +1022,8 @@ export type Database = {
           institution_id?: string | null
           name?: string
           phone?: string | null
+          referral_code?: string | null
+          referred_by_user_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -867,6 +1074,83 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referral_credits: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          referred_user_id: string | null
+          reservation_id: string | null
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          referred_user_id?: string | null
+          reservation_id?: string | null
+          source: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          referred_user_id?: string | null
+          reservation_id?: string | null
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_credits_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_payouts: {
+        Row: {
+          amount: number
+          id: string
+          notes: string | null
+          pix_key: string
+          pix_key_type: string
+          processed_at: string | null
+          processed_by: string | null
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          id?: string
+          notes?: string | null
+          pix_key: string
+          pix_key_type: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          id?: string
+          notes?: string | null
+          pix_key?: string
+          pix_key_type?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       refunds: {
         Row: {
@@ -1057,6 +1341,27 @@ export type Database = {
           },
         ]
       }
+      user_badges: {
+        Row: {
+          badge_code: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_code: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_code?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1111,6 +1416,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      cancel_account_deletion: { Args: never; Returns: undefined }
       cancel_reservation: {
         Args: { p_reservation_id: string }
         Returns: {
@@ -1201,6 +1507,28 @@ export type Database = {
       }
       crm_overview: { Args: never; Returns: Json }
       expire_reservations: { Args: never; Returns: number }
+      export_my_data: { Args: never; Returns: Json }
+      finalize_enrollment: {
+        Args: { p_approved: boolean; p_notes: string; p_reservation_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          institution_id: string
+          notes: string | null
+          reservation_id: string
+          status: Database["public"]["Enums"]["reservation_status"]
+          uge_card_eligible: boolean
+          uge_card_issued_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "enrollments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       finance_overview: { Args: never; Returns: Json }
       finance_revenue_by_institution: {
         Args: never
@@ -1213,7 +1541,9 @@ export type Database = {
           trade_name: string
         }[]
       }
+      funnel_overview: { Args: { p_days?: number }; Returns: Json }
       gen_reservation_code: { Args: never; Returns: string }
+      generate_referral_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1281,6 +1611,47 @@ export type Database = {
         Args: { p_institution_id: string }
         Returns: undefined
       }
+      referral_leaderboard: { Args: { p_limit?: number }; Returns: Json }
+      referral_summary: { Args: never; Returns: Json }
+      request_account_deletion: {
+        Args: { p_reason: string }
+        Returns: {
+          id: string
+          processed_at: string | null
+          reason: string | null
+          requested_at: string
+          scheduled_for: string
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "account_deletion_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      request_referral_payout: {
+        Args: { p_amount: number; p_pix_key: string; p_pix_type: string }
+        Returns: {
+          amount: number
+          id: string
+          notes: string | null
+          pix_key: string
+          pix_key_type: string
+          processed_at: string | null
+          processed_by: string | null
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "referral_payouts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       request_refund: {
         Args: { p_reason: string; p_reservation_id: string }
         Returns: {
@@ -1298,6 +1669,32 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "refunds"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      review_enrollment_document: {
+        Args: { p_approved: boolean; p_document_id: string; p_reason: string }
+        Returns: {
+          created_at: string
+          doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          rejection_reason: string | null
+          reservation_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "enrollment_documents"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -1343,12 +1740,58 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      set_referrer: { Args: { p_code: string }; Returns: undefined }
+      submit_enrollment_document: {
+        Args: {
+          p_doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          p_file_name: string
+          p_file_path: string
+          p_file_size: number
+          p_mime_type: string
+          p_reservation_id: string
+        }
+        Returns: {
+          created_at: string
+          doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          rejection_reason: string | null
+          reservation_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "enrollment_documents"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       toggle_institution_feature: {
         Args: { p_featured: boolean; p_institution_id: string }
         Returns: undefined
       }
       toggle_scholarship_feature: {
         Args: { p_featured: boolean; p_scholarship_id: string }
+        Returns: undefined
+      }
+      track_event: {
+        Args: {
+          p_entity_id: string
+          p_entity_type: string
+          p_event_type: string
+          p_metadata: Json
+          p_path: string
+          p_referrer: string
+          p_session_id: string
+        }
         Returns: undefined
       }
       unaccent_safe: { Args: { p: string }; Returns: string }
@@ -1385,6 +1828,16 @@ export type Database = {
       course_modality: "PRESENCIAL" | "SEMIPRESENCIAL" | "EAD"
       course_shift: "MANHA" | "TARDE" | "NOITE" | "INTEGRAL" | "FLEXIVEL"
       discount_type: "PERCENT" | "FIXED" | "FINAL_PRICE"
+      enrollment_doc_status: "PENDING" | "APPROVED" | "REJECTED"
+      enrollment_doc_type:
+        | "RG"
+        | "CPF"
+        | "PROOF_OF_ADDRESS"
+        | "INCOME_PROOF"
+        | "PREVIOUS_DIPLOMA"
+        | "ENROLLMENT_DECLARATION"
+        | "PHOTO"
+        | "OTHER"
       institution_status: "PENDING" | "APPROVED" | "SUSPENDED" | "REJECTED"
       lead_status:
         | "NEW"
@@ -1577,6 +2030,17 @@ export const Constants = {
       course_modality: ["PRESENCIAL", "SEMIPRESENCIAL", "EAD"],
       course_shift: ["MANHA", "TARDE", "NOITE", "INTEGRAL", "FLEXIVEL"],
       discount_type: ["PERCENT", "FIXED", "FINAL_PRICE"],
+      enrollment_doc_status: ["PENDING", "APPROVED", "REJECTED"],
+      enrollment_doc_type: [
+        "RG",
+        "CPF",
+        "PROOF_OF_ADDRESS",
+        "INCOME_PROOF",
+        "PREVIOUS_DIPLOMA",
+        "ENROLLMENT_DECLARATION",
+        "PHOTO",
+        "OTHER",
+      ],
       institution_status: ["PENDING", "APPROVED", "SUSPENDED", "REJECTED"],
       lead_status: [
         "NEW",

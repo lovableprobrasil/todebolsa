@@ -4,6 +4,8 @@ import { Heart, Bookmark, IdCard, ArrowRight, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { ScholarshipCard } from "@/components/site/ScholarshipCard";
+import { recommendScholarships } from "@/lib/scholarships";
 
 export const Route = createFileRoute("/_authenticated/painel")({
   component: PainelPage,
@@ -23,6 +25,12 @@ function PainelPage() {
       ]);
       return { favorites: fav.count ?? 0, reservations: res.count ?? 0 };
     },
+  });
+
+  const { data: recs = [] } = useQuery({
+    enabled: !!uid,
+    queryKey: ["recommendations", uid],
+    queryFn: () => recommendScholarships(uid!, 6),
   });
 
   const name = profile?.name?.split(" ")[0] ?? "Estudante";
@@ -78,6 +86,20 @@ function PainelPage() {
           </Button>
         </div>
       </section>
+
+      {recs.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-xl font-extrabold flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" /> Recomendado para você
+            </h2>
+            <Link to="/bolsas" className="text-sm text-primary hover:underline">Ver todas</Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {recs.map((s) => <ScholarshipCard key={s.id} s={s} />)}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

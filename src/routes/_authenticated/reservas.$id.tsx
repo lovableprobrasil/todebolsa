@@ -10,6 +10,7 @@ import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
+import { DocumentUpload } from "@/components/enrollment/DocumentUpload";
 
 export const Route = createFileRoute("/_authenticated/reservas/$id")({
   component: ReservationDetailPage,
@@ -211,9 +212,13 @@ function ReservationDetailPage() {
           <CheckCircle2 className="h-12 w-12 text-primary mx-auto" />
           <h2 className="font-display text-xl font-extrabold mt-3">Bolsa confirmada!</h2>
           <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-            A instituição entrará em contato em até 48 horas para concluir a matrícula. Acompanhe atualizações em suas notificações.
+            Agora envie seus documentos abaixo para a instituição finalizar sua matrícula.
           </p>
         </section>
+      )}
+
+      {(r.status === "CONFIRMED" || r.status === "UNDER_REVIEW" || r.status === "AWAITING_ENROLLMENT") && user && (
+        <DocumentUpload reservationId={r.id} userId={user.id} />
       )}
 
       {r.status === "ENROLLMENT_APPROVED" && user && r.institution_id && (

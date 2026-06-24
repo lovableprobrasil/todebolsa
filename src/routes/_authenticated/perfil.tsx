@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { UserCircle, Loader2, Save } from "lucide-react";
+import { UserCircle, Loader2, Save, Gift, ShieldCheck, ChevronRight } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -77,6 +77,31 @@ function PerfilPage() {
           </Button>
         </div>
       </form>
+
+      <div className="grid sm:grid-cols-2 gap-3">
+        <Link
+          to="/indicacoes"
+          className="group rounded-2xl border border-border bg-card p-5 hover:border-primary hover:-translate-y-0.5 transition-all flex items-center gap-3"
+        >
+          <Gift className="h-5 w-5 text-primary" />
+          <div className="flex-1">
+            <div className="font-bold">Indique e ganhe R$ 25</div>
+            <div className="text-xs text-muted-foreground">Crédito + PIX a partir de R$ 25</div>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+        <Link
+          to="/meus-dados"
+          className="group rounded-2xl border border-border bg-card p-5 hover:border-primary hover:-translate-y-0.5 transition-all flex items-center gap-3"
+        >
+          <ShieldCheck className="h-5 w-5 text-primary" />
+          <div className="flex-1">
+            <div className="font-bold">Privacidade e dados</div>
+            <div className="text-xs text-muted-foreground">LGPD: exportar ou excluir</div>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+      </div>
     </div>
   );
 }

@@ -16,4 +16,4 @@ Disallow: /auth
 Disallow: /recuperar-senha
 Disallow: /reset-password
 
-Sitemap: https://todebolsa.lovable.app/sitemap.xml
+Sitemap: https://todebolsa.lovable.app/api/public/sitemap

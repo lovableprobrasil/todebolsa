@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, redirect, useRouterState } from "@tanstack/react-router";
-import { Shield, LayoutDashboard, Building2, GraduationCap, Users, Bookmark, Briefcase, Wallet, Star } from "lucide-react";
+import { Shield, LayoutDashboard, Building2, GraduationCap, Users, Bookmark, Briefcase, Wallet, Star, FileCheck2, Activity, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -23,9 +23,12 @@ const TABS = [
   { to: "/admin/instituicoes", label: "Instituições", icon: Building2, exact: false },
   { to: "/admin/bolsas", label: "Bolsas", icon: GraduationCap, exact: false },
   { to: "/admin/reservas", label: "Reservas", icon: Bookmark, exact: false },
+  { to: "/admin/matriculas", label: "Matrículas", icon: FileCheck2, exact: false },
   { to: "/admin/crm", label: "CRM & Comercial", icon: Briefcase, exact: false },
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet, exact: false },
+  { to: "/admin/analytics", label: "Analytics", icon: Activity, exact: false },
   { to: "/admin/avaliacoes", label: "Avaliações", icon: Star, exact: false },
+  { to: "/admin/indicacoes", label: "Indicações", icon: Gift, exact: false },
   { to: "/admin/usuarios", label: "Usuários", icon: Users, exact: false },
 ] as const;
 

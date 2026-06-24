@@ -19,6 +19,8 @@ type BolsasSearch = {
   city?: string;
   modality?: string;
   minDiscount?: number;
+  maxPrice?: number;
+  sort?: "relevance" | "discount-desc" | "price-asc" | "price-desc" | "recent";
 };
 
 function str(v: unknown): string | undefined {
@@ -32,6 +34,8 @@ export const Route = createFileRoute("/bolsas/")({
     city: str(raw.city),
     modality: str(raw.modality),
     minDiscount: raw.minDiscount != null && !Number.isNaN(Number(raw.minDiscount)) ? Number(raw.minDiscount) : undefined,
+    maxPrice: raw.maxPrice != null && !Number.isNaN(Number(raw.maxPrice)) ? Number(raw.maxPrice) : undefined,
+    sort: (["relevance", "discount-desc", "price-asc", "price-desc", "recent"] as const).find((s) => s === raw.sort),
   }),
   head: ({ match }) => {
     const s = (match.search ?? {}) as BolsasSearch;
@@ -60,6 +64,8 @@ function BolsasPage() {
   const search = Route.useSearch();
   const [minDiscount, setMinDiscount] = useState<number>(search.minDiscount ?? 0);
   const [modality, setModality] = useState<string | undefined>(search.modality);
+  const [maxPrice, setMaxPrice] = useState<number>(search.maxPrice ?? 0);
+  const [sort, setSort] = useState<BolsasSearch["sort"]>(search.sort ?? "relevance");
 
   const filters = useMemo(
     () => ({
@@ -68,8 +74,10 @@ function BolsasPage() {
       city: search.city,
       modality,
       minDiscount: minDiscount > 0 ? minDiscount : undefined,
+      maxPrice: maxPrice > 0 ? maxPrice : undefined,
+      sort,
     }),
-    [search.level, search.q, search.city, modality, minDiscount],
+    [search.level, search.q, search.city, modality, minDiscount, maxPrice, sort],
   );
 
   const { data, isLoading } = useQuery({
@@ -147,6 +155,20 @@ function BolsasPage() {
               />
             </div>
 
+            <div className="mb-2">
+              <Label className="mb-2 block">
+                Mensalidade máxima:{" "}
+                <span className="font-bold text-primary">{maxPrice > 0 ? `R$ ${maxPrice}` : "qualquer"}</span>
+              </Label>
+              <Slider
+                value={[maxPrice]}
+                min={0}
+                max={3000}
+                step={50}
+                onValueChange={(v) => setMaxPrice(v[0] ?? 0)}
+              />
+            </div>
+
             <Button
               variant="ghost"
               size="sm"
@@ -154,6 +176,8 @@ function BolsasPage() {
               onClick={() => {
                 setMinDiscount(0);
                 setModality(undefined);
+                setMaxPrice(0);
+                setSort("relevance");
               }}
             >
               Limpar filtros
@@ -162,13 +186,25 @@ function BolsasPage() {
         </aside>
 
         <section>
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-5 flex-wrap gap-2">
             <p className="text-sm text-muted-foreground">
               {isLoading
                 ? "Carregando bolsas..."
                 : `${data?.length ?? 0} ${data?.length === 1 ? "bolsa encontrada" : "bolsas encontradas"}`}
             </p>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as BolsasSearch["sort"])}
+              className="rounded-xl border border-border bg-background px-3 py-2 text-sm"
+            >
+              <option value="relevance">Ordenar: relevância</option>
+              <option value="discount-desc">Maior desconto</option>
+              <option value="price-asc">Menor mensalidade</option>
+              <option value="price-desc">Maior mensalidade</option>
+              <option value="recent">Mais recentes</option>
+            </select>
           </div>
+
 
           {isLoading ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

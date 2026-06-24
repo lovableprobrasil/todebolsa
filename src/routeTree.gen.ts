@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ParaInstituicoesRouteImport } from './routes/para-instituicoes'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -24,22 +25,30 @@ import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated/notificacoes'
+import { Route as AuthenticatedMeusDadosRouteImport } from './routes/_authenticated/meus-dados'
+import { Route as AuthenticatedIndicacoesRouteImport } from './routes/_authenticated/indicacoes'
 import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authenticated/favoritos'
 import { Route as AuthenticatedCarteiraRouteImport } from './routes/_authenticated/carteira'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedInstituicaoIndexRouteImport } from './routes/_authenticated/instituicao.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$city'
+import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
+import { Route as ApiPublicSitemapRouteImport } from './routes/api/public/sitemap'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
 import { Route as AuthenticatedInstituicaoCadastrarRouteImport } from './routes/_authenticated/instituicao.cadastrar'
 import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminReservasRouteImport } from './routes/_authenticated/admin.reservas'
+import { Route as AuthenticatedAdminMatriculasRouteImport } from './routes/_authenticated/admin.matriculas'
 import { Route as AuthenticatedAdminInstituicoesRouteImport } from './routes/_authenticated/admin.instituicoes'
+import { Route as AuthenticatedAdminIndicacoesRouteImport } from './routes/_authenticated/admin.indicacoes'
 import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
 import { Route as AuthenticatedAdminAvaliacoesRouteImport } from './routes/_authenticated/admin.avaliacoes'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
 import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
@@ -62,6 +71,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
   id: '/recuperar-senha',
   path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ParaInstituicoesRoute = ParaInstituicoesRouteImport.update({
@@ -124,6 +138,16 @@ const AuthenticatedNotificacoesRoute =
     path: '/notificacoes',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMeusDadosRoute = AuthenticatedMeusDadosRouteImport.update({
+  id: '/meus-dados',
+  path: '/meus-dados',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedIndicacoesRoute = AuthenticatedIndicacoesRouteImport.update({
+  id: '/indicacoes',
+  path: '/indicacoes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedFavoritosRoute = AuthenticatedFavoritosRouteImport.update({
   id: '/favoritos',
   path: '/favoritos',
@@ -149,6 +173,21 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const BolsasCidadeCityRoute = BolsasCidadeCityRouteImport.update({
+  id: '/bolsas/cidade/$city',
+  path: '/bolsas/cidade/$city',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BolsasCategoriaLevelRoute = BolsasCategoriaLevelRouteImport.update({
+  id: '/bolsas/categoria/$level',
+  path: '/bolsas/categoria/$level',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicSitemapRoute = ApiPublicSitemapRouteImport.update({
+  id: '/api/public/sitemap',
+  path: '/api/public/sitemap',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedReservasIdRoute = AuthenticatedReservasIdRouteImport.update({
   id: '/$id',
@@ -179,10 +218,22 @@ const AuthenticatedAdminReservasRoute =
     path: '/reservas',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminMatriculasRoute =
+  AuthenticatedAdminMatriculasRouteImport.update({
+    id: '/matriculas',
+    path: '/matriculas',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminInstituicoesRoute =
   AuthenticatedAdminInstituicoesRouteImport.update({
     id: '/instituicoes',
     path: '/instituicoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminIndicacoesRoute =
+  AuthenticatedAdminIndicacoesRouteImport.update({
+    id: '/indicacoes',
+    path: '/indicacoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminFinanceiroRoute =
@@ -212,6 +263,12 @@ const AuthenticatedAdminAvaliacoesRoute =
   AuthenticatedAdminAvaliacoesRouteImport.update({
     id: '/avaliacoes',
     path: '/avaliacoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminFinanceiroIndexRoute =
@@ -268,12 +325,15 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
+  '/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/meus-dados': typeof AuthenticatedMeusDadosRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/perfil': typeof AuthenticatedPerfilRoute
@@ -281,17 +341,23 @@ export interface FileRoutesByFullPath {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas/': typeof BolsasIndexRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
+  '/admin/indicacoes': typeof AuthenticatedAdminIndicacoesRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
+  '/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
+  '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
+  '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
   '/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
@@ -308,11 +374,14 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
+  '/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/meus-dados': typeof AuthenticatedMeusDadosRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/perfil': typeof AuthenticatedPerfilRoute
@@ -320,15 +389,21 @@ export interface FileRoutesByTo {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas': typeof BolsasIndexRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/admin/indicacoes': typeof AuthenticatedAdminIndicacoesRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
+  '/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
+  '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
+  '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/instituicao': typeof AuthenticatedInstituicaoIndexRoute
   '/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
@@ -347,12 +422,15 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/carteira': typeof AuthenticatedCarteiraRoute
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
+  '/_authenticated/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/_authenticated/meus-dados': typeof AuthenticatedMeusDadosRoute
   '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
@@ -360,17 +438,23 @@ export interface FileRoutesById {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas/': typeof BolsasIndexRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
+  '/_authenticated/admin/indicacoes': typeof AuthenticatedAdminIndicacoesRoute
   '/_authenticated/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
+  '/_authenticated/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/_authenticated/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/_authenticated/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/sitemap': typeof ApiPublicSitemapRoute
+  '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
+  '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
   '/_authenticated/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
@@ -389,12 +473,15 @@ export interface FileRouteTypes {
     | '/auth'
     | '/faq'
     | '/para-instituicoes'
+    | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
     | '/admin'
     | '/carteira'
     | '/favoritos'
+    | '/indicacoes'
+    | '/meus-dados'
     | '/notificacoes'
     | '/painel'
     | '/perfil'
@@ -402,17 +489,23 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas/'
+    | '/admin/analytics'
     | '/admin/avaliacoes'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/crm'
     | '/admin/financeiro'
+    | '/admin/indicacoes'
     | '/admin/instituicoes'
+    | '/admin/matriculas'
     | '/admin/reservas'
     | '/admin/usuarios'
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
     | '/reservas/$id'
+    | '/api/public/sitemap'
+    | '/bolsas/categoria/$level'
+    | '/bolsas/cidade/$city'
     | '/admin/'
     | '/instituicao/'
     | '/admin/crm/atividades'
@@ -429,11 +522,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/faq'
     | '/para-instituicoes'
+    | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
     | '/carteira'
     | '/favoritos'
+    | '/indicacoes'
+    | '/meus-dados'
     | '/notificacoes'
     | '/painel'
     | '/perfil'
@@ -441,15 +537,21 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas'
+    | '/admin/analytics'
     | '/admin/avaliacoes'
     | '/admin/bolsas'
     | '/admin/bootstrap'
+    | '/admin/indicacoes'
     | '/admin/instituicoes'
+    | '/admin/matriculas'
     | '/admin/reservas'
     | '/admin/usuarios'
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
     | '/reservas/$id'
+    | '/api/public/sitemap'
+    | '/bolsas/categoria/$level'
+    | '/bolsas/cidade/$city'
     | '/admin'
     | '/instituicao'
     | '/admin/crm/atividades'
@@ -467,12 +569,15 @@ export interface FileRouteTypes {
     | '/auth'
     | '/faq'
     | '/para-instituicoes'
+    | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/carteira'
     | '/_authenticated/favoritos'
+    | '/_authenticated/indicacoes'
+    | '/_authenticated/meus-dados'
     | '/_authenticated/notificacoes'
     | '/_authenticated/painel'
     | '/_authenticated/perfil'
@@ -480,17 +585,23 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas/'
+    | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/avaliacoes'
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
     | '/_authenticated/admin/crm'
     | '/_authenticated/admin/financeiro'
+    | '/_authenticated/admin/indicacoes'
     | '/_authenticated/admin/instituicoes'
+    | '/_authenticated/admin/matriculas'
     | '/_authenticated/admin/reservas'
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/instituicao/$id'
     | '/_authenticated/instituicao/cadastrar'
     | '/_authenticated/reservas/$id'
+    | '/api/public/sitemap'
+    | '/bolsas/categoria/$level'
+    | '/bolsas/cidade/$city'
     | '/_authenticated/admin/'
     | '/_authenticated/instituicao/'
     | '/_authenticated/admin/crm/atividades'
@@ -509,12 +620,16 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   FaqRoute: typeof FaqRoute
   ParaInstituicoesRoute: typeof ParaInstituicoesRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   BolsasIdRoute: typeof BolsasIdRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
+  ApiPublicSitemapRoute: typeof ApiPublicSitemapRoute
+  BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
+  BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -538,6 +653,13 @@ declare module '@tanstack/react-router' {
       path: '/recuperar-senha'
       fullPath: '/recuperar-senha'
       preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/para-instituicoes': {
@@ -624,6 +746,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNotificacoesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/meus-dados': {
+      id: '/_authenticated/meus-dados'
+      path: '/meus-dados'
+      fullPath: '/meus-dados'
+      preLoaderRoute: typeof AuthenticatedMeusDadosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/indicacoes': {
+      id: '/_authenticated/indicacoes'
+      path: '/indicacoes'
+      fullPath: '/indicacoes'
+      preLoaderRoute: typeof AuthenticatedIndicacoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/favoritos': {
       id: '/_authenticated/favoritos'
       path: '/favoritos'
@@ -658,6 +794,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/bolsas/cidade/$city': {
+      id: '/bolsas/cidade/$city'
+      path: '/bolsas/cidade/$city'
+      fullPath: '/bolsas/cidade/$city'
+      preLoaderRoute: typeof BolsasCidadeCityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bolsas/categoria/$level': {
+      id: '/bolsas/categoria/$level'
+      path: '/bolsas/categoria/$level'
+      fullPath: '/bolsas/categoria/$level'
+      preLoaderRoute: typeof BolsasCategoriaLevelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/sitemap': {
+      id: '/api/public/sitemap'
+      path: '/api/public/sitemap'
+      fullPath: '/api/public/sitemap'
+      preLoaderRoute: typeof ApiPublicSitemapRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/reservas/$id': {
       id: '/_authenticated/reservas/$id'
@@ -694,11 +851,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminReservasRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/matriculas': {
+      id: '/_authenticated/admin/matriculas'
+      path: '/matriculas'
+      fullPath: '/admin/matriculas'
+      preLoaderRoute: typeof AuthenticatedAdminMatriculasRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/instituicoes': {
       id: '/_authenticated/admin/instituicoes'
       path: '/instituicoes'
       fullPath: '/admin/instituicoes'
       preLoaderRoute: typeof AuthenticatedAdminInstituicoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/indicacoes': {
+      id: '/_authenticated/admin/indicacoes'
+      path: '/indicacoes'
+      fullPath: '/admin/indicacoes'
+      preLoaderRoute: typeof AuthenticatedAdminIndicacoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/financeiro': {
@@ -734,6 +905,13 @@ declare module '@tanstack/react-router' {
       path: '/avaliacoes'
       fullPath: '/admin/avaliacoes'
       preLoaderRoute: typeof AuthenticatedAdminAvaliacoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/financeiro/': {
@@ -840,25 +1018,31 @@ const AuthenticatedAdminFinanceiroRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminAvaliacoesRoute: typeof AuthenticatedAdminAvaliacoesRoute
   AuthenticatedAdminBolsasRoute: typeof AuthenticatedAdminBolsasRoute
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRouteWithChildren
   AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRouteWithChildren
+  AuthenticatedAdminIndicacoesRoute: typeof AuthenticatedAdminIndicacoesRoute
   AuthenticatedAdminInstituicoesRoute: typeof AuthenticatedAdminInstituicoesRoute
+  AuthenticatedAdminMatriculasRoute: typeof AuthenticatedAdminMatriculasRoute
   AuthenticatedAdminReservasRoute: typeof AuthenticatedAdminReservasRoute
   AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
   AuthenticatedAdminAvaliacoesRoute: AuthenticatedAdminAvaliacoesRoute,
   AuthenticatedAdminBolsasRoute: AuthenticatedAdminBolsasRoute,
   AuthenticatedAdminBootstrapRoute: AuthenticatedAdminBootstrapRoute,
   AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRouteWithChildren,
   AuthenticatedAdminFinanceiroRoute:
     AuthenticatedAdminFinanceiroRouteWithChildren,
+  AuthenticatedAdminIndicacoesRoute: AuthenticatedAdminIndicacoesRoute,
   AuthenticatedAdminInstituicoesRoute: AuthenticatedAdminInstituicoesRoute,
+  AuthenticatedAdminMatriculasRoute: AuthenticatedAdminMatriculasRoute,
   AuthenticatedAdminReservasRoute: AuthenticatedAdminReservasRoute,
   AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -884,6 +1068,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedCarteiraRoute: typeof AuthenticatedCarteiraRoute
   AuthenticatedFavoritosRoute: typeof AuthenticatedFavoritosRoute
+  AuthenticatedIndicacoesRoute: typeof AuthenticatedIndicacoesRoute
+  AuthenticatedMeusDadosRoute: typeof AuthenticatedMeusDadosRoute
   AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
@@ -897,6 +1083,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedCarteiraRoute: AuthenticatedCarteiraRoute,
   AuthenticatedFavoritosRoute: AuthenticatedFavoritosRoute,
+  AuthenticatedIndicacoesRoute: AuthenticatedIndicacoesRoute,
+  AuthenticatedMeusDadosRoute: AuthenticatedMeusDadosRoute,
   AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedPainelRoute: AuthenticatedPainelRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
@@ -917,12 +1105,16 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   FaqRoute: FaqRoute,
   ParaInstituicoesRoute: ParaInstituicoesRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   BolsasIdRoute: BolsasIdRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
   BolsasIndexRoute: BolsasIndexRoute,
+  ApiPublicSitemapRoute: ApiPublicSitemapRoute,
+  BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
+  BolsasCidadeCityRoute: BolsasCidadeCityRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -52,12 +52,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    // Capture referral code from URL on first load
+    try {
+      const url = new URL(window.location.href);
+      const ref = url.searchParams.get("ref");
+      if (ref && !localStorage.getItem("tdb_pending_ref")) {
+        localStorage.setItem("tdb_pending_ref", ref);
+      }
+    } catch {/* ignore */}
+
+    async function tryAttachReferral() {
+      const ref = localStorage.getItem("tdb_pending_ref");
+      if (!ref) return;
+      const { error } = await supabase.rpc("set_referrer", { p_code: ref });
+      if (!error) localStorage.removeItem("tdb_pending_ref");
+    }
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
       setUser(newSession?.user ?? null);
       if (newSession?.user) {
         const uid = newSession.user.id;
-        setTimeout(() => { loadProfile(uid); loadRoles(uid); }, 0);
+        setTimeout(() => { loadProfile(uid); loadRoles(uid); tryAttachReferral(); }, 0);
       } else {
         setProfile(null);
         setInstitutionAdminOf([]);
@@ -71,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.session?.user) {
         loadProfile(data.session.user.id);
         loadRoles(data.session.user.id);
+        tryAttachReferral();
       }
       setLoading(false);
     });

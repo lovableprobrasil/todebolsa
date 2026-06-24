@@ -51,13 +51,18 @@ const SCHOLARSHIP_SELECT = `
   )
 `;
 
+export type SortMode = "relevance" | "discount-desc" | "price-asc" | "price-desc" | "recent";
+
 export type SearchFilters = {
   level?: string;
   query?: string;
   city?: string;
+  state?: string;
   modality?: string;
   minDiscount?: number;
+  maxPrice?: number;
   featuredOnly?: boolean;
+  sort?: SortMode;
   limit?: number;
 };
 
@@ -71,17 +76,79 @@ export async function listScholarships(filters: SearchFilters = {}): Promise<Sch
 
   if (filters.featuredOnly) q = q.eq("is_featured", true);
   if (filters.minDiscount) q = q.gte("discount_value", filters.minDiscount);
+  if (filters.maxPrice) q = q.lte("price_with_scholarship", filters.maxPrice);
   if (filters.level) q = q.eq("course_offering.course.level", filters.level);
   if (filters.modality) q = q.eq("course_offering.course.modality", filters.modality);
   if (filters.city) q = q.ilike("course_offering.institution_unit.city", `%${filters.city}%`);
+  if (filters.state) q = q.eq("course_offering.institution_unit.state", filters.state);
   if (filters.query) q = q.ilike("course_offering.course.name", `%${filters.query}%`);
 
-  q = q.order("is_featured", { ascending: false }).order("discount_value", { ascending: false });
+  switch (filters.sort) {
+    case "price-asc":
+      q = q.order("price_with_scholarship", { ascending: true });
+      break;
+    case "price-desc":
+      q = q.order("price_with_scholarship", { ascending: false });
+      break;
+    case "discount-desc":
+      q = q.order("discount_value", { ascending: false });
+      break;
+    case "recent":
+      q = q.order("created_at", { ascending: false });
+      break;
+    default:
+      q = q.order("is_featured", { ascending: false }).order("discount_value", { ascending: false });
+  }
   if (filters.limit) q = q.limit(filters.limit);
 
   const { data, error } = await q;
   if (error) throw error;
   return (data ?? []) as unknown as ScholarshipListItem[];
+}
+
+// Personalized recommendations: similar level/city to user favorites
+export async function recommendScholarships(userId: string, limit = 6): Promise<ScholarshipListItem[]> {
+  const { data: favs } = await supabase
+    .from("favorites")
+    .select("scholarship_id")
+    .eq("user_id", userId)
+    .limit(20);
+
+  const favIds = (favs ?? []).map((f) => f.scholarship_id);
+  if (favIds.length === 0) {
+    return listScholarships({ featuredOnly: true, limit });
+  }
+
+  const { data: seeds } = await supabase
+    .from("scholarships")
+    .select("course_offering:course_offerings!inner(course:courses!inner(level), institution_unit:institution_units!inner(city))")
+    .in("id", favIds);
+
+  const levels = new Set<string>();
+  const cities = new Set<string>();
+  for (const s of (seeds ?? []) as Array<{ course_offering: { course: { level: string }; institution_unit: { city: string } } }>) {
+    if (s.course_offering?.course?.level) levels.add(s.course_offering.course.level);
+    if (s.course_offering?.institution_unit?.city) cities.add(s.course_offering.institution_unit.city);
+  }
+
+  const level = Array.from(levels)[0];
+  const city = Array.from(cities)[0];
+
+  let q = supabase
+    .from("scholarships")
+    .select(SCHOLARSHIP_SELECT)
+    .eq("is_active", true)
+    .not("id", "in", `(${favIds.join(",")})`)
+    .limit(limit);
+  if (level) q = q.eq("course_offering.course.level", level);
+  if (city) q = q.ilike("course_offering.institution_unit.city", `%${city}%`);
+  q = q.order("discount_value", { ascending: false });
+
+  const { data } = await q;
+  if (!data || data.length === 0) {
+    return listScholarships({ featuredOnly: true, limit });
+  }
+  return data as unknown as ScholarshipListItem[];
 }
 
 export async function getScholarship(id: string): Promise<ScholarshipListItem | null> {
