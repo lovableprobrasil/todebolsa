@@ -27,7 +27,7 @@ const ELIGIBLE = [
   "UNDER_REVIEW",
   "AWAITING_ENROLLMENT",
   "ENROLLMENT_APPROVED",
-];
+] as const;
 
 type WalletReservation = {
   reservation_code: string;
