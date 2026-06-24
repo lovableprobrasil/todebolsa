@@ -802,6 +802,60 @@ export type Database = {
           },
         ]
       }
+      refunds: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          payment_attempt_id: string | null
+          processed_at: string
+          processed_by: string | null
+          reason: string | null
+          reservation_id: string
+          status: Database["public"]["Enums"]["refund_status"]
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          payment_attempt_id?: string | null
+          processed_at?: string
+          processed_by?: string | null
+          reason?: string | null
+          reservation_id: string
+          status?: Database["public"]["Enums"]["refund_status"]
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_attempt_id?: string | null
+          processed_at?: string
+          processed_by?: string | null
+          reason?: string | null
+          reservation_id?: string
+          status?: Database["public"]["Enums"]["refund_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_payment_attempt_id_fkey"
+            columns: ["payment_attempt_id"]
+            isOneToOne: false
+            referencedRelation: "payment_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reservations: {
         Row: {
           amount_paid: number | null
@@ -1081,6 +1135,18 @@ export type Database = {
       }
       crm_overview: { Args: never; Returns: Json }
       expire_reservations: { Args: never; Returns: number }
+      finance_overview: { Args: never; Returns: Json }
+      finance_revenue_by_institution: {
+        Args: never
+        Returns: {
+          gross: number
+          institution_id: string
+          net: number
+          payments_count: number
+          refunds: number
+          trade_name: string
+        }[]
+      }
       gen_reservation_code: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -1088,6 +1154,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      institution_paid_leads_report: {
+        Args: { p_institution_id: string }
+        Returns: Json
       }
       is_institution_admin: {
         Args: { _institution_id: string; _user_id: string }
@@ -1114,6 +1184,27 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "reservations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      request_refund: {
+        Args: { p_reason: string; p_reservation_id: string }
+        Returns: {
+          amount: number
+          created_at: string
+          id: string
+          payment_attempt_id: string | null
+          processed_at: string
+          processed_by: string | null
+          reason: string | null
+          reservation_id: string
+          status: Database["public"]["Enums"]["refund_status"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "refunds"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -1226,6 +1317,7 @@ export type Database = {
         | "NEGOTIATION"
         | "WON"
         | "LOST"
+      refund_status: "REQUESTED" | "PROCESSED" | "FAILED"
       reservation_status:
         | "RESERVED"
         | "PAYMENT_PENDING"
@@ -1419,6 +1511,7 @@ export const Constants = {
         "WON",
         "LOST",
       ],
+      refund_status: ["REQUESTED", "PROCESSED", "FAILED"],
       reservation_status: [
         "RESERVED",
         "PAYMENT_PENDING",
