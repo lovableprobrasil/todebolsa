@@ -38,6 +38,7 @@ import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
+import { Route as AuthenticatedAdminCrmLeadsRouteImport } from './routes/_authenticated/admin.crm.leads'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -193,6 +194,12 @@ const AuthenticatedAdminCrmIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminCrmRoute,
   } as any)
+const AuthenticatedAdminCrmLeadsRoute =
+  AuthenticatedAdminCrmLeadsRouteImport.update({
+    id: '/leads',
+    path: '/leads',
+    getParentRoute: () => AuthenticatedAdminCrmRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
+  '/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
 }
 export interface FileRoutesByTo {
@@ -250,6 +258,7 @@ export interface FileRoutesByTo {
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/instituicao': typeof AuthenticatedInstituicaoIndexRoute
+  '/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
 }
 export interface FileRoutesById {
@@ -282,6 +291,7 @@ export interface FileRoutesById {
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
+  '/_authenticated/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
 }
 export interface FileRouteTypes {
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/reservas/$id'
     | '/admin/'
     | '/instituicao/'
+    | '/admin/crm/leads'
     | '/admin/crm/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/reservas/$id'
     | '/admin'
     | '/instituicao'
+    | '/admin/crm/leads'
     | '/admin/crm'
   id:
     | '__root__'
@@ -373,6 +385,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reservas/$id'
     | '/_authenticated/admin/'
     | '/_authenticated/instituicao/'
+    | '/_authenticated/admin/crm/leads'
     | '/_authenticated/admin/crm/'
   fileRoutesById: FileRoutesById
 }
@@ -593,14 +606,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCrmIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCrmRoute
     }
+    '/_authenticated/admin/crm/leads': {
+      id: '/_authenticated/admin/crm/leads'
+      path: '/leads'
+      fullPath: '/admin/crm/leads'
+      preLoaderRoute: typeof AuthenticatedAdminCrmLeadsRouteImport
+      parentRoute: typeof AuthenticatedAdminCrmRoute
+    }
   }
 }
 
 interface AuthenticatedAdminCrmRouteChildren {
+  AuthenticatedAdminCrmLeadsRoute: typeof AuthenticatedAdminCrmLeadsRoute
   AuthenticatedAdminCrmIndexRoute: typeof AuthenticatedAdminCrmIndexRoute
 }
 
 const AuthenticatedAdminCrmRouteChildren: AuthenticatedAdminCrmRouteChildren = {
+  AuthenticatedAdminCrmLeadsRoute: AuthenticatedAdminCrmLeadsRoute,
   AuthenticatedAdminCrmIndexRoute: AuthenticatedAdminCrmIndexRoute,
 }
 
