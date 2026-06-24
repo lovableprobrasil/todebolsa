@@ -193,6 +193,9 @@ export async function listInstitutionsLite() {
     .order("trade_name");
   if (error) throw error;
   return data ?? [];
+}
+
+
 
 
 export async function getInstitutionBySlug(slug: string) {
