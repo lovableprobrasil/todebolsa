@@ -798,6 +798,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_users: {
+        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: {
+          avatar_url: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          phone: string
+          roles: Database["public"]["Enums"]["app_role"][]
+        }[]
+      }
+      admin_overview: { Args: never; Returns: Json }
+      assign_user_role: {
+        Args: {
+          p_institution_id?: string
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       cancel_reservation: {
         Args: { p_reservation_id: string }
         Returns: {
@@ -822,6 +843,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      claim_first_admin: { Args: never; Returns: undefined }
       claim_institution: {
         Args: {
           p_city: string
@@ -874,6 +896,7 @@ export type Database = {
         Args: { _institution_id: string; _user_id: string }
         Returns: boolean
       }
+      is_platform_admin: { Args: { _uid?: string }; Returns: boolean }
       pay_reservation: {
         Args: { p_method: string; p_reservation_id: string }
         Returns: {
@@ -897,6 +920,53 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      revoke_user_role: {
+        Args: {
+          p_institution_id?: string
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: undefined
+      }
+      set_institution_status: {
+        Args: {
+          p_institution_id: string
+          p_status: Database["public"]["Enums"]["institution_status"]
+        }
+        Returns: {
+          cnpj: string | null
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          is_featured: boolean
+          legal_name: string | null
+          logo_url: string | null
+          mec_code: string | null
+          phone: string | null
+          rating: number | null
+          slug: string
+          status: Database["public"]["Enums"]["institution_status"]
+          trade_name: string
+          updated_at: string
+          website: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "institutions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      toggle_institution_feature: {
+        Args: { p_featured: boolean; p_institution_id: string }
+        Returns: undefined
+      }
+      toggle_scholarship_feature: {
+        Args: { p_featured: boolean; p_scholarship_id: string }
+        Returns: undefined
       }
       unaccent_safe: { Args: { p: string }; Returns: string }
     }

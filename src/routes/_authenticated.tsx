@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, redirect, useNavigate, useRouterState } from "@tanstack/react-router";
-import { GraduationCap, LayoutDashboard, Heart, Bookmark, IdCard, UserCircle, LogOut, Menu, X, Building2, Bell } from "lucide-react";
+import { GraduationCap, LayoutDashboard, Heart, Bookmark, IdCard, UserCircle, LogOut, Menu, X, Building2, Bell, Shield } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -32,10 +32,13 @@ const NAV = [
 ] as const;
 
 function AuthenticatedLayout() {
-  const { profile, user, signOut } = useAuth();
+  const { profile, user, signOut, isPlatformAdmin } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const nav = isPlatformAdmin
+    ? [...NAV, { to: "/admin", label: "Painel master", icon: Shield } as const]
+    : NAV;
 
   async function handleSignOut() {
     await signOut();
@@ -92,7 +95,7 @@ function AuthenticatedLayout() {
           {/* Sidebar (desktop) */}
           <aside className="hidden lg:block">
             <nav className="sticky top-24 space-y-1">
-              {NAV.map((item) => {
+              {nav.map((item) => {
                 const active = pathname === item.to;
                 const Icon = item.icon;
                 return (
@@ -118,7 +121,7 @@ function AuthenticatedLayout() {
           {mobileOpen && (
             <div className="lg:hidden -mt-2 -mx-1 mb-2">
               <nav className="rounded-2xl border border-border bg-card p-2 space-y-1">
-                {NAV.map((item) => {
+                {nav.map((item) => {
                   const active = pathname === item.to;
                   const Icon = item.icon;
                   return (
