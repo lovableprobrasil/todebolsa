@@ -9,12 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ParaInstituicoesRouteImport } from './routes/para-instituicoes'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as CarteiraUgeRouteImport } from './routes/carteira-uge'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
@@ -58,6 +60,11 @@ import { Route as AuthenticatedAdminCrmLeadsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminCrmInstituicoesRouteImport } from './routes/_authenticated/admin.crm.instituicoes'
 import { Route as AuthenticatedAdminCrmAtividadesRouteImport } from './routes/_authenticated/admin.crm.atividades'
 
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -86,6 +93,11 @@ const ParaInstituicoesRoute = ParaInstituicoesRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CarteiraUgeRoute = CarteiraUgeRouteImport.update({
@@ -324,12 +336,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/carteira-uge': typeof CarteiraUgeRoute
+  '/cookies': typeof CookiesRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
@@ -373,12 +387,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/carteira-uge': typeof CarteiraUgeRoute
+  '/cookies': typeof CookiesRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termos': typeof TermosRoute
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/indicacoes': typeof AuthenticatedIndicacoesRoute
@@ -421,12 +437,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/carteira-uge': typeof CarteiraUgeRoute
+  '/cookies': typeof CookiesRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termos': typeof TermosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/carteira': typeof AuthenticatedCarteiraRoute
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
@@ -472,12 +490,14 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/carteira-uge'
+    | '/cookies'
     | '/faq'
     | '/para-instituicoes'
     | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/termos'
     | '/admin'
     | '/carteira'
     | '/favoritos'
@@ -521,12 +541,14 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/carteira-uge'
+    | '/cookies'
     | '/faq'
     | '/para-instituicoes'
     | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/termos'
     | '/carteira'
     | '/favoritos'
     | '/indicacoes'
@@ -568,12 +590,14 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/carteira-uge'
+    | '/cookies'
     | '/faq'
     | '/para-instituicoes'
     | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/termos'
     | '/_authenticated/admin'
     | '/_authenticated/carteira'
     | '/_authenticated/favoritos'
@@ -619,12 +643,14 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   CarteiraUgeRoute: typeof CarteiraUgeRoute
+  CookiesRoute: typeof CookiesRoute
   FaqRoute: typeof FaqRoute
   ParaInstituicoesRoute: typeof ParaInstituicoesRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermosRoute: typeof TermosRoute
   BolsasIdRoute: typeof BolsasIdRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
@@ -634,6 +660,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -674,6 +707,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/carteira-uge': {
@@ -1104,12 +1144,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   CarteiraUgeRoute: CarteiraUgeRoute,
+  CookiesRoute: CookiesRoute,
   FaqRoute: FaqRoute,
   ParaInstituicoesRoute: ParaInstituicoesRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermosRoute: TermosRoute,
   BolsasIdRoute: BolsasIdRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
   BolsasIndexRoute: BolsasIndexRoute,

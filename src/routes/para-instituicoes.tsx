@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, CheckCircle2, BarChart3, Users, Megaphone } from "lucide-react";
+import { useState } from "react";
+import { Building2, CheckCircle2, BarChart3, Users, Megaphone, Loader2 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export const Route = createFileRoute("/para-instituicoes")({
   head: () => ({
@@ -18,6 +25,15 @@ export const Route = createFileRoute("/para-instituicoes")({
     links: [{ rel: "canonical", href: "https://todebolsa.lovable.app/para-instituicoes" }],
   }),
   component: ForInstitutionsPage,
+});
+
+const leadSchema = z.object({
+  name: z.string().trim().min(3, "Informe seu nome").max(120),
+  email: z.string().trim().email("E-mail inválido").max(160),
+  phone: z.string().trim().min(8, "Telefone inválido").max(30),
+  city: z.string().trim().min(2, "Informe a cidade").max(120),
+  course_interest: z.string().trim().max(200).optional().or(z.literal("")),
+  notes: z.string().trim().max(1000).optional().or(z.literal("")),
 });
 
 function ForInstitutionsPage() {
@@ -46,21 +62,14 @@ function ForInstitutionsPage() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button size="lg" asChild>
-                <Link to="/instituicao/cadastrar">Solicitar credenciamento</Link>
+                <a href="#credenciamento">Solicitar credenciamento</a>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a
-                  href="https://wa.me/5511999999999?text=Quero%20falar%20com%20um%20consultor%20do%20T%C3%B4%20de%20Bolsa"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Falar com consultor
-                </a>
+                <Link to="/instituicao/cadastrar">Já tenho conta — cadastrar agora</Link>
               </Button>
             </div>
           </div>
         </section>
-
 
         <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -97,15 +106,123 @@ function ForInstitutionsPage() {
                 </li>
               ))}
             </ol>
-            <div className="text-center mt-10">
-              <Button size="lg" asChild>
-                <Link to="/instituicao/cadastrar">Quero cadastrar minha instituição</Link>
-              </Button>
-            </div>
           </div>
         </section>
+
+        <LeadForm />
       </main>
       <Footer />
+    </div>
+  );
+}
+
+function LeadForm() {
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    city: "",
+    course_interest: "",
+    notes: "",
+  });
+
+  function update<K extends keyof typeof form>(k: K, v: string) {
+    setForm((f) => ({ ...f, [k]: v }));
+  }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const parsed = leadSchema.safeParse(form);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Verifique os campos");
+      return;
+    }
+    setSubmitting(true);
+    const { error } = await supabase.from("leads").insert({
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone,
+      city: parsed.data.city,
+      course_interest: parsed.data.course_interest || null,
+      notes: parsed.data.notes || null,
+      source: "para-instituicoes",
+      status: "NEW",
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Não foi possível enviar. Tente novamente em instantes.");
+      return;
+    }
+    setDone(true);
+    toast.success("Recebemos seu pedido! Nossa equipe entra em contato em até 48h.");
+  }
+
+  return (
+    <section id="credenciamento" className="py-16 scroll-mt-20">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-border bg-card p-6 md:p-10 shadow-sm">
+          <div className="text-center mb-8">
+            <h2 className="font-display text-3xl md:text-4xl font-extrabold">
+              Solicite o credenciamento
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Preencha o formulário e nosso time comercial entra em contato em até 48 horas úteis.
+            </p>
+          </div>
+
+          {done ? (
+            <div className="text-center py-10">
+              <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-success/15 text-success mb-4">
+                <CheckCircle2 className="h-7 w-7" />
+              </div>
+              <h3 className="font-bold text-xl mb-2">Pedido recebido!</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Em breve um consultor entrará em contato pelo telefone <strong>{form.phone}</strong> ou pelo e-mail <strong>{form.email}</strong>.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={onSubmit} className="grid gap-4 md:grid-cols-2">
+              <Field label="Nome do responsável *" htmlFor="lead-name">
+                <Input id="lead-name" value={form.name} onChange={(e) => update("name", e.target.value)} required maxLength={120} />
+              </Field>
+              <Field label="E-mail corporativo *" htmlFor="lead-email">
+                <Input id="lead-email" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} required maxLength={160} />
+              </Field>
+              <Field label="Telefone / WhatsApp *" htmlFor="lead-phone">
+                <Input id="lead-phone" inputMode="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} required maxLength={30} placeholder="(11) 99999-9999" />
+              </Field>
+              <Field label="Cidade / UF *" htmlFor="lead-city">
+                <Input id="lead-city" value={form.city} onChange={(e) => update("city", e.target.value)} required maxLength={120} placeholder="São Paulo / SP" />
+              </Field>
+              <Field label="Nome da instituição" htmlFor="lead-course" className="md:col-span-2">
+                <Input id="lead-course" value={form.course_interest} onChange={(e) => update("course_interest", e.target.value)} maxLength={200} placeholder="Ex.: Faculdade Modelo" />
+              </Field>
+              <Field label="Conte um pouco mais (opcional)" htmlFor="lead-notes" className="md:col-span-2">
+                <Textarea id="lead-notes" rows={4} value={form.notes} onChange={(e) => update("notes", e.target.value)} maxLength={1000} placeholder="Quantos cursos? Modalidades (EAD, presencial)? Volume estimado de vagas?" />
+              </Field>
+              <div className="md:col-span-2 flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                <p className="text-xs text-muted-foreground">
+                  Ao enviar, você concorda com nossos <Link to="/termos" className="underline">Termos</Link> e <Link to="/privacidade" className="underline">Política de Privacidade</Link>.
+                </p>
+                <Button type="submit" size="lg" disabled={submitting} className="w-full sm:w-auto">
+                  {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Enviando...</> : "Solicitar credenciamento"}
+                </Button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Field({ label, htmlFor, className, children }: { label: string; htmlFor: string; className?: string; children: React.ReactNode }) {
+  return (
+    <div className={className}>
+      <Label htmlFor={htmlFor} className="mb-1.5 block text-sm font-semibold">{label}</Label>
+      {children}
     </div>
   );
 }
