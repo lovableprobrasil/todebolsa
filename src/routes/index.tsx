@@ -25,7 +25,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:title", content: "Tô de Bolsa — Até 90% de desconto em bolsas de estudo" },
       { name: "twitter:description", content: "Marketplace nacional de bolsas de estudo para todas as idades e níveis de ensino." },
     ],
-    links: [{ rel: "canonical", href: "https://todebolsa.lovable.app/" }],
+    links: [
+      { rel: "canonical", href: "https://todebolsa.lovable.app/" },
+      { rel: "preload", as: "image", href: heroStudent, fetchpriority: "high" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
