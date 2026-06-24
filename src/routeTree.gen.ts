@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ParaInstituicoesRouteImport } from './routes/para-instituicoes'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -33,6 +34,7 @@ import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$ci
 import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
 import { Route as ApiPublicSitemapRouteImport } from './routes/api/public/sitemap'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
+import { Route as AuthenticatedPerfilPrivacidadeRouteImport } from './routes/_authenticated/perfil.privacidade'
 import { Route as AuthenticatedInstituicaoCadastrarRouteImport } from './routes/_authenticated/instituicao.cadastrar'
 import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
@@ -67,6 +69,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
   id: '/recuperar-senha',
   path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ParaInstituicoesRoute = ParaInstituicoesRouteImport.update({
@@ -175,6 +182,12 @@ const AuthenticatedReservasIdRoute = AuthenticatedReservasIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedReservasRoute,
 } as any)
+const AuthenticatedPerfilPrivacidadeRoute =
+  AuthenticatedPerfilPrivacidadeRouteImport.update({
+    id: '/privacidade',
+    path: '/privacidade',
+    getParentRoute: () => AuthenticatedPerfilRoute,
+  } as any)
 const AuthenticatedInstituicaoCadastrarRoute =
   AuthenticatedInstituicaoCadastrarRouteImport.update({
     id: '/instituicao/cadastrar',
@@ -300,6 +313,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -308,7 +322,7 @@ export interface FileRoutesByFullPath {
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/painel': typeof AuthenticatedPainelRoute
-  '/perfil': typeof AuthenticatedPerfilRoute
+  '/perfil': typeof AuthenticatedPerfilRouteWithChildren
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
@@ -325,6 +339,7 @@ export interface FileRoutesByFullPath {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/perfil/privacidade': typeof AuthenticatedPerfilPrivacidadeRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
@@ -345,6 +360,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -352,7 +368,7 @@ export interface FileRoutesByTo {
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/painel': typeof AuthenticatedPainelRoute
-  '/perfil': typeof AuthenticatedPerfilRoute
+  '/perfil': typeof AuthenticatedPerfilRouteWithChildren
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
@@ -367,6 +383,7 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/perfil/privacidade': typeof AuthenticatedPerfilPrivacidadeRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
@@ -389,6 +406,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -397,7 +415,7 @@ export interface FileRoutesById {
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
   '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
-  '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
+  '/_authenticated/perfil': typeof AuthenticatedPerfilRouteWithChildren
   '/_authenticated/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
@@ -414,6 +432,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/_authenticated/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/_authenticated/perfil/privacidade': typeof AuthenticatedPerfilPrivacidadeRoute
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/api/public/sitemap': typeof ApiPublicSitemapRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
@@ -436,6 +455,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/faq'
     | '/para-instituicoes'
+    | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
@@ -461,6 +481,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
+    | '/perfil/privacidade'
     | '/reservas/$id'
     | '/api/public/sitemap'
     | '/bolsas/categoria/$level'
@@ -481,6 +502,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/faq'
     | '/para-instituicoes'
+    | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
@@ -503,6 +525,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
+    | '/perfil/privacidade'
     | '/reservas/$id'
     | '/api/public/sitemap'
     | '/bolsas/categoria/$level'
@@ -524,6 +547,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/faq'
     | '/para-instituicoes'
+    | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
     | '/sitemap.xml'
@@ -549,6 +573,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/instituicao/$id'
     | '/_authenticated/instituicao/cadastrar'
+    | '/_authenticated/perfil/privacidade'
     | '/_authenticated/reservas/$id'
     | '/api/public/sitemap'
     | '/bolsas/categoria/$level'
@@ -571,6 +596,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   FaqRoute: typeof FaqRoute
   ParaInstituicoesRoute: typeof ParaInstituicoesRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -603,6 +629,13 @@ declare module '@tanstack/react-router' {
       path: '/recuperar-senha'
       fullPath: '/recuperar-senha'
       preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/para-instituicoes': {
@@ -751,6 +784,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reservas/$id'
       preLoaderRoute: typeof AuthenticatedReservasIdRouteImport
       parentRoute: typeof AuthenticatedReservasRoute
+    }
+    '/_authenticated/perfil/privacidade': {
+      id: '/_authenticated/perfil/privacidade'
+      path: '/privacidade'
+      fullPath: '/perfil/privacidade'
+      preLoaderRoute: typeof AuthenticatedPerfilPrivacidadeRouteImport
+      parentRoute: typeof AuthenticatedPerfilRoute
     }
     '/_authenticated/instituicao/cadastrar': {
       id: '/_authenticated/instituicao/cadastrar'
@@ -971,6 +1011,17 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedPerfilRouteChildren {
+  AuthenticatedPerfilPrivacidadeRoute: typeof AuthenticatedPerfilPrivacidadeRoute
+}
+
+const AuthenticatedPerfilRouteChildren: AuthenticatedPerfilRouteChildren = {
+  AuthenticatedPerfilPrivacidadeRoute: AuthenticatedPerfilPrivacidadeRoute,
+}
+
+const AuthenticatedPerfilRouteWithChildren =
+  AuthenticatedPerfilRoute._addFileChildren(AuthenticatedPerfilRouteChildren)
+
 interface AuthenticatedReservasRouteChildren {
   AuthenticatedReservasIdRoute: typeof AuthenticatedReservasIdRoute
 }
@@ -990,7 +1041,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFavoritosRoute: typeof AuthenticatedFavoritosRoute
   AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
-  AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
+  AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRouteWithChildren
   AuthenticatedReservasRoute: typeof AuthenticatedReservasRouteWithChildren
   AuthenticatedInstituicaoIdRoute: typeof AuthenticatedInstituicaoIdRoute
   AuthenticatedInstituicaoCadastrarRoute: typeof AuthenticatedInstituicaoCadastrarRoute
@@ -1003,7 +1054,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFavoritosRoute: AuthenticatedFavoritosRoute,
   AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedPainelRoute: AuthenticatedPainelRoute,
-  AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
+  AuthenticatedPerfilRoute: AuthenticatedPerfilRouteWithChildren,
   AuthenticatedReservasRoute: AuthenticatedReservasRouteWithChildren,
   AuthenticatedInstituicaoIdRoute: AuthenticatedInstituicaoIdRoute,
   AuthenticatedInstituicaoCadastrarRoute:
@@ -1021,6 +1072,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   FaqRoute: FaqRoute,
   ParaInstituicoesRoute: ParaInstituicoesRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
