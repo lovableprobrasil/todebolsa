@@ -133,3 +133,28 @@ function EmptyState() {
     </div>
   );
 }
+
+function PendingApplicationCard({ status }: { status: string }) {
+  const label = status === "DRAFT" ? "Continuar cadastro" : "Ver status do credenciamento";
+  return (
+    <div className="rounded-3xl border border-border bg-card p-10 text-center">
+      <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-warning/15 text-warning-foreground mb-4">
+        <Clock className="h-7 w-7" />
+      </div>
+      <h2 className="font-display text-xl font-bold mb-2">Seu credenciamento está em andamento</h2>
+      <p className="text-muted-foreground mb-5 max-w-md mx-auto">
+        Status atual: <strong>{status}</strong>. Acompanhe pelo pré-painel ou continue o cadastro.
+      </p>
+      <div className="flex flex-wrap gap-2 justify-center">
+        <Button asChild>
+          <Link to="/instituicao/credenciamento">{label}</Link>
+        </Button>
+        {status === "DRAFT" && (
+          <Button variant="outline" asChild>
+            <Link to="/instituicao/cadastrar">Continuar formulário</Link>
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
