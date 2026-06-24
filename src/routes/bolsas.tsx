@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { z } from "zod";
-import { zodValidator } from "@tanstack/zod-adapter";
 import { useMemo, useState } from "react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -15,18 +13,26 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { SlidersHorizontal } from "lucide-react";
 
-const searchSchema = z.object({
-  level: z.string().optional().catch(undefined),
-  q: z.string().optional().catch(undefined),
-  city: z.string().optional().catch(undefined),
-  modality: z.string().optional().catch(undefined),
-  minDiscount: z.coerce.number().optional().catch(undefined),
-});
+type BolsasSearch = {
+  level?: string;
+  q?: string;
+  city?: string;
+  modality?: string;
+  minDiscount?: number;
+};
 
-type BolsasSearch = z.infer<typeof searchSchema>;
+function str(v: unknown): string | undefined {
+  return typeof v === "string" && v.length > 0 ? v : undefined;
+}
 
 export const Route = createFileRoute("/bolsas")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (raw: Record<string, unknown>): BolsasSearch => ({
+    level: str(raw.level),
+    q: str(raw.q),
+    city: str(raw.city),
+    modality: str(raw.modality),
+    minDiscount: raw.minDiscount != null && !Number.isNaN(Number(raw.minDiscount)) ? Number(raw.minDiscount) : undefined,
+  }),
   head: ({ match }) => {
     const s = (match.search ?? {}) as BolsasSearch;
     const levelLabel = s.level && s.level in COURSE_LEVEL_LABEL ? COURSE_LEVEL_LABEL[s.level] : null;
