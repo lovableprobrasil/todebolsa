@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { listScholarships } from "@/lib/scholarships";
+import { listScholarshipsByIds } from "@/lib/scholarships";
 
 export const Route = createFileRoute("/_authenticated/favoritos")({
   component: FavoritosPage,
@@ -32,7 +32,7 @@ function FavoritosPage() {
   const { data: items, isLoading } = useQuery({
     enabled: !!favIds && favIds.length > 0,
     queryKey: ["favorite-scholarships", favIds],
-    queryFn: () => listScholarships({ ids: favIds!, limit: 100 }),
+    queryFn: () => listScholarshipsByIds(favIds!),
   });
 
   const remove = useMutation({

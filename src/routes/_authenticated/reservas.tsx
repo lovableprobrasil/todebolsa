@@ -34,7 +34,7 @@ function ReservasPage() {
       const { data } = await supabase
         .from("reservations")
         .select(`
-          id, status, created_at, expires_at, locked_price,
+          id, status, created_at, expires_at, amount_paid, reservation_code,
           scholarship:scholarships(
             id, price_with_scholarship,
             course_offering:course_offerings(
@@ -83,7 +83,7 @@ function ReservasPage() {
             const Icon = meta.icon;
             const course = r.scholarship?.course_offering?.course;
             const inst = course?.institution;
-            const price = Number(r.locked_price ?? r.scholarship?.price_with_scholarship ?? 0);
+            const price = Number(r.amount_paid ?? r.scholarship?.price_with_scholarship ?? 0);
             return (
               <div key={r.id} className="rounded-2xl border border-border bg-card p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
