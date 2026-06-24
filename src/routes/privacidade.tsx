@@ -43,7 +43,7 @@ function PrivacyPage() {
           <li>Solicitar a exclusão da sua conta (com prazo de 30 dias para reversão).</li>
           <li>Revogar consentimentos a qualquer momento.</li>
         </ul>
-        <p>Gerencie essas opções na página <Link to="/perfil/privacidade">Privacidade e dados</Link>.</p>
+        <p>Gerencie essas opções na página <Link to="/meus-dados">Privacidade e dados</Link>.</p>
 
         <h2>5. Segurança</h2>
         <p>Aplicamos criptografia em trânsito (HTTPS), políticas de acesso por linha (RLS) e auditoria de todas as operações sensíveis.</p>
