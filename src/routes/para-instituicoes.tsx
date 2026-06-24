@@ -38,22 +38,29 @@ function ForInstitutionsPage() {
               <Building2 className="h-3.5 w-3.5" /> Portal da instituição
             </div>
             <h1 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight max-w-3xl mx-auto">
-              Sua instituição no maior marketplace de bolsas do Brasil
+              Venda mais matrículas preenchendo <span className="text-primary">vagas ociosas</span> com bolsas inteligentes
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Cadastre cursos, defina suas bolsas, controle vagas e receba alunos qualificados —
-              tudo de forma self-service.
+              Cadastre cursos, defina suas bolsas, controle vagas e receba alunos qualificados — tudo de forma
+              self-service no maior marketplace de bolsas do Brasil.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button size="lg" asChild>
                 <Link to="/instituicao/cadastrar">Solicitar credenciamento</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/bolsas">Ver como funciona para alunos</Link>
+                <a
+                  href="https://wa.me/5511999999999?text=Quero%20falar%20com%20um%20consultor%20do%20T%C3%B4%20de%20Bolsa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Falar com consultor
+                </a>
               </Button>
             </div>
           </div>
         </section>
+
 
         <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
