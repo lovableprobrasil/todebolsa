@@ -66,7 +66,7 @@ function HomePage() {
         <Hero />
         <HomeSearch />
         <TrustBadges />
-        <PopularBar />
+        
         <CategorySection />
         <StatsBar />
         <InstitutionsSection />
