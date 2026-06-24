@@ -102,10 +102,14 @@ function BolsasPage() {
 
       <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 grid gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="space-y-6">
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <div className="flex items-center gap-2 font-bold mb-4">
-              <SlidersHorizontal className="h-4 w-4" /> Filtros
-            </div>
+          <details className="group rounded-2xl border border-border bg-card p-5 lg:open:[&]:p-5 [&[open]]:p-5 open:p-5" open>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 font-bold lg:cursor-default lg:pointer-events-none">
+              <span className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4" /> Filtros
+              </span>
+              <span aria-hidden className="text-sm text-muted-foreground transition-transform group-open:rotate-180 lg:hidden">▾</span>
+            </summary>
+            <div className="mt-4 lg:mt-4">
 
             <div className="mb-5">
               <Label className="mb-2 block">Nível de ensino</Label>
