@@ -363,6 +363,80 @@ export type Database = {
           },
         ]
       }
+      institution_prospects: {
+        Row: {
+          city: string | null
+          cnpj: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          converted_institution_id: string | null
+          created_at: string
+          estimated_courses: number | null
+          estimated_students: number | null
+          id: string
+          legal_name: string | null
+          next_action_at: string | null
+          notes: string | null
+          owner_id: string | null
+          state: string | null
+          status: Database["public"]["Enums"]["prospect_status"]
+          trade_name: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          city?: string | null
+          cnpj?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          converted_institution_id?: string | null
+          created_at?: string
+          estimated_courses?: number | null
+          estimated_students?: number | null
+          id?: string
+          legal_name?: string | null
+          next_action_at?: string | null
+          notes?: string | null
+          owner_id?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["prospect_status"]
+          trade_name: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          city?: string | null
+          cnpj?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          converted_institution_id?: string | null
+          created_at?: string
+          estimated_courses?: number | null
+          estimated_students?: number | null
+          id?: string
+          legal_name?: string | null
+          next_action_at?: string | null
+          notes?: string | null
+          owner_id?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["prospect_status"]
+          trade_name?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_prospects_converted_institution_id_fkey"
+            columns: ["converted_institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institution_units: {
         Row: {
           address: string | null
@@ -475,6 +549,53 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      lead_activities: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          done_at: string | null
+          due_at: string | null
+          id: string
+          lead_id: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          done_at?: string | null
+          due_at?: string | null
+          id?: string
+          lead_id: string
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          done_at?: string | null
+          due_at?: string | null
+          id?: string
+          lead_id?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leads: {
         Row: {
@@ -633,6 +754,53 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      prospect_activities: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          done_at: string | null
+          due_at: string | null
+          id: string
+          prospect_id: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          done_at?: string | null
+          due_at?: string | null
+          id?: string
+          prospect_id: string
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          done_at?: string | null
+          due_at?: string | null
+          id?: string
+          prospect_id?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_activities_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "institution_prospects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reservations: {
         Row: {
@@ -811,6 +979,10 @@ export type Database = {
         }[]
       }
       admin_overview: { Args: never; Returns: Json }
+      assign_lead: {
+        Args: { p_lead_id: string; p_owner_id: string }
+        Returns: undefined
+      }
       assign_user_role: {
         Args: {
           p_institution_id?: string
@@ -859,6 +1031,30 @@ export type Database = {
         }
         Returns: string
       }
+      confirm_enrollment: {
+        Args: { p_approve: boolean; p_notes?: string; p_reservation_id: string }
+        Returns: {
+          amount_paid: number | null
+          course_offering_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          institution_id: string
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          reservation_code: string
+          reserved_at: string
+          scholarship_id: string
+          status: Database["public"]["Enums"]["reservation_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "reservations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       create_reservation: {
         Args: { p_scholarship_id: string }
         Returns: {
@@ -883,6 +1079,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      crm_overview: { Args: never; Returns: Json }
       expire_reservations: { Args: never; Returns: number }
       gen_reservation_code: { Args: never; Returns: string }
       has_role: {
@@ -969,6 +1166,13 @@ export type Database = {
         Returns: undefined
       }
       unaccent_safe: { Args: { p: string }; Returns: string }
+      update_lead_status: {
+        Args: {
+          p_lead_id: string
+          p_status: Database["public"]["Enums"]["lead_status"]
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role:
@@ -1014,6 +1218,14 @@ export type Database = {
         | "REFUNDED"
         | "CHARGEBACK"
         | "CANCELLED"
+      prospect_status:
+        | "NEW"
+        | "CONTACTED"
+        | "MEETING_SCHEDULED"
+        | "PROPOSAL_SENT"
+        | "NEGOTIATION"
+        | "WON"
+        | "LOST"
       reservation_status:
         | "RESERVED"
         | "PAYMENT_PENDING"
@@ -1197,6 +1409,15 @@ export const Constants = {
         "REFUNDED",
         "CHARGEBACK",
         "CANCELLED",
+      ],
+      prospect_status: [
+        "NEW",
+        "CONTACTED",
+        "MEETING_SCHEDULED",
+        "PROPOSAL_SENT",
+        "NEGOTIATION",
+        "WON",
+        "LOST",
       ],
       reservation_status: [
         "RESERVED",
