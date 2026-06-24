@@ -135,7 +135,7 @@ function PostPage() {
       <article className="flex-1">
         {post.cover_url && (
           <div className="w-full aspect-[21/9] bg-muted overflow-hidden">
-            <img src={post.cover_url} alt={post.title} className="h-full w-full object-cover" />
+            <img src={post.cover_url} alt={post.title} loading="lazy" decoding="async" className="h-full w-full object-cover" />
           </div>
         )}
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
