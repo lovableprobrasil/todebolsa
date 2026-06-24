@@ -5,7 +5,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { Button } from "@/components/ui/button";
-import { getInstitutionBySlug, listScholarships } from "@/lib/scholarships";
+import { getInstitutionBySlug, type ScholarshipListItem } from "@/lib/scholarships";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/instituicoes/$slug")({
@@ -46,7 +46,7 @@ function InstitutionPage() {
     },
   });
 
-  const { data: scholarships } = useQuery({
+  const { data: scholarships } = useQuery<ScholarshipListItem[]>({
     queryKey: ["institution-scholarships", inst?.id],
     enabled: !!inst?.id,
     queryFn: async () => {
@@ -66,7 +66,7 @@ function InstitutionPage() {
         .eq("is_active", true)
         .eq("course_offering.course.institution_id", inst!.id);
       if (error) throw error;
-      return (data ?? []) as never;
+      return (data ?? []) as unknown as ScholarshipListItem[];
     },
   });
 
@@ -123,7 +123,7 @@ function InstitutionPage() {
           <h2 className="font-display text-2xl font-extrabold mb-6">Bolsas disponíveis</h2>
           {scholarships && scholarships.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {scholarships.map((s: never) => <ScholarshipCard key={(s as { id: string }).id} s={s} />)}
+              {scholarships.map((s) => <ScholarshipCard key={s.id} s={s} />)}
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-border p-12 text-center text-muted-foreground">

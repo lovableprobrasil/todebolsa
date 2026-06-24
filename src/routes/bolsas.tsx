@@ -23,11 +23,13 @@ const searchSchema = z.object({
   minDiscount: fallback(z.number().optional(), undefined),
 });
 
+type BolsasSearch = z.infer<typeof searchSchema>;
+
 export const Route = createFileRoute("/bolsas")({
   validateSearch: zodValidator(searchSchema),
   head: ({ match }) => {
-    const s = match.search as z.infer<typeof searchSchema>;
-    const levelLabel = s.level ? COURSE_LEVEL_LABEL[s.level] : null;
+    const s = (match.search ?? {}) as BolsasSearch;
+    const levelLabel = s.level && s.level in COURSE_LEVEL_LABEL ? COURSE_LEVEL_LABEL[s.level] : null;
     const title = levelLabel
       ? `Bolsas em ${levelLabel}${s.city ? ` em ${s.city}` : ""} | Tô de Bolsa`
       : "Buscar bolsas de estudo | Tô de Bolsa";
@@ -94,7 +96,7 @@ function BolsasPage() {
                   <Link
                     key={c.slug}
                     to="/bolsas"
-                    search={(prev) => ({ ...prev, level: prev.level === c.slug ? undefined : c.slug })}
+                    search={(prev: BolsasSearch) => ({ ...prev, level: prev.level === c.slug ? undefined : c.slug })}
                     className={`block px-3 py-1.5 rounded-lg text-sm transition-colors ${
                       search.level === c.slug
                         ? "bg-primary text-primary-foreground font-semibold"
