@@ -19,6 +19,8 @@ type BolsasSearch = {
   city?: string;
   modality?: string;
   minDiscount?: number;
+  maxPrice?: number;
+  sort?: "relevance" | "discount-desc" | "price-asc" | "price-desc" | "recent";
 };
 
 function str(v: unknown): string | undefined {
@@ -32,6 +34,8 @@ export const Route = createFileRoute("/bolsas/")({
     city: str(raw.city),
     modality: str(raw.modality),
     minDiscount: raw.minDiscount != null && !Number.isNaN(Number(raw.minDiscount)) ? Number(raw.minDiscount) : undefined,
+    maxPrice: raw.maxPrice != null && !Number.isNaN(Number(raw.maxPrice)) ? Number(raw.maxPrice) : undefined,
+    sort: (["relevance", "discount-desc", "price-asc", "price-desc", "recent"] as const).find((s) => s === raw.sort),
   }),
   head: ({ match }) => {
     const s = (match.search ?? {}) as BolsasSearch;
@@ -60,6 +64,8 @@ function BolsasPage() {
   const search = Route.useSearch();
   const [minDiscount, setMinDiscount] = useState<number>(search.minDiscount ?? 0);
   const [modality, setModality] = useState<string | undefined>(search.modality);
+  const [maxPrice, setMaxPrice] = useState<number>(search.maxPrice ?? 0);
+  const [sort, setSort] = useState<BolsasSearch["sort"]>(search.sort ?? "relevance");
 
   const filters = useMemo(
     () => ({
@@ -68,8 +74,10 @@ function BolsasPage() {
       city: search.city,
       modality,
       minDiscount: minDiscount > 0 ? minDiscount : undefined,
+      maxPrice: maxPrice > 0 ? maxPrice : undefined,
+      sort,
     }),
-    [search.level, search.q, search.city, modality, minDiscount],
+    [search.level, search.q, search.city, modality, minDiscount, maxPrice, sort],
   );
 
   const { data, isLoading } = useQuery({
