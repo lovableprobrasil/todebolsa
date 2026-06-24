@@ -29,11 +29,21 @@ function AuthPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    async function routeAfterAuth(userId: string) {
+      if (redirect) { navigate({ to: redirect, replace: true }); return; }
+      const { data: adminRole } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "PLATFORM_ADMIN")
+        .maybeSingle();
+      navigate({ to: adminRole ? "/admin" : "/painel", replace: true });
+    }
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: redirect ?? "/painel", replace: true });
+      if (data.session) routeAfterAuth(data.session.user.id);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      if (s) navigate({ to: redirect ?? "/painel", replace: true });
+      if (s) routeAfterAuth(s.user.id);
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate, redirect]);

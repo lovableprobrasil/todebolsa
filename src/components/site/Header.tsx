@@ -15,7 +15,9 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
+  const { user, profile, isPlatformAdmin } = useAuth();
+  const homeTo = isPlatformAdmin ? "/admin" : "/painel";
+  const homeLabel = isPlatformAdmin ? "Painel master" : "Meu painel";
   const initials = (profile?.name ?? user?.email ?? "?")
     .split(" ")
     .map((p) => p[0])
@@ -71,11 +73,11 @@ export function Header() {
             <>
               <NotificationsBell />
               <Button size="sm" asChild className="gap-2">
-                <Link to="/painel">
+                <Link to={homeTo}>
                   <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 text-[11px] font-bold">
                     {initials}
                   </span>
-                  <span>Meu painel</span>
+                  <span>{homeLabel}</span>
                   <LayoutDashboard className="h-4 w-4" />
                 </Link>
               </Button>
@@ -126,7 +128,7 @@ export function Header() {
             <div className="grid grid-cols-2 gap-2 mt-2">
               {user ? (
                 <Button className="col-span-2" asChild>
-                  <Link to="/painel" onClick={() => setOpen(false)}>Meu painel</Link>
+                  <Link to={homeTo} onClick={() => setOpen(false)}>{homeLabel}</Link>
                 </Button>
               ) : (
                 <>
