@@ -68,15 +68,18 @@ export function Header() {
 
         <div className="hidden md:flex items-center gap-2 shrink-0">
           {user ? (
-            <Button size="sm" asChild className="gap-2">
-              <Link to="/painel">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 text-[11px] font-bold">
-                  {initials}
-                </span>
-                <span>Meu painel</span>
-                <LayoutDashboard className="h-4 w-4" />
-              </Link>
-            </Button>
+            <>
+              <NotificationsBell />
+              <Button size="sm" asChild className="gap-2">
+                <Link to="/painel">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 text-[11px] font-bold">
+                    {initials}
+                  </span>
+                  <span>Meu painel</span>
+                  <LayoutDashboard className="h-4 w-4" />
+                </Link>
+              </Button>
+            </>
           ) : (
             <>
               <Button variant="ghost" size="sm" asChild>
