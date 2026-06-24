@@ -73,11 +73,11 @@ export function Header() {
             <>
               <NotificationsBell />
               <Button size="sm" asChild className="gap-2">
-                <Link to="/painel">
+                <Link to={homeTo}>
                   <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 text-[11px] font-bold">
                     {initials}
                   </span>
-                  <span>Meu painel</span>
+                  <span>{homeLabel}</span>
                   <LayoutDashboard className="h-4 w-4" />
                 </Link>
               </Button>
