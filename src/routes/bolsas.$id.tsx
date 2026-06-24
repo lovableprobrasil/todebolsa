@@ -251,7 +251,7 @@ function InfoRow({
 }
 
 function ReserveButton({
-  scholarshipId, courseOfferingId, institutionId, price,
+  scholarshipId,
 }: { scholarshipId: string; courseOfferingId: string; institutionId: string; price: number }) {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -260,30 +260,22 @@ function ReserveButton({
   const mutation = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("auth");
-      const code = "TDB-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-      const { error } = await supabase.from("reservations").insert({
-        user_id: user.id,
-        scholarship_id: scholarshipId,
-        course_offering_id: courseOfferingId,
-        institution_id: institutionId,
-        reservation_code: code,
-        status: "RESERVED",
-        amount_paid: price,
-        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      });
+      const { data, error } = await supabase.rpc("create_reservation", { p_scholarship_id: scholarshipId });
       if (error) throw error;
+      return data as { id: string };
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: ["reservations"] });
-      toast.success("Bolsa reservada! Confira em Minhas reservas.");
-      navigate({ to: "/reservas" });
+      qc.invalidateQueries({ queryKey: ["scholarship", scholarshipId] });
+      toast.success("Bolsa reservada! Conclua o pagamento para garantir sua vaga.");
+      navigate({ to: "/reservas/$id", params: { id: res.id } });
     },
     onError: (e: Error) => {
       if (e.message === "auth") {
         navigate({ to: "/auth", search: { redirect: window.location.pathname } });
         return;
       }
-      toast.error("Não foi possível reservar agora. Tente novamente.");
+      toast.error(e.message || "Não foi possível reservar agora.");
     },
   });
 
