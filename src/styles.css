@@ -81,25 +81,34 @@
   /* Laranja vibrante — cor principal (#F97316) */
   --primary: oklch(0.705 0.213 47.6);
   --primary-foreground: oklch(0.99 0 0);
-  --primary-soft: oklch(0.961 0.045 70);
+  /* Verde esmeralda — cor principal (#10B981) */
+  --primary: oklch(0.696 0.17 162.5);
+  --primary-foreground: oklch(0.99 0 0);
+  --primary-soft: oklch(0.95 0.05 162);
 
-  /* Azul de confiança — secundário/marca (#2563EB) */
-  --brand-blue: oklch(0.546 0.245 262.9);
+  /* Azul navy — secundário/marca (#0F172A / #1E293B) */
+  --brand-blue: oklch(0.24 0.04 260);
   --brand-blue-foreground: oklch(0.99 0 0);
-  --brand-blue-soft: oklch(0.95 0.04 262);
+  --brand-blue-soft: oklch(0.95 0.02 255);
+
+  /* Hero — fundo navy profundo (#0A1628) */
+  --hero-bg: oklch(0.19 0.045 255);
+  --hero-foreground: oklch(0.99 0 0);
+  --hero-muted: oklch(0.78 0.02 250);
 
   --secondary: oklch(0.96 0.01 250);
   --secondary-foreground: oklch(0.22 0.04 260);
 
-  --success: oklch(0.65 0.16 150);
+  --success: oklch(0.696 0.17 162.5);
   --success-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.82 0.17 85);
+  --warning: oklch(0.78 0.16 65);
   --warning-foreground: oklch(0.22 0.05 60);
 
   --muted: oklch(0.965 0.005 250);
   --muted-foreground: oklch(0.5 0.02 260);
-  --accent: oklch(0.96 0.05 60);
-  --accent-foreground: oklch(0.3 0.12 45);
+  /* Âmbar suave — destaque carteira UGE */
+  --accent: oklch(0.78 0.16 65);
+  --accent-foreground: oklch(0.22 0.05 60);
 
   --destructive: oklch(0.6 0.23 27);
   --destructive-foreground: oklch(0.99 0 0);
