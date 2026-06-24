@@ -24,6 +24,9 @@ import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authenticated/favoritos'
 import { Route as AuthenticatedCarteiraRouteImport } from './routes/_authenticated/carteira'
+import { Route as AuthenticatedInstituicaoIndexRouteImport } from './routes/_authenticated/instituicao.index'
+import { Route as AuthenticatedInstituicaoCadastrarRouteImport } from './routes/_authenticated/instituicao.cadastrar'
+import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -99,6 +102,24 @@ const AuthenticatedCarteiraRoute = AuthenticatedCarteiraRouteImport.update({
   path: '/carteira',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedInstituicaoIndexRoute =
+  AuthenticatedInstituicaoIndexRouteImport.update({
+    id: '/instituicao/',
+    path: '/instituicao/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedInstituicaoCadastrarRoute =
+  AuthenticatedInstituicaoCadastrarRouteImport.update({
+    id: '/instituicao/cadastrar',
+    path: '/instituicao/cadastrar',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedInstituicaoIdRoute =
+  AuthenticatedInstituicaoIdRouteImport.update({
+    id: '/instituicao/$id',
+    path: '/instituicao/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,6 +136,9 @@ export interface FileRoutesByFullPath {
   '/reservas': typeof AuthenticatedReservasRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
+  '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,6 +155,9 @@ export interface FileRoutesByTo {
   '/reservas': typeof AuthenticatedReservasRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
+  '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/instituicao': typeof AuthenticatedInstituicaoIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,6 +176,9 @@ export interface FileRoutesById {
   '/_authenticated/reservas': typeof AuthenticatedReservasRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
+  '/_authenticated/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/_authenticated/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,6 +197,9 @@ export interface FileRouteTypes {
     | '/reservas'
     | '/bolsas/$id'
     | '/instituicoes/$slug'
+    | '/instituicao/$id'
+    | '/instituicao/cadastrar'
+    | '/instituicao/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -183,6 +216,9 @@ export interface FileRouteTypes {
     | '/reservas'
     | '/bolsas/$id'
     | '/instituicoes/$slug'
+    | '/instituicao/$id'
+    | '/instituicao/cadastrar'
+    | '/instituicao'
   id:
     | '__root__'
     | '/'
@@ -200,6 +236,9 @@ export interface FileRouteTypes {
     | '/_authenticated/reservas'
     | '/bolsas/$id'
     | '/instituicoes/$slug'
+    | '/_authenticated/instituicao/$id'
+    | '/_authenticated/instituicao/cadastrar'
+    | '/_authenticated/instituicao/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -321,6 +360,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCarteiraRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/instituicao/': {
+      id: '/_authenticated/instituicao/'
+      path: '/instituicao'
+      fullPath: '/instituicao/'
+      preLoaderRoute: typeof AuthenticatedInstituicaoIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/instituicao/cadastrar': {
+      id: '/_authenticated/instituicao/cadastrar'
+      path: '/instituicao/cadastrar'
+      fullPath: '/instituicao/cadastrar'
+      preLoaderRoute: typeof AuthenticatedInstituicaoCadastrarRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/instituicao/$id': {
+      id: '/_authenticated/instituicao/$id'
+      path: '/instituicao/$id'
+      fullPath: '/instituicao/$id'
+      preLoaderRoute: typeof AuthenticatedInstituicaoIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -330,6 +390,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedReservasRoute: typeof AuthenticatedReservasRoute
+  AuthenticatedInstituicaoIdRoute: typeof AuthenticatedInstituicaoIdRoute
+  AuthenticatedInstituicaoCadastrarRoute: typeof AuthenticatedInstituicaoCadastrarRoute
+  AuthenticatedInstituicaoIndexRoute: typeof AuthenticatedInstituicaoIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -338,6 +401,10 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPainelRoute: AuthenticatedPainelRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedReservasRoute: AuthenticatedReservasRoute,
+  AuthenticatedInstituicaoIdRoute: AuthenticatedInstituicaoIdRoute,
+  AuthenticatedInstituicaoCadastrarRoute:
+    AuthenticatedInstituicaoCadastrarRoute,
+  AuthenticatedInstituicaoIndexRoute: AuthenticatedInstituicaoIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
