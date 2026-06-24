@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          id: string
+          processed_at: string | null
+          reason: string | null
+          requested_at: string
+          scheduled_for: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       analytics_events: {
         Row: {
           created_at: string
@@ -164,6 +194,42 @@ export type Database = {
         }
         Relationships: []
       }
+      consent_log: {
+        Row: {
+          consent_type: string
+          created_at: string
+          granted: boolean
+          id: number
+          ip_address: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+          version: string
+        }
+        Insert: {
+          consent_type: string
+          created_at?: string
+          granted: boolean
+          id?: number
+          ip_address?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          version?: string
+        }
+        Update: {
+          consent_type?: string
+          created_at?: string
+          granted?: boolean
+          id?: number
+          ip_address?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          version?: string
+        }
+        Relationships: []
+      }
       course_offerings: {
         Row: {
           course_id: string
@@ -285,6 +351,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      data_export_requests: {
+        Row: {
+          completed_at: string | null
+          id: string
+          payload: Json | null
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          payload?: Json | null
+          requested_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          payload?: Json | null
+          requested_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       enrollment_documents: {
         Row: {
@@ -1219,6 +1312,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      cancel_account_deletion: { Args: never; Returns: undefined }
       cancel_reservation: {
         Args: { p_reservation_id: string }
         Returns: {
@@ -1309,6 +1403,7 @@ export type Database = {
       }
       crm_overview: { Args: never; Returns: Json }
       expire_reservations: { Args: never; Returns: number }
+      export_my_data: { Args: never; Returns: Json }
       finalize_enrollment: {
         Args: { p_approved: boolean; p_notes: string; p_reservation_id: string }
         Returns: {
@@ -1410,6 +1505,24 @@ export type Database = {
       recalc_institution_rating: {
         Args: { p_institution_id: string }
         Returns: undefined
+      }
+      request_account_deletion: {
+        Args: { p_reason: string }
+        Returns: {
+          id: string
+          processed_at: string | null
+          reason: string | null
+          requested_at: string
+          scheduled_for: string
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "account_deletion_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       request_refund: {
         Args: { p_reason: string; p_reservation_id: string }
