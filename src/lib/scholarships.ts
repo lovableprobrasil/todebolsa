@@ -94,6 +94,16 @@ export async function getScholarship(id: string): Promise<ScholarshipListItem | 
   return (data as unknown as ScholarshipListItem) ?? null;
 }
 
+export async function listScholarshipsByIds(ids: string[]): Promise<ScholarshipListItem[]> {
+  if (ids.length === 0) return [];
+  const { data, error } = await supabase
+    .from("scholarships")
+    .select(SCHOLARSHIP_SELECT)
+    .in("id", ids);
+  if (error) throw error;
+  return (data ?? []) as unknown as ScholarshipListItem[];
+}
+
 export async function listFeaturedInstitutions() {
   const { data, error } = await supabase
     .from("institutions")
