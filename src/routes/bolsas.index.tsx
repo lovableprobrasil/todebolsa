@@ -142,6 +142,20 @@ function BolsasPage() {
             </div>
 
             <div className="mb-5">
+              <Label className="mb-2 block">Instituição</Label>
+              <select
+                value={institutionId ?? ""}
+                onChange={(e) => setInstitutionId(e.target.value || undefined)}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Todas as instituições</option>
+                {institutionOpts.map((i) => (
+                  <option key={i.id} value={i.id}>{i.trade_name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-5">
               <Label className="mb-2 block">Modalidade</Label>
               <div className="space-y-2">
                 {["PRESENCIAL", "SEMIPRESENCIAL", "EAD"].map((m) => (
@@ -155,6 +169,7 @@ function BolsasPage() {
                 ))}
               </div>
             </div>
+
 
             <div className="mb-2">
               <Label className="mb-2 block">
