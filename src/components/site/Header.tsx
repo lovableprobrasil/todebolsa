@@ -1,21 +1,28 @@
-import { Link } from "@tanstack/react-router";
-import { GraduationCap, Menu } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { GraduationCap, Menu, Search, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const NAV = [
-  { to: "/bolsas", label: "Buscar bolsas" },
-  { to: "/para-instituicoes", label: "Para instituições" },
-  { to: "/faq", label: "Ajuda" },
+  { to: "/bolsas", label: "Bolsas" },
+  { to: "/para-instituicoes", label: "Instituições" },
+  { to: "/faq", label: "Blog" },
 ] as const;
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const navigate = useNavigate();
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    navigate({ to: "/bolsas", search: q.trim() ? { q: q.trim() } : {} });
+  }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2 group">
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex shrink-0 items-center gap-2 group">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-[var(--shadow-elegant)] group-hover:scale-105 transition-transform">
             <GraduationCap className="h-5 w-5" />
           </span>
@@ -24,7 +31,20 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <form
+          onSubmit={submit}
+          className="hidden md:flex flex-1 max-w-xl mx-auto items-center gap-2 rounded-full bg-secondary border border-border px-4 h-10 focus-within:border-primary focus-within:bg-background transition-colors"
+        >
+          <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar curso ou cidade..."
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          />
+        </form>
+
+        <nav className="hidden lg:flex items-center gap-6 shrink-0">
           {NAV.map((item) => (
             <Link
               key={item.to}
@@ -37,27 +57,36 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2 shrink-0">
           <Button variant="ghost" size="sm" asChild>
             <Link to="/bolsas">Entrar</Link>
           </Button>
-          <Button size="sm" asChild>
-            <Link to="/bolsas">Encontrar bolsa</Link>
+          <Button size="sm" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
+            <Link to="/bolsas">Cadastrar</Link>
           </Button>
         </div>
 
         <button
-          className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-muted"
+          className="md:hidden inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg hover:bg-muted ml-auto"
           onClick={() => setOpen((v) => !v)}
           aria-label="Abrir menu"
         >
-          <Menu className="h-5 w-5" />
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
       {open && (
         <div className="md:hidden border-t border-border bg-background">
           <div className="px-4 py-3 flex flex-col gap-1">
+            <form onSubmit={submit} className="flex items-center gap-2 rounded-full bg-secondary border border-border px-4 h-10 mb-2">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Buscar curso ou cidade..."
+                className="flex-1 bg-transparent text-sm outline-none"
+              />
+            </form>
             {NAV.map((item) => (
               <Link
                 key={item.to}
@@ -68,9 +97,14 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <Button className="mt-2" asChild>
-              <Link to="/bolsas">Encontrar bolsa</Link>
-            </Button>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <Button variant="outline" asChild>
+                <Link to="/bolsas">Entrar</Link>
+              </Button>
+              <Button className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
+                <Link to="/bolsas">Cadastrar</Link>
+              </Button>
+            </div>
           </div>
         </div>
       )}
