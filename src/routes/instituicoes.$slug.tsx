@@ -123,13 +123,16 @@ function InstitutionPage() {
               {inst.description && (
                 <p className="mt-2 text-muted-foreground max-w-2xl">{inst.description}</p>
               )}
-              <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                {inst.rating ? (
-                  <span className="inline-flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-warning text-warning" />
-                    <strong className="text-foreground">{Number(inst.rating).toFixed(1)}</strong> de avaliação
+              <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground items-center">
+                {Number(inst.rating_count) > 0 ? (
+                  <span className="inline-flex items-center gap-2">
+                    <ReviewStars value={Number(inst.rating_avg)} readOnly />
+                    <strong className="text-foreground">{Number(inst.rating_avg).toFixed(1)}</strong>
+                    <span>· {inst.rating_count} avaliações</span>
                   </span>
-                ) : null}
+                ) : (
+                  <span className="text-xs">Ainda sem avaliações</span>
+                )}
                 {inst.website && (
                   <a href={inst.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
                     <Globe className="h-4 w-4" /> {inst.website.replace(/^https?:\/\//, "")}
