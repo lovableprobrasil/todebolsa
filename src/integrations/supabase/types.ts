@@ -564,6 +564,284 @@ export type Database = {
           },
         ]
       }
+      institution_application_documents: {
+        Row: {
+          application_id: string
+          created_at: string
+          doc_type: string
+          file_name: string | null
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          user_id: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          doc_type: string
+          file_name?: string | null
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          user_id: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          doc_type?: string
+          file_name?: string | null
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "institution_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_application_messages: {
+        Row: {
+          application_id: string
+          author_id: string
+          author_role: string
+          created_at: string
+          id: string
+          message: string
+        }
+        Insert: {
+          application_id: string
+          author_id: string
+          author_role: string
+          created_at?: string
+          id?: string
+          message: string
+        }
+        Update: {
+          application_id?: string
+          author_id?: string
+          author_role?: string
+          created_at?: string
+          id?: string
+          message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_application_messages_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "institution_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_applications: {
+        Row: {
+          accepted_at: string | null
+          accepted_privacy: boolean
+          accepted_representation: boolean
+          accepted_terms: boolean
+          accepted_truthfulness: boolean
+          address: string | null
+          assigned_sales_id: string | null
+          authorization_declared: boolean
+          avg_discount_pct: number | null
+          city: string | null
+          cnpj: string | null
+          complement: string | null
+          courses_offered: string[]
+          created_at: string
+          email: string | null
+          has_idle_vacancies: boolean | null
+          high_potential: boolean
+          id: string
+          instagram: string | null
+          institution_id: string | null
+          institution_type: string | null
+          internal_notes: string | null
+          legal_name: string | null
+          levels: string[]
+          modalities: string[]
+          monthly_vacancies: number | null
+          neighborhood: string | null
+          number: string | null
+          phone: string | null
+          rejection_reason: string | null
+          responsible_cpf: string | null
+          responsible_email: string | null
+          responsible_name: string | null
+          responsible_role: string | null
+          responsible_whatsapp: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          service_mode:
+            | Database["public"]["Enums"]["institution_service_mode"]
+            | null
+          state: string | null
+          status: Database["public"]["Enums"]["institution_application_status"]
+          submitted_at: string | null
+          trade_name: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+          zip: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_privacy?: boolean
+          accepted_representation?: boolean
+          accepted_terms?: boolean
+          accepted_truthfulness?: boolean
+          address?: string | null
+          assigned_sales_id?: string | null
+          authorization_declared?: boolean
+          avg_discount_pct?: number | null
+          city?: string | null
+          cnpj?: string | null
+          complement?: string | null
+          courses_offered?: string[]
+          created_at?: string
+          email?: string | null
+          has_idle_vacancies?: boolean | null
+          high_potential?: boolean
+          id?: string
+          instagram?: string | null
+          institution_id?: string | null
+          institution_type?: string | null
+          internal_notes?: string | null
+          legal_name?: string | null
+          levels?: string[]
+          modalities?: string[]
+          monthly_vacancies?: number | null
+          neighborhood?: string | null
+          number?: string | null
+          phone?: string | null
+          rejection_reason?: string | null
+          responsible_cpf?: string | null
+          responsible_email?: string | null
+          responsible_name?: string | null
+          responsible_role?: string | null
+          responsible_whatsapp?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          service_mode?:
+            | Database["public"]["Enums"]["institution_service_mode"]
+            | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["institution_application_status"]
+          submitted_at?: string | null
+          trade_name?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+          zip?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_privacy?: boolean
+          accepted_representation?: boolean
+          accepted_terms?: boolean
+          accepted_truthfulness?: boolean
+          address?: string | null
+          assigned_sales_id?: string | null
+          authorization_declared?: boolean
+          avg_discount_pct?: number | null
+          city?: string | null
+          cnpj?: string | null
+          complement?: string | null
+          courses_offered?: string[]
+          created_at?: string
+          email?: string | null
+          has_idle_vacancies?: boolean | null
+          high_potential?: boolean
+          id?: string
+          instagram?: string | null
+          institution_id?: string | null
+          institution_type?: string | null
+          internal_notes?: string | null
+          legal_name?: string | null
+          levels?: string[]
+          modalities?: string[]
+          monthly_vacancies?: number | null
+          neighborhood?: string | null
+          number?: string | null
+          phone?: string | null
+          rejection_reason?: string | null
+          responsible_cpf?: string | null
+          responsible_email?: string | null
+          responsible_name?: string | null
+          responsible_role?: string | null
+          responsible_whatsapp?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          service_mode?:
+            | Database["public"]["Enums"]["institution_service_mode"]
+            | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["institution_application_status"]
+          submitted_at?: string | null
+          trade_name?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+          zip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_applications_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_onboarding_checklist: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          institution_id: string
+          step_code: string
+          step_order: number
+          step_title: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          step_code: string
+          step_order: number
+          step_title: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          step_code?: string
+          step_order?: number
+          step_title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_onboarding_checklist_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institution_prospects: {
         Row: {
           city: string | null
@@ -1404,6 +1682,14 @@ export type Database = {
         }[]
       }
       admin_overview: { Args: never; Returns: Json }
+      approve_institution_application: {
+        Args: { p_id: string }
+        Returns: string
+      }
+      assign_application_sales: {
+        Args: { p_id: string; p_user_id: string }
+        Returns: undefined
+      }
       assign_lead: {
         Args: { p_lead_id: string; p_owner_id: string }
         Returns: undefined
@@ -1607,6 +1893,23 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      post_application_message: {
+        Args: { p_id: string; p_message: string }
+        Returns: {
+          application_id: string
+          author_id: string
+          author_role: string
+          created_at: string
+          id: string
+          message: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "institution_application_messages"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       recalc_institution_rating: {
         Args: { p_institution_id: string }
         Returns: undefined
@@ -1707,6 +2010,132 @@ export type Database = {
         }
         Returns: undefined
       }
+      save_institution_application: {
+        Args: { p_id: string; p_payload: Json }
+        Returns: {
+          accepted_at: string | null
+          accepted_privacy: boolean
+          accepted_representation: boolean
+          accepted_terms: boolean
+          accepted_truthfulness: boolean
+          address: string | null
+          assigned_sales_id: string | null
+          authorization_declared: boolean
+          avg_discount_pct: number | null
+          city: string | null
+          cnpj: string | null
+          complement: string | null
+          courses_offered: string[]
+          created_at: string
+          email: string | null
+          has_idle_vacancies: boolean | null
+          high_potential: boolean
+          id: string
+          instagram: string | null
+          institution_id: string | null
+          institution_type: string | null
+          internal_notes: string | null
+          legal_name: string | null
+          levels: string[]
+          modalities: string[]
+          monthly_vacancies: number | null
+          neighborhood: string | null
+          number: string | null
+          phone: string | null
+          rejection_reason: string | null
+          responsible_cpf: string | null
+          responsible_email: string | null
+          responsible_name: string | null
+          responsible_role: string | null
+          responsible_whatsapp: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          service_mode:
+            | Database["public"]["Enums"]["institution_service_mode"]
+            | null
+          state: string | null
+          status: Database["public"]["Enums"]["institution_application_status"]
+          submitted_at: string | null
+          trade_name: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+          zip: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "institution_applications"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_application_internal_notes: {
+        Args: { p_id: string; p_notes: string }
+        Returns: undefined
+      }
+      set_application_status: {
+        Args: {
+          p_id: string
+          p_message?: string
+          p_status: Database["public"]["Enums"]["institution_application_status"]
+        }
+        Returns: {
+          accepted_at: string | null
+          accepted_privacy: boolean
+          accepted_representation: boolean
+          accepted_terms: boolean
+          accepted_truthfulness: boolean
+          address: string | null
+          assigned_sales_id: string | null
+          authorization_declared: boolean
+          avg_discount_pct: number | null
+          city: string | null
+          cnpj: string | null
+          complement: string | null
+          courses_offered: string[]
+          created_at: string
+          email: string | null
+          has_idle_vacancies: boolean | null
+          high_potential: boolean
+          id: string
+          instagram: string | null
+          institution_id: string | null
+          institution_type: string | null
+          internal_notes: string | null
+          legal_name: string | null
+          levels: string[]
+          modalities: string[]
+          monthly_vacancies: number | null
+          neighborhood: string | null
+          number: string | null
+          phone: string | null
+          rejection_reason: string | null
+          responsible_cpf: string | null
+          responsible_email: string | null
+          responsible_name: string | null
+          responsible_role: string | null
+          responsible_whatsapp: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          service_mode:
+            | Database["public"]["Enums"]["institution_service_mode"]
+            | null
+          state: string | null
+          status: Database["public"]["Enums"]["institution_application_status"]
+          submitted_at: string | null
+          trade_name: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+          zip: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "institution_applications"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       set_institution_status: {
         Args: {
           p_institution_id: string
@@ -1741,6 +2170,7 @@ export type Database = {
         }
       }
       set_referrer: { Args: { p_code: string }; Returns: undefined }
+      start_institution_application: { Args: never; Returns: string }
       submit_enrollment_document: {
         Args: {
           p_doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
@@ -1774,8 +2204,75 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      submit_institution_application: {
+        Args: { p_id: string }
+        Returns: {
+          accepted_at: string | null
+          accepted_privacy: boolean
+          accepted_representation: boolean
+          accepted_terms: boolean
+          accepted_truthfulness: boolean
+          address: string | null
+          assigned_sales_id: string | null
+          authorization_declared: boolean
+          avg_discount_pct: number | null
+          city: string | null
+          cnpj: string | null
+          complement: string | null
+          courses_offered: string[]
+          created_at: string
+          email: string | null
+          has_idle_vacancies: boolean | null
+          high_potential: boolean
+          id: string
+          instagram: string | null
+          institution_id: string | null
+          institution_type: string | null
+          internal_notes: string | null
+          legal_name: string | null
+          levels: string[]
+          modalities: string[]
+          monthly_vacancies: number | null
+          neighborhood: string | null
+          number: string | null
+          phone: string | null
+          rejection_reason: string | null
+          responsible_cpf: string | null
+          responsible_email: string | null
+          responsible_name: string | null
+          responsible_role: string | null
+          responsible_whatsapp: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          service_mode:
+            | Database["public"]["Enums"]["institution_service_mode"]
+            | null
+          state: string | null
+          status: Database["public"]["Enums"]["institution_application_status"]
+          submitted_at: string | null
+          trade_name: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+          zip: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "institution_applications"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      toggle_application_high_potential: {
+        Args: { p_flag: boolean; p_id: string }
+        Returns: undefined
+      }
       toggle_institution_feature: {
         Args: { p_featured: boolean; p_institution_id: string }
+        Returns: undefined
+      }
+      toggle_onboarding_step: {
+        Args: { p_done: boolean; p_id: string }
         Returns: undefined
       }
       toggle_scholarship_feature: {
@@ -1811,6 +2308,7 @@ export type Database = {
         | "INSTITUTION_ADMIN"
         | "PLATFORM_SALES"
         | "PLATFORM_ADMIN"
+        | "INSTITUTION_APPLICANT"
       course_level:
         | "FUNDAMENTAL"
         | "MEDIO"
@@ -1838,6 +2336,15 @@ export type Database = {
         | "ENROLLMENT_DECLARATION"
         | "PHOTO"
         | "OTHER"
+      institution_application_status:
+        | "DRAFT"
+        | "SUBMITTED"
+        | "UNDER_REVIEW"
+        | "NEEDS_INFO"
+        | "APPROVED"
+        | "REJECTED"
+        | "SUSPENDED"
+      institution_service_mode: "PRESENCIAL" | "EAD" | "HIBRIDO" | "POLOS"
       institution_status: "PENDING" | "APPROVED" | "SUSPENDED" | "REJECTED"
       lead_status:
         | "NEW"
@@ -2011,6 +2518,7 @@ export const Constants = {
         "INSTITUTION_ADMIN",
         "PLATFORM_SALES",
         "PLATFORM_ADMIN",
+        "INSTITUTION_APPLICANT",
       ],
       course_level: [
         "FUNDAMENTAL",
@@ -2041,6 +2549,16 @@ export const Constants = {
         "PHOTO",
         "OTHER",
       ],
+      institution_application_status: [
+        "DRAFT",
+        "SUBMITTED",
+        "UNDER_REVIEW",
+        "NEEDS_INFO",
+        "APPROVED",
+        "REJECTED",
+        "SUSPENDED",
+      ],
+      institution_service_mode: ["PRESENCIAL", "EAD", "HIBRIDO", "POLOS"],
       institution_status: ["PENDING", "APPROVED", "SUSPENDED", "REJECTED"],
       lead_status: [
         "NEW",

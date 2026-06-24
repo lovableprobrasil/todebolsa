@@ -21,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 const TABS = [
   { to: "/admin", label: "Visão geral", icon: LayoutDashboard, exact: true },
   { to: "/admin/instituicoes", label: "Instituições", icon: Building2, exact: false },
+  { to: "/admin/credenciamento-instituicoes", label: "Credenciamento", icon: FileCheck2, exact: false },
   { to: "/admin/bolsas", label: "Bolsas", icon: GraduationCap, exact: false },
   { to: "/admin/reservas", label: "Reservas", icon: Bookmark, exact: false },
   { to: "/admin/matriculas", label: "Matrículas", icon: FileCheck2, exact: false },
