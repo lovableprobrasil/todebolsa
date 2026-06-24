@@ -22,6 +22,7 @@ export function Footer() {
           <FooterCol title="Para alunos">
             <FooterLink to="/bolsas">Buscar bolsas</FooterLink>
             <FooterLink to="/carteira-uge">Carteira UGE</FooterLink>
+            <FooterLink to="/guia">Guia do Estudante</FooterLink>
             <FooterLink to="/faq">Como funciona</FooterLink>
           </FooterCol>
 
