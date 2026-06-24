@@ -95,7 +95,7 @@ function AuthenticatedLayout() {
           {/* Sidebar (desktop) */}
           <aside className="hidden lg:block">
             <nav className="sticky top-24 space-y-1">
-              {NAV.map((item) => {
+              {nav.map((item) => {
                 const active = pathname === item.to;
                 const Icon = item.icon;
                 return (
@@ -121,7 +121,7 @@ function AuthenticatedLayout() {
           {mobileOpen && (
             <div className="lg:hidden -mt-2 -mx-1 mb-2">
               <nav className="rounded-2xl border border-border bg-card p-2 space-y-1">
-                {NAV.map((item) => {
+                {nav.map((item) => {
                   const active = pathname === item.to;
                   const Icon = item.icon;
                   return (
