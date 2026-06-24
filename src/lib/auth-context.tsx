@@ -15,6 +15,7 @@ type AuthCtx = {
   session: Session | null;
   profile: Profile | null;
   institutionAdminOf: string[];
+  isPlatformAdmin: boolean;
   loading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -28,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [institutionAdminOf, setInstitutionAdminOf] = useState<string[]>([]);
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   async function loadProfile(uid: string) {
@@ -43,9 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data } = await supabase
       .from("user_roles")
       .select("role, institution_id")
-      .eq("user_id", uid)
-      .eq("role", "INSTITUTION_ADMIN");
-    setInstitutionAdminOf((data ?? []).map((r) => r.institution_id).filter((x): x is string => !!x));
+      .eq("user_id", uid);
+    const rows = data ?? [];
+    setInstitutionAdminOf(rows.filter((r) => r.role === "INSTITUTION_ADMIN").map((r) => r.institution_id).filter((x): x is string => !!x));
+    setIsPlatformAdmin(rows.some((r) => r.role === "PLATFORM_ADMIN"));
   }
 
   useEffect(() => {
@@ -58,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setProfile(null);
         setInstitutionAdminOf([]);
+        setIsPlatformAdmin(false);
       }
     });
 
@@ -78,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     setProfile(null);
     setInstitutionAdminOf([]);
+    setIsPlatformAdmin(false);
   }
 
   async function refreshProfile() {
@@ -89,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Ctx.Provider value={{ user, session, profile, institutionAdminOf, loading, signOut, refreshProfile, refreshRoles }}>
+    <Ctx.Provider value={{ user, session, profile, institutionAdminOf, isPlatformAdmin, loading, signOut, refreshProfile, refreshRoles }}>
       {children}
     </Ctx.Provider>
   );
