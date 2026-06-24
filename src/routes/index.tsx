@@ -119,9 +119,9 @@ function Hero() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Button size="lg" className="rounded-xl h-12 px-6 text-base" asChild>
-                <Link to="/bolsas">
-                  Encontrar minha bolsa <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
+                <a href="#busca-bolsas">
+                  Buscar bolsas agora <ArrowRight className="h-4 w-4 ml-1" />
+                </a>
               </Button>
               <Button
                 size="lg"
@@ -129,10 +129,11 @@ function Hero() {
                 className="rounded-xl h-12 px-6 text-base bg-transparent border-white/25 text-hero-foreground hover:bg-white/10 hover:text-hero-foreground"
                 asChild
               >
-                <Link to="/bolsas">Criar conta grátis</Link>
+                <Link to="/carteira-uge">Ver cursos com Carteira UGE</Link>
               </Button>
             </div>
           </div>
+
 
           <div className="relative">
             <div aria-hidden className="absolute inset-x-8 bottom-6 h-40 rounded-[3rem] bg-primary/20 blur-3xl" />
