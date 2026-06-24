@@ -34,10 +34,15 @@ import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminReservasRouteImport } from './routes/_authenticated/admin.reservas'
 import { Route as AuthenticatedAdminInstituicoesRouteImport } from './routes/_authenticated/admin.instituicoes'
+import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
+import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
+import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
+import { Route as AuthenticatedAdminFinanceiroReceitasRouteImport } from './routes/_authenticated/admin.financeiro.receitas'
+import { Route as AuthenticatedAdminFinanceiroInstituicoesRouteImport } from './routes/_authenticated/admin.financeiro.instituicoes'
 import { Route as AuthenticatedAdminCrmLeadsRouteImport } from './routes/_authenticated/admin.crm.leads'
 import { Route as AuthenticatedAdminCrmInstituicoesRouteImport } from './routes/_authenticated/admin.crm.instituicoes'
 import { Route as AuthenticatedAdminCrmAtividadesRouteImport } from './routes/_authenticated/admin.crm.atividades'
@@ -173,6 +178,12 @@ const AuthenticatedAdminInstituicoesRoute =
     path: '/instituicoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminFinanceiroRoute =
+  AuthenticatedAdminFinanceiroRouteImport.update({
+    id: '/financeiro',
+    path: '/financeiro',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminCrmRoute = AuthenticatedAdminCrmRouteImport.update({
   id: '/crm',
   path: '/crm',
@@ -190,11 +201,35 @@ const AuthenticatedAdminBolsasRoute =
     path: '/bolsas',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminFinanceiroIndexRoute =
+  AuthenticatedAdminFinanceiroIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminFinanceiroRoute,
+  } as any)
 const AuthenticatedAdminCrmIndexRoute =
   AuthenticatedAdminCrmIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedAdminCrmRoute,
+  } as any)
+const AuthenticatedAdminFinanceiroReembolsosRoute =
+  AuthenticatedAdminFinanceiroReembolsosRouteImport.update({
+    id: '/reembolsos',
+    path: '/reembolsos',
+    getParentRoute: () => AuthenticatedAdminFinanceiroRoute,
+  } as any)
+const AuthenticatedAdminFinanceiroReceitasRoute =
+  AuthenticatedAdminFinanceiroReceitasRouteImport.update({
+    id: '/receitas',
+    path: '/receitas',
+    getParentRoute: () => AuthenticatedAdminFinanceiroRoute,
+  } as any)
+const AuthenticatedAdminFinanceiroInstituicoesRoute =
+  AuthenticatedAdminFinanceiroInstituicoesRouteImport.update({
+    id: '/instituicoes',
+    path: '/instituicoes',
+    getParentRoute: () => AuthenticatedAdminFinanceiroRoute,
   } as any)
 const AuthenticatedAdminCrmLeadsRoute =
   AuthenticatedAdminCrmLeadsRouteImport.update({
@@ -235,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
+  '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
@@ -246,7 +282,11 @@ export interface FileRoutesByFullPath {
   '/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
   '/admin/crm/instituicoes': typeof AuthenticatedAdminCrmInstituicoesRoute
   '/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
+  '/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
+  '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
+  '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
+  '/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -277,7 +317,11 @@ export interface FileRoutesByTo {
   '/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
   '/admin/crm/instituicoes': typeof AuthenticatedAdminCrmInstituicoesRoute
   '/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
+  '/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
+  '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
+  '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
+  '/admin/financeiro': typeof AuthenticatedAdminFinanceiroIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -301,6 +345,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
+  '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
   '/_authenticated/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/_authenticated/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
@@ -312,7 +357,11 @@ export interface FileRoutesById {
   '/_authenticated/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
   '/_authenticated/admin/crm/instituicoes': typeof AuthenticatedAdminCrmInstituicoesRoute
   '/_authenticated/admin/crm/leads': typeof AuthenticatedAdminCrmLeadsRoute
+  '/_authenticated/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
+  '/_authenticated/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
+  '/_authenticated/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
+  '/_authenticated/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -336,6 +385,7 @@ export interface FileRouteTypes {
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/crm'
+    | '/admin/financeiro'
     | '/admin/instituicoes'
     | '/admin/reservas'
     | '/admin/usuarios'
@@ -347,7 +397,11 @@ export interface FileRouteTypes {
     | '/admin/crm/atividades'
     | '/admin/crm/instituicoes'
     | '/admin/crm/leads'
+    | '/admin/financeiro/instituicoes'
+    | '/admin/financeiro/receitas'
+    | '/admin/financeiro/reembolsos'
     | '/admin/crm/'
+    | '/admin/financeiro/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -378,7 +432,11 @@ export interface FileRouteTypes {
     | '/admin/crm/atividades'
     | '/admin/crm/instituicoes'
     | '/admin/crm/leads'
+    | '/admin/financeiro/instituicoes'
+    | '/admin/financeiro/receitas'
+    | '/admin/financeiro/reembolsos'
     | '/admin/crm'
+    | '/admin/financeiro'
   id:
     | '__root__'
     | '/'
@@ -401,6 +459,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
     | '/_authenticated/admin/crm'
+    | '/_authenticated/admin/financeiro'
     | '/_authenticated/admin/instituicoes'
     | '/_authenticated/admin/reservas'
     | '/_authenticated/admin/usuarios'
@@ -412,7 +471,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/crm/atividades'
     | '/_authenticated/admin/crm/instituicoes'
     | '/_authenticated/admin/crm/leads'
+    | '/_authenticated/admin/financeiro/instituicoes'
+    | '/_authenticated/admin/financeiro/receitas'
+    | '/_authenticated/admin/financeiro/reembolsos'
     | '/_authenticated/admin/crm/'
+    | '/_authenticated/admin/financeiro/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -604,6 +667,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminInstituicoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/financeiro': {
+      id: '/_authenticated/admin/financeiro'
+      path: '/financeiro'
+      fullPath: '/admin/financeiro'
+      preLoaderRoute: typeof AuthenticatedAdminFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/crm': {
       id: '/_authenticated/admin/crm'
       path: '/crm'
@@ -625,12 +695,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBolsasRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/financeiro/': {
+      id: '/_authenticated/admin/financeiro/'
+      path: '/'
+      fullPath: '/admin/financeiro/'
+      preLoaderRoute: typeof AuthenticatedAdminFinanceiroIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminFinanceiroRoute
+    }
     '/_authenticated/admin/crm/': {
       id: '/_authenticated/admin/crm/'
       path: '/'
       fullPath: '/admin/crm/'
       preLoaderRoute: typeof AuthenticatedAdminCrmIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCrmRoute
+    }
+    '/_authenticated/admin/financeiro/reembolsos': {
+      id: '/_authenticated/admin/financeiro/reembolsos'
+      path: '/reembolsos'
+      fullPath: '/admin/financeiro/reembolsos'
+      preLoaderRoute: typeof AuthenticatedAdminFinanceiroReembolsosRouteImport
+      parentRoute: typeof AuthenticatedAdminFinanceiroRoute
+    }
+    '/_authenticated/admin/financeiro/receitas': {
+      id: '/_authenticated/admin/financeiro/receitas'
+      path: '/receitas'
+      fullPath: '/admin/financeiro/receitas'
+      preLoaderRoute: typeof AuthenticatedAdminFinanceiroReceitasRouteImport
+      parentRoute: typeof AuthenticatedAdminFinanceiroRoute
+    }
+    '/_authenticated/admin/financeiro/instituicoes': {
+      id: '/_authenticated/admin/financeiro/instituicoes'
+      path: '/instituicoes'
+      fullPath: '/admin/financeiro/instituicoes'
+      preLoaderRoute: typeof AuthenticatedAdminFinanceiroInstituicoesRouteImport
+      parentRoute: typeof AuthenticatedAdminFinanceiroRoute
     }
     '/_authenticated/admin/crm/leads': {
       id: '/_authenticated/admin/crm/leads'
@@ -676,10 +774,35 @@ const AuthenticatedAdminCrmRouteWithChildren =
     AuthenticatedAdminCrmRouteChildren,
   )
 
+interface AuthenticatedAdminFinanceiroRouteChildren {
+  AuthenticatedAdminFinanceiroInstituicoesRoute: typeof AuthenticatedAdminFinanceiroInstituicoesRoute
+  AuthenticatedAdminFinanceiroReceitasRoute: typeof AuthenticatedAdminFinanceiroReceitasRoute
+  AuthenticatedAdminFinanceiroReembolsosRoute: typeof AuthenticatedAdminFinanceiroReembolsosRoute
+  AuthenticatedAdminFinanceiroIndexRoute: typeof AuthenticatedAdminFinanceiroIndexRoute
+}
+
+const AuthenticatedAdminFinanceiroRouteChildren: AuthenticatedAdminFinanceiroRouteChildren =
+  {
+    AuthenticatedAdminFinanceiroInstituicoesRoute:
+      AuthenticatedAdminFinanceiroInstituicoesRoute,
+    AuthenticatedAdminFinanceiroReceitasRoute:
+      AuthenticatedAdminFinanceiroReceitasRoute,
+    AuthenticatedAdminFinanceiroReembolsosRoute:
+      AuthenticatedAdminFinanceiroReembolsosRoute,
+    AuthenticatedAdminFinanceiroIndexRoute:
+      AuthenticatedAdminFinanceiroIndexRoute,
+  }
+
+const AuthenticatedAdminFinanceiroRouteWithChildren =
+  AuthenticatedAdminFinanceiroRoute._addFileChildren(
+    AuthenticatedAdminFinanceiroRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBolsasRoute: typeof AuthenticatedAdminBolsasRoute
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRouteWithChildren
+  AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRouteWithChildren
   AuthenticatedAdminInstituicoesRoute: typeof AuthenticatedAdminInstituicoesRoute
   AuthenticatedAdminReservasRoute: typeof AuthenticatedAdminReservasRoute
   AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
@@ -690,6 +813,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminBolsasRoute: AuthenticatedAdminBolsasRoute,
   AuthenticatedAdminBootstrapRoute: AuthenticatedAdminBootstrapRoute,
   AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRouteWithChildren,
+  AuthenticatedAdminFinanceiroRoute:
+    AuthenticatedAdminFinanceiroRouteWithChildren,
   AuthenticatedAdminInstituicoesRoute: AuthenticatedAdminInstituicoesRoute,
   AuthenticatedAdminReservasRoute: AuthenticatedAdminReservasRoute,
   AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
