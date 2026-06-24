@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer } from "@/lib/scholarships";
 import { formatBRL, COURSE_LEVEL_LABEL } from "@/lib/format";
-import heroStudent from "@/assets/hero-student-card.png";
+import heroStudent from "@/assets/hero-student-card.webp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,7 +25,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:title", content: "Tô de Bolsa — Até 90% de desconto em bolsas de estudo" },
       { name: "twitter:description", content: "Marketplace nacional de bolsas de estudo para todas as idades e níveis de ensino." },
     ],
-    links: [{ rel: "canonical", href: "https://todebolsa.lovable.app/" }],
+    links: [
+      { rel: "canonical", href: "https://todebolsa.lovable.app/" },
+      { rel: "preload", as: "image", href: heroStudent, fetchpriority: "high" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -159,6 +162,8 @@ function Hero() {
               alt="Estudante sorrindo segurando carteira de estudante digital e física"
               width={896}
               height={1152}
+              fetchPriority="high"
+              decoding="async"
               className="relative w-full h-auto max-h-[640px] object-contain object-bottom mx-auto drop-shadow-2xl"
             />
           </div>
@@ -410,6 +415,7 @@ function InstitutionsSection() {
                     src={i.logo_url}
                     alt={`Logo ${i.trade_name}`}
                     loading="lazy"
+                    decoding="async"
                     className="max-h-16 max-w-[80%] object-contain"
                   />
                 ) : (

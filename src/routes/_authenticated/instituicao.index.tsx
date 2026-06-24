@@ -74,7 +74,7 @@ function InstitutionPortalIndex() {
                 <div className="flex items-start gap-4">
                   <div className="h-12 w-12 rounded-xl bg-secondary flex items-center justify-center overflow-hidden">
                     {i.logo_url ? (
-                      <img src={i.logo_url} alt="" className="h-full w-full object-cover" />
+                      <img src={i.logo_url} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
                     ) : (
                       <Building2 className="h-5 w-5 text-muted-foreground" />
                     )}
