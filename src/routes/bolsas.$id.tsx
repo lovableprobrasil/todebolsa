@@ -1,7 +1,7 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  MapPin, Clock, Users, GraduationCap, CheckCircle2, ArrowLeft, Calendar,
+  MapPin, Clock, Users, GraduationCap, CheckCircle2, ArrowLeft, Calendar, Heart, Loader2,
 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -13,6 +13,9 @@ import { getScholarship } from "@/lib/scholarships";
 import {
   COURSE_LEVEL_LABEL, MODALITY_LABEL, SHIFT_LABEL, formatBRL, discountPercent,
 } from "@/lib/format";
+import { useAuth } from "@/lib/auth-context";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/bolsas/$id")({
   head: () => ({
@@ -198,12 +201,8 @@ function ScholarshipDetail() {
               </div>
 
               <div className="mt-6 space-y-3">
-                <Button size="lg" className="w-full font-semibold">
-                  Garantir bolsa agora
-                </Button>
-                <Button size="lg" variant="outline" className="w-full">
-                  Falar com consultor
-                </Button>
+                <ReserveButton scholarshipId={s.id} courseOfferingId={s.course_offering.id} institutionId={inst.id} price={final} />
+                <FavoriteButton scholarshipId={s.id} />
               </div>
 
               <p className="mt-4 text-xs text-muted-foreground text-center">
@@ -248,5 +247,106 @@ function InfoRow({
         <div className="text-sm font-medium truncate">{value}</div>
       </div>
     </div>
+  );
+}
+
+function ReserveButton({
+  scholarshipId, courseOfferingId, institutionId, price,
+}: { scholarshipId: string; courseOfferingId: string; institutionId: string; price: number }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("auth");
+      const code = "TDB-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+      const { error } = await supabase.from("reservations").insert({
+        user_id: user.id,
+        scholarship_id: scholarshipId,
+        course_offering_id: courseOfferingId,
+        institution_id: institutionId,
+        reservation_code: code,
+        status: "RESERVED",
+        amount_paid: price,
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["reservations"] });
+      toast.success("Bolsa reservada! Confira em Minhas reservas.");
+      navigate({ to: "/reservas" });
+    },
+    onError: (e: Error) => {
+      if (e.message === "auth") {
+        navigate({ to: "/auth", search: { redirect: window.location.pathname } });
+        return;
+      }
+      toast.error("Não foi possível reservar agora. Tente novamente.");
+    },
+  });
+
+  return (
+    <Button
+      size="lg"
+      className="w-full font-semibold"
+      onClick={() => mutation.mutate()}
+      disabled={mutation.isPending}
+    >
+      {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Garantir bolsa agora"}
+    </Button>
+  );
+}
+
+function FavoriteButton({ scholarshipId }: { scholarshipId: string }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  const { data: isFav } = useQuery({
+    enabled: !!user,
+    queryKey: ["fav", scholarshipId, user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("favorites")
+        .select("scholarship_id")
+        .eq("user_id", user!.id)
+        .eq("scholarship_id", scholarshipId)
+        .maybeSingle();
+      return !!data;
+    },
+  });
+
+  const toggle = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("auth");
+      if (isFav) {
+        await supabase.from("favorites").delete().eq("user_id", user.id).eq("scholarship_id", scholarshipId);
+      } else {
+        await supabase.from("favorites").insert({ user_id: user.id, scholarship_id: scholarshipId });
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["fav", scholarshipId] });
+      qc.invalidateQueries({ queryKey: ["favorites"] });
+      toast.success(isFav ? "Removido dos favoritos" : "Adicionado aos favoritos");
+    },
+    onError: (e: Error) => {
+      if (e.message === "auth") navigate({ to: "/auth", search: { redirect: window.location.pathname } });
+    },
+  });
+
+  return (
+    <Button
+      size="lg"
+      variant="outline"
+      className="w-full"
+      onClick={() => toggle.mutate()}
+      disabled={toggle.isPending}
+    >
+      <Heart className={`h-4 w-4 mr-2 ${isFav ? "fill-primary text-primary" : ""}`} />
+      {isFav ? "Favoritado" : "Salvar nos favoritos"}
+    </Button>
   );
 }
