@@ -22,9 +22,11 @@ import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticated/reservas'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
+import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated/notificacoes'
 import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authenticated/favoritos'
 import { Route as AuthenticatedCarteiraRouteImport } from './routes/_authenticated/carteira'
 import { Route as AuthenticatedInstituicaoIndexRouteImport } from './routes/_authenticated/instituicao.index'
+import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
 import { Route as AuthenticatedInstituicaoCadastrarRouteImport } from './routes/_authenticated/instituicao.cadastrar'
 import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
 
@@ -92,6 +94,12 @@ const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
   path: '/painel',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedNotificacoesRoute =
+  AuthenticatedNotificacoesRouteImport.update({
+    id: '/notificacoes',
+    path: '/notificacoes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedFavoritosRoute = AuthenticatedFavoritosRouteImport.update({
   id: '/favoritos',
   path: '/favoritos',
@@ -108,6 +116,11 @@ const AuthenticatedInstituicaoIndexRoute =
     path: '/instituicao/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedReservasIdRoute = AuthenticatedReservasIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedReservasRoute,
+} as any)
 const AuthenticatedInstituicaoCadastrarRoute =
   AuthenticatedInstituicaoCadastrarRouteImport.update({
     id: '/instituicao/cadastrar',
@@ -131,13 +144,15 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/perfil': typeof AuthenticatedPerfilRoute
-  '/reservas': typeof AuthenticatedReservasRoute
+  '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
 }
 export interface FileRoutesByTo {
@@ -150,13 +165,15 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/perfil': typeof AuthenticatedPerfilRoute
-  '/reservas': typeof AuthenticatedReservasRoute
+  '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/instituicao': typeof AuthenticatedInstituicaoIndexRoute
 }
 export interface FileRoutesById {
@@ -171,13 +188,15 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/carteira': typeof AuthenticatedCarteiraRoute
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
+  '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
-  '/_authenticated/reservas': typeof AuthenticatedReservasRoute
+  '/_authenticated/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/_authenticated/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/_authenticated/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
 }
 export interface FileRouteTypes {
@@ -192,6 +211,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/carteira'
     | '/favoritos'
+    | '/notificacoes'
     | '/painel'
     | '/perfil'
     | '/reservas'
@@ -199,6 +219,7 @@ export interface FileRouteTypes {
     | '/instituicoes/$slug'
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
+    | '/reservas/$id'
     | '/instituicao/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -211,6 +232,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/carteira'
     | '/favoritos'
+    | '/notificacoes'
     | '/painel'
     | '/perfil'
     | '/reservas'
@@ -218,6 +240,7 @@ export interface FileRouteTypes {
     | '/instituicoes/$slug'
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
+    | '/reservas/$id'
     | '/instituicao'
   id:
     | '__root__'
@@ -231,6 +254,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/carteira'
     | '/_authenticated/favoritos'
+    | '/_authenticated/notificacoes'
     | '/_authenticated/painel'
     | '/_authenticated/perfil'
     | '/_authenticated/reservas'
@@ -238,6 +262,7 @@ export interface FileRouteTypes {
     | '/instituicoes/$slug'
     | '/_authenticated/instituicao/$id'
     | '/_authenticated/instituicao/cadastrar'
+    | '/_authenticated/reservas/$id'
     | '/_authenticated/instituicao/'
   fileRoutesById: FileRoutesById
 }
@@ -346,6 +371,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPainelRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/notificacoes': {
+      id: '/_authenticated/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof AuthenticatedNotificacoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/favoritos': {
       id: '/_authenticated/favoritos'
       path: '/favoritos'
@@ -367,6 +399,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInstituicaoIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/reservas/$id': {
+      id: '/_authenticated/reservas/$id'
+      path: '/$id'
+      fullPath: '/reservas/$id'
+      preLoaderRoute: typeof AuthenticatedReservasIdRouteImport
+      parentRoute: typeof AuthenticatedReservasRoute
+    }
     '/_authenticated/instituicao/cadastrar': {
       id: '/_authenticated/instituicao/cadastrar'
       path: '/instituicao/cadastrar'
@@ -384,12 +423,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedReservasRouteChildren {
+  AuthenticatedReservasIdRoute: typeof AuthenticatedReservasIdRoute
+}
+
+const AuthenticatedReservasRouteChildren: AuthenticatedReservasRouteChildren = {
+  AuthenticatedReservasIdRoute: AuthenticatedReservasIdRoute,
+}
+
+const AuthenticatedReservasRouteWithChildren =
+  AuthenticatedReservasRoute._addFileChildren(
+    AuthenticatedReservasRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedCarteiraRoute: typeof AuthenticatedCarteiraRoute
   AuthenticatedFavoritosRoute: typeof AuthenticatedFavoritosRoute
+  AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
-  AuthenticatedReservasRoute: typeof AuthenticatedReservasRoute
+  AuthenticatedReservasRoute: typeof AuthenticatedReservasRouteWithChildren
   AuthenticatedInstituicaoIdRoute: typeof AuthenticatedInstituicaoIdRoute
   AuthenticatedInstituicaoCadastrarRoute: typeof AuthenticatedInstituicaoCadastrarRoute
   AuthenticatedInstituicaoIndexRoute: typeof AuthenticatedInstituicaoIndexRoute
@@ -398,9 +451,10 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCarteiraRoute: AuthenticatedCarteiraRoute,
   AuthenticatedFavoritosRoute: AuthenticatedFavoritosRoute,
+  AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedPainelRoute: AuthenticatedPainelRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
-  AuthenticatedReservasRoute: AuthenticatedReservasRoute,
+  AuthenticatedReservasRoute: AuthenticatedReservasRouteWithChildren,
   AuthenticatedInstituicaoIdRoute: AuthenticatedInstituicaoIdRoute,
   AuthenticatedInstituicaoCadastrarRoute:
     AuthenticatedInstituicaoCadastrarRoute,
