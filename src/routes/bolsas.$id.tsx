@@ -76,6 +76,19 @@ export const Route = createFileRoute("/bolsas/$id")({
             },
           }),
         },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Início", item: "https://todebolsa.lovable.app/" },
+              { "@type": "ListItem", position: 2, name: "Bolsas", item: "https://todebolsa.lovable.app/bolsas" },
+              { "@type": "ListItem", position: 3, name: inst.trade_name, item: `https://todebolsa.lovable.app/instituicoes/${inst.slug}` },
+              { "@type": "ListItem", position: 4, name: course.name, item: url },
+            ],
+          }),
+        },
       ],
     };
   },
