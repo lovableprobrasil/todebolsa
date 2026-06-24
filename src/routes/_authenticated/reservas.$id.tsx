@@ -60,7 +60,7 @@ function ReservationDetailPage() {
       const { data, error } = await supabase
         .from("reservations")
         .select(`
-          id, status, payment_status, reservation_code, expires_at, reserved_at, amount_paid,
+          id, status, payment_status, reservation_code, expires_at, reserved_at, amount_paid, institution_id,
           scholarship:scholarships(id, title, price_with_scholarship,
             course_offering:course_offerings(
               course:courses(name, original_price, institution:institutions(trade_name, slug)),
