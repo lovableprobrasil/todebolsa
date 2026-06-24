@@ -34,6 +34,7 @@ import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminReservasRouteImport } from './routes/_authenticated/admin.reservas'
 import { Route as AuthenticatedAdminInstituicoesRouteImport } from './routes/_authenticated/admin.instituicoes'
+import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
 
@@ -168,6 +169,11 @@ const AuthenticatedAdminInstituicoesRoute =
     path: '/instituicoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminCrmRoute = AuthenticatedAdminCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminBootstrapRoute =
   AuthenticatedAdminBootstrapRouteImport.update({
     id: '/bootstrap',
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
@@ -227,6 +234,7 @@ export interface FileRoutesByTo {
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
@@ -257,6 +265,7 @@ export interface FileRoutesById {
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/_authenticated/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/_authenticated/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/instituicoes/$slug'
     | '/admin/bolsas'
     | '/admin/bootstrap'
+    | '/admin/crm'
     | '/admin/instituicoes'
     | '/admin/reservas'
     | '/admin/usuarios'
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/instituicoes/$slug'
     | '/admin/bolsas'
     | '/admin/bootstrap'
+    | '/admin/crm'
     | '/admin/instituicoes'
     | '/admin/reservas'
     | '/admin/usuarios'
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/instituicoes/$slug'
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
+    | '/_authenticated/admin/crm'
     | '/_authenticated/admin/instituicoes'
     | '/_authenticated/admin/reservas'
     | '/_authenticated/admin/usuarios'
@@ -542,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminInstituicoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/crm': {
+      id: '/_authenticated/admin/crm'
+      path: '/crm'
+      fullPath: '/admin/crm'
+      preLoaderRoute: typeof AuthenticatedAdminCrmRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/bootstrap': {
       id: '/_authenticated/admin/bootstrap'
       path: '/bootstrap'
@@ -562,6 +581,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBolsasRoute: typeof AuthenticatedAdminBolsasRoute
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
+  AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRoute
   AuthenticatedAdminInstituicoesRoute: typeof AuthenticatedAdminInstituicoesRoute
   AuthenticatedAdminReservasRoute: typeof AuthenticatedAdminReservasRoute
   AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
@@ -571,6 +591,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminBolsasRoute: AuthenticatedAdminBolsasRoute,
   AuthenticatedAdminBootstrapRoute: AuthenticatedAdminBootstrapRoute,
+  AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRoute,
   AuthenticatedAdminInstituicoesRoute: AuthenticatedAdminInstituicoesRoute,
   AuthenticatedAdminReservasRoute: AuthenticatedAdminReservasRoute,
   AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
