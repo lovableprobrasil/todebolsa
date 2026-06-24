@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          event_type: string
+          id: number
+          metadata: Json | null
+          path: string | null
+          referrer: string | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type: string
+          id?: number
+          metadata?: Json | null
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type?: string
+          id?: number
+          metadata?: Json | null
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author: string | null
@@ -243,6 +282,75 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      enrollment_documents: {
+        Row: {
+          created_at: string
+          doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          rejection_reason: string | null
+          reservation_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id?: string | null
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          rejection_reason?: string | null
+          reservation_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          doc_type?: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          rejection_reason?: string | null
+          reservation_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollment_documents_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollment_documents_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
             referencedColumns: ["id"]
           },
         ]
@@ -1201,6 +1309,27 @@ export type Database = {
       }
       crm_overview: { Args: never; Returns: Json }
       expire_reservations: { Args: never; Returns: number }
+      finalize_enrollment: {
+        Args: { p_approved: boolean; p_notes: string; p_reservation_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          institution_id: string
+          notes: string | null
+          reservation_id: string
+          status: Database["public"]["Enums"]["reservation_status"]
+          uge_card_eligible: boolean
+          uge_card_issued_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "enrollments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       finance_overview: { Args: never; Returns: Json }
       finance_revenue_by_institution: {
         Args: never
@@ -1213,6 +1342,7 @@ export type Database = {
           trade_name: string
         }[]
       }
+      funnel_overview: { Args: { p_days?: number }; Returns: Json }
       gen_reservation_code: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -1302,6 +1432,32 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      review_enrollment_document: {
+        Args: { p_approved: boolean; p_document_id: string; p_reason: string }
+        Returns: {
+          created_at: string
+          doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          rejection_reason: string | null
+          reservation_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "enrollment_documents"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       revoke_user_role: {
         Args: {
           p_institution_id?: string
@@ -1343,12 +1499,57 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      submit_enrollment_document: {
+        Args: {
+          p_doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          p_file_name: string
+          p_file_path: string
+          p_file_size: number
+          p_mime_type: string
+          p_reservation_id: string
+        }
+        Returns: {
+          created_at: string
+          doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
+          enrollment_id: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          rejection_reason: string | null
+          reservation_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["enrollment_doc_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "enrollment_documents"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       toggle_institution_feature: {
         Args: { p_featured: boolean; p_institution_id: string }
         Returns: undefined
       }
       toggle_scholarship_feature: {
         Args: { p_featured: boolean; p_scholarship_id: string }
+        Returns: undefined
+      }
+      track_event: {
+        Args: {
+          p_entity_id: string
+          p_entity_type: string
+          p_event_type: string
+          p_metadata: Json
+          p_path: string
+          p_referrer: string
+          p_session_id: string
+        }
         Returns: undefined
       }
       unaccent_safe: { Args: { p: string }; Returns: string }
@@ -1385,6 +1586,16 @@ export type Database = {
       course_modality: "PRESENCIAL" | "SEMIPRESENCIAL" | "EAD"
       course_shift: "MANHA" | "TARDE" | "NOITE" | "INTEGRAL" | "FLEXIVEL"
       discount_type: "PERCENT" | "FIXED" | "FINAL_PRICE"
+      enrollment_doc_status: "PENDING" | "APPROVED" | "REJECTED"
+      enrollment_doc_type:
+        | "RG"
+        | "CPF"
+        | "PROOF_OF_ADDRESS"
+        | "INCOME_PROOF"
+        | "PREVIOUS_DIPLOMA"
+        | "ENROLLMENT_DECLARATION"
+        | "PHOTO"
+        | "OTHER"
       institution_status: "PENDING" | "APPROVED" | "SUSPENDED" | "REJECTED"
       lead_status:
         | "NEW"
@@ -1577,6 +1788,17 @@ export const Constants = {
       course_modality: ["PRESENCIAL", "SEMIPRESENCIAL", "EAD"],
       course_shift: ["MANHA", "TARDE", "NOITE", "INTEGRAL", "FLEXIVEL"],
       discount_type: ["PERCENT", "FIXED", "FINAL_PRICE"],
+      enrollment_doc_status: ["PENDING", "APPROVED", "REJECTED"],
+      enrollment_doc_type: [
+        "RG",
+        "CPF",
+        "PROOF_OF_ADDRESS",
+        "INCOME_PROOF",
+        "PREVIOUS_DIPLOMA",
+        "ENROLLMENT_DECLARATION",
+        "PHOTO",
+        "OTHER",
+      ],
       institution_status: ["PENDING", "APPROVED", "SUSPENDED", "REJECTED"],
       lead_status: [
         "NEW",

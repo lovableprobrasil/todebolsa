@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth-context";
 import { Toaster } from "@/components/ui/sonner";
+import { trackPageview } from "../lib/analytics";
 
 function NotFoundComponent() {
   return (
@@ -79,7 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Tô de Bolsa — Bolsas de estudo com até 90% de desconto" },
       { name: "description", content: "Marketplace nacional de bolsas de estudo. Encontre bolsas em escolas, faculdades, técnicos, idiomas e mais — com até 90% de desconto e carteira de estudante digital UGE." },
       { name: "author", content: "Tô de Bolsa" },
-      { name: "theme-color", content: "#1d4ed8" },
+      { name: "theme-color", content: "#E8762B" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Tô de Bolsa" },
+      { name: "mobile-web-app-capable", content: "yes" },
       { property: "og:site_name", content: "Tô de Bolsa" },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:type", content: "website" },
@@ -91,6 +96,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
+      { rel: "icon", type: "image/png", sizes: "512x512", href: "/icon-512.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -134,6 +143,13 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    trackPageview();
+    const unsub = router.subscribe("onResolved", () => trackPageview());
+    return () => unsub();
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>

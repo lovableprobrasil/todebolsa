@@ -1,0 +1,31 @@
+{
+  "name": "Tô de Bolsa — Bolsas de estudo",
+  "short_name": "Tô de Bolsa",
+  "description": "Marketplace nacional de bolsas de estudo com até 90% de desconto.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF7EE",
+  "theme_color": "#E8762B",
+  "lang": "pt-BR",
+  "categories": ["education", "finance", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Buscar bolsas", "url": "/bolsas", "short_name": "Bolsas" },
+    { "name": "Minhas reservas", "url": "/reservas", "short_name": "Reservas" }
+  ]
+}

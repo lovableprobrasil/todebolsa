@@ -34,12 +34,14 @@ import { Route as AuthenticatedInstituicaoCadastrarRouteImport } from './routes/
 import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminReservasRouteImport } from './routes/_authenticated/admin.reservas'
+import { Route as AuthenticatedAdminMatriculasRouteImport } from './routes/_authenticated/admin.matriculas'
 import { Route as AuthenticatedAdminInstituicoesRouteImport } from './routes/_authenticated/admin.instituicoes'
 import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
 import { Route as AuthenticatedAdminAvaliacoesRouteImport } from './routes/_authenticated/admin.avaliacoes'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
 import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
@@ -179,6 +181,12 @@ const AuthenticatedAdminReservasRoute =
     path: '/reservas',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminMatriculasRoute =
+  AuthenticatedAdminMatriculasRouteImport.update({
+    id: '/matriculas',
+    path: '/matriculas',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminInstituicoesRoute =
   AuthenticatedAdminInstituicoesRouteImport.update({
     id: '/instituicoes',
@@ -212,6 +220,12 @@ const AuthenticatedAdminAvaliacoesRoute =
   AuthenticatedAdminAvaliacoesRouteImport.update({
     id: '/avaliacoes',
     path: '/avaliacoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminFinanceiroIndexRoute =
@@ -281,12 +295,14 @@ export interface FileRoutesByFullPath {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas/': typeof BolsasIndexRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
+  '/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
@@ -320,10 +336,12 @@ export interface FileRoutesByTo {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas': typeof BolsasIndexRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
+  '/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
@@ -360,12 +378,14 @@ export interface FileRoutesById {
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/bolsas/': typeof BolsasIndexRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
   '/_authenticated/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
+  '/_authenticated/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/_authenticated/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
@@ -402,12 +422,14 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas/'
+    | '/admin/analytics'
     | '/admin/avaliacoes'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/crm'
     | '/admin/financeiro'
     | '/admin/instituicoes'
+    | '/admin/matriculas'
     | '/admin/reservas'
     | '/admin/usuarios'
     | '/instituicao/$id'
@@ -441,10 +463,12 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas'
+    | '/admin/analytics'
     | '/admin/avaliacoes'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/instituicoes'
+    | '/admin/matriculas'
     | '/admin/reservas'
     | '/admin/usuarios'
     | '/instituicao/$id'
@@ -480,12 +504,14 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/instituicoes/$slug'
     | '/bolsas/'
+    | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/avaliacoes'
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
     | '/_authenticated/admin/crm'
     | '/_authenticated/admin/financeiro'
     | '/_authenticated/admin/instituicoes'
+    | '/_authenticated/admin/matriculas'
     | '/_authenticated/admin/reservas'
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/instituicao/$id'
@@ -694,6 +720,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminReservasRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/matriculas': {
+      id: '/_authenticated/admin/matriculas'
+      path: '/matriculas'
+      fullPath: '/admin/matriculas'
+      preLoaderRoute: typeof AuthenticatedAdminMatriculasRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/instituicoes': {
       id: '/_authenticated/admin/instituicoes'
       path: '/instituicoes'
@@ -734,6 +767,13 @@ declare module '@tanstack/react-router' {
       path: '/avaliacoes'
       fullPath: '/admin/avaliacoes'
       preLoaderRoute: typeof AuthenticatedAdminAvaliacoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/financeiro/': {
@@ -840,18 +880,21 @@ const AuthenticatedAdminFinanceiroRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminAvaliacoesRoute: typeof AuthenticatedAdminAvaliacoesRoute
   AuthenticatedAdminBolsasRoute: typeof AuthenticatedAdminBolsasRoute
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRouteWithChildren
   AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRouteWithChildren
   AuthenticatedAdminInstituicoesRoute: typeof AuthenticatedAdminInstituicoesRoute
+  AuthenticatedAdminMatriculasRoute: typeof AuthenticatedAdminMatriculasRoute
   AuthenticatedAdminReservasRoute: typeof AuthenticatedAdminReservasRoute
   AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
   AuthenticatedAdminAvaliacoesRoute: AuthenticatedAdminAvaliacoesRoute,
   AuthenticatedAdminBolsasRoute: AuthenticatedAdminBolsasRoute,
   AuthenticatedAdminBootstrapRoute: AuthenticatedAdminBootstrapRoute,
@@ -859,6 +902,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminFinanceiroRoute:
     AuthenticatedAdminFinanceiroRouteWithChildren,
   AuthenticatedAdminInstituicoesRoute: AuthenticatedAdminInstituicoesRoute,
+  AuthenticatedAdminMatriculasRoute: AuthenticatedAdminMatriculasRoute,
   AuthenticatedAdminReservasRoute: AuthenticatedAdminReservasRoute,
   AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
