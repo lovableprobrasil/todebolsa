@@ -79,14 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Tô de Bolsa — Bolsas de estudo com até 90% de desconto" },
       { name: "description", content: "Marketplace nacional de bolsas de estudo. Encontre bolsas em escolas, faculdades, técnicos, idiomas e mais — com até 90% de desconto e carteira de estudante digital UGE." },
       { name: "author", content: "Tô de Bolsa" },
+      { name: "theme-color", content: "#1d4ed8" },
+      { property: "og:site_name", content: "Tô de Bolsa" },
+      { property: "og:locale", content: "pt_BR" },
+      { property: "og:type", content: "website" },
       { property: "og:title", content: "Tô de Bolsa — Bolsas de estudo com até 90% de desconto" },
       { property: "og:description", content: "Marketplace nacional de bolsas de estudo. Encontre bolsas em escolas, faculdades, técnicos, idiomas e mais — com até 90% de desconto e carteira de estudante digital UGE." },
-      { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Tô de Bolsa — Bolsas de estudo com até 90% de desconto" },
       { name: "twitter:description", content: "Marketplace nacional de bolsas de estudo. Encontre bolsas em escolas, faculdades, técnicos, idiomas e mais — com até 90% de desconto e carteira de estudante digital UGE." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/de825093-2b25-4066-9f08-4c78aa8b399d/id-preview-50eaeea9--6a9f733e-fd3f-4cd4-96cf-b710dee9b85b.lovable.app-1782237087948.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/de825093-2b25-4066-9f08-4c78aa8b399d/id-preview-50eaeea9--6a9f733e-fd3f-4cd4-96cf-b710dee9b85b.lovable.app-1782237087948.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -95,6 +96,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Tô de Bolsa",
+          url: "https://todebolsa.lovable.app",
+          description: "Marketplace nacional de bolsas de estudo com até 90% de desconto.",
+          sameAs: [],
+        }),
       },
     ],
   }),

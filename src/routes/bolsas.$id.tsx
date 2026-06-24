@@ -18,12 +18,67 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/bolsas/$id")({
-  head: () => ({
-    meta: [
-      { title: "Detalhes da bolsa | Tô de Bolsa" },
-      { name: "description", content: "Veja todos os detalhes da bolsa e garanta sua vaga." },
-    ],
-  }),
+  loader: async ({ params }) => {
+    try {
+      const s = await getScholarship(params.id);
+      return { scholarship: s };
+    } catch {
+      return { scholarship: null };
+    }
+  },
+  head: ({ params, loaderData }) => {
+    const s = loaderData?.scholarship;
+    const url = `https://todebolsa.lovable.app/bolsas/${params.id}`;
+    if (!s) {
+      return {
+        meta: [
+          { title: "Detalhes da bolsa | Tô de Bolsa" },
+          { name: "description", content: "Veja todos os detalhes da bolsa e garanta sua vaga." },
+          { property: "og:url", content: url },
+        ],
+        links: [{ rel: "canonical", href: url }],
+      };
+    }
+    const course = s.course_offering.course;
+    const inst = course.institution;
+    const original = Number(course.original_price);
+    const final = Number(s.price_with_scholarship);
+    const discount = original > 0 ? Math.round(((original - final) / original) * 100) : 0;
+    const title = `${course.name} com ${discount}% de bolsa — ${inst.trade_name} | Tô de Bolsa`;
+    const desc = `${s.title}. Mensalidade com bolsa: R$ ${final.toFixed(2).replace(".", ",")}. Garanta sua vaga no Tô de Bolsa.`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "product" },
+        { property: "og:url", content: url },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            name: course.name,
+            description: course.description ?? s.title,
+            provider: { "@type": "Organization", name: inst.trade_name },
+            offers: {
+              "@type": "Offer",
+              price: final,
+              priceCurrency: "BRL",
+              url,
+              availability: "https://schema.org/InStock",
+            },
+          }),
+        },
+      ],
+    };
+  },
   notFoundComponent: () => (
     <div className="min-h-screen flex flex-col">
       <Header />

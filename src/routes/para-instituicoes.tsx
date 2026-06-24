@@ -11,7 +11,11 @@ export const Route = createFileRoute("/para-instituicoes")({
       { name: "description", content: "Cadastre sua instituição no Tô de Bolsa e alcance milhares de alunos em todo o Brasil." },
       { property: "og:title", content: "Cadastre sua instituição no Tô de Bolsa" },
       { property: "og:description", content: "Cursos, polos, vagas, bolsas e campanhas. Tudo em um só painel." },
+      { property: "og:url", content: "https://todebolsa.lovable.app/para-instituicoes" },
+      { name: "twitter:title", content: "Cadastre sua instituição no Tô de Bolsa" },
+      { name: "twitter:description", content: "Cursos, polos, vagas, bolsas e campanhas. Tudo em um só painel." },
     ],
+    links: [{ rel: "canonical", href: "https://todebolsa.lovable.app/para-instituicoes" }],
   }),
   component: ForInstitutionsPage,
 });

@@ -46,7 +46,11 @@ export const Route = createFileRoute("/bolsas")({
         { name: "description", content: desc },
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
+        { property: "og:url", content: "https://todebolsa.lovable.app/bolsas" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
+      links: [{ rel: "canonical", href: "https://todebolsa.lovable.app/bolsas" }],
     };
   },
   component: BolsasPage,

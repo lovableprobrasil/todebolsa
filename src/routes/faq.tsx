@@ -12,7 +12,11 @@ export const Route = createFileRoute("/faq")({
       { name: "description", content: "Tire suas dúvidas sobre como usar o Tô de Bolsa, bolsas de estudo, reservas e carteira UGE." },
       { property: "og:title", content: "Perguntas frequentes | Tô de Bolsa" },
       { property: "og:description", content: "Como funcionam bolsas, reservas, matrículas e a carteira UGE." },
+      { property: "og:url", content: "https://todebolsa.lovable.app/faq" },
+      { name: "twitter:title", content: "Perguntas frequentes | Tô de Bolsa" },
+      { name: "twitter:description", content: "Como funcionam bolsas, reservas, matrículas e a carteira UGE." },
     ],
+    links: [{ rel: "canonical", href: "https://todebolsa.lovable.app/faq" }],
   }),
   component: FaqPage,
 });

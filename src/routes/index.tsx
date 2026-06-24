@@ -17,6 +17,26 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Encontre bolsas para faculdade, escola, técnico e idiomas. Oportunidades para todas as idades e carteira de estudante digital UGE." },
       { property: "og:title", content: "Tô de Bolsa — Até 90% de desconto em bolsas de estudo" },
       { property: "og:description", content: "Marketplace nacional de bolsas de estudo para todas as idades e níveis de ensino." },
+      { property: "og:url", content: "https://todebolsa.lovable.app/" },
+      { name: "twitter:title", content: "Tô de Bolsa — Até 90% de desconto em bolsas de estudo" },
+      { name: "twitter:description", content: "Marketplace nacional de bolsas de estudo para todas as idades e níveis de ensino." },
+    ],
+    links: [{ rel: "canonical", href: "https://todebolsa.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Tô de Bolsa",
+          url: "https://todebolsa.lovable.app",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://todebolsa.lovable.app/bolsas?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      },
     ],
   }),
   component: HomePage,
