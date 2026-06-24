@@ -521,6 +521,80 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          link: string | null
+          message: string | null
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string | null
+          read_at?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string | null
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      payment_attempts: {
+        Row: {
+          amount: number
+          created_at: string
+          gateway_ref: string | null
+          id: string
+          method: string
+          paid_at: string | null
+          reservation_id: string
+          status: Database["public"]["Enums"]["payment_status"]
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          gateway_ref?: string | null
+          id?: string
+          method: string
+          paid_at?: string | null
+          reservation_id: string
+          status?: Database["public"]["Enums"]["payment_status"]
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          gateway_ref?: string | null
+          id?: string
+          method?: string
+          paid_at?: string | null
+          reservation_id?: string
+          status?: Database["public"]["Enums"]["payment_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_attempts_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -724,6 +798,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_reservation: {
+        Args: { p_reservation_id: string }
+        Returns: {
+          amount_paid: number | null
+          course_offering_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          institution_id: string
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          reservation_code: string
+          reserved_at: string
+          scholarship_id: string
+          status: Database["public"]["Enums"]["reservation_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "reservations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       claim_institution: {
         Args: {
           p_city: string
@@ -739,6 +837,32 @@ export type Database = {
         }
         Returns: string
       }
+      create_reservation: {
+        Args: { p_scholarship_id: string }
+        Returns: {
+          amount_paid: number | null
+          course_offering_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          institution_id: string
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          reservation_code: string
+          reserved_at: string
+          scholarship_id: string
+          status: Database["public"]["Enums"]["reservation_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "reservations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      expire_reservations: { Args: never; Returns: number }
+      gen_reservation_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -749,6 +873,30 @@ export type Database = {
       is_institution_admin: {
         Args: { _institution_id: string; _user_id: string }
         Returns: boolean
+      }
+      pay_reservation: {
+        Args: { p_method: string; p_reservation_id: string }
+        Returns: {
+          amount_paid: number | null
+          course_offering_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          institution_id: string
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          reservation_code: string
+          reserved_at: string
+          scholarship_id: string
+          status: Database["public"]["Enums"]["reservation_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "reservations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       unaccent_safe: { Args: { p: string }; Returns: string }
     }
