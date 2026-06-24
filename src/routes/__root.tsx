@@ -7,15 +7,16 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth-context";
-import { Toaster } from "@/components/ui/sonner";
 import { trackPageview } from "../lib/analytics";
-import { CookieBanner } from "@/components/site/CookieBanner";
-import { MobileSearchFab } from "@/components/site/MobileSearchFab";
+
+const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
+const CookieBanner = lazy(() => import("@/components/site/CookieBanner").then((m) => ({ default: m.CookieBanner })));
+const MobileSearchFab = lazy(() => import("@/components/site/MobileSearchFab").then((m) => ({ default: m.MobileSearchFab })));
 
 function NotFoundComponent() {
   return (
