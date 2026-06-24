@@ -66,6 +66,13 @@ function BolsasPage() {
   const [modality, setModality] = useState<string | undefined>(search.modality);
   const [maxPrice, setMaxPrice] = useState<number>(search.maxPrice ?? 0);
   const [sort, setSort] = useState<BolsasSearch["sort"]>(search.sort ?? "relevance");
+  const [institutionId, setInstitutionId] = useState<string | undefined>(undefined);
+
+  const { data: institutionOpts = [] } = useQuery({
+    queryKey: ["institutions", "lite"],
+    queryFn: listInstitutionsLite,
+    staleTime: 60_000,
+  });
 
   const filters = useMemo(
     () => ({
@@ -73,17 +80,19 @@ function BolsasPage() {
       query: search.q,
       city: search.city,
       modality,
+      institutionId,
       minDiscount: minDiscount > 0 ? minDiscount : undefined,
       maxPrice: maxPrice > 0 ? maxPrice : undefined,
       sort,
     }),
-    [search.level, search.q, search.city, modality, minDiscount, maxPrice, sort],
+    [search.level, search.q, search.city, modality, institutionId, minDiscount, maxPrice, sort],
   );
 
   const { data, isLoading } = useQuery({
     queryKey: ["scholarships", "list", filters],
     queryFn: () => listScholarships(filters),
   });
+
 
   return (
     <div className="min-h-screen flex flex-col">
