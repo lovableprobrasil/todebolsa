@@ -176,6 +176,7 @@ function RootComponent() {
           Pular para o conteúdo
         </a>
         <Outlet />
+        <MobileSearchFab />
         <CookieBanner />
         <Toaster position="top-right" richColors />
       </AuthProvider>
