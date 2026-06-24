@@ -162,6 +162,8 @@ function Hero() {
               alt="Estudante sorrindo segurando carteira de estudante digital e física"
               width={896}
               height={1152}
+              fetchPriority="high"
+              decoding="async"
               className="relative w-full h-auto max-h-[640px] object-contain object-bottom mx-auto drop-shadow-2xl"
             />
           </div>
