@@ -38,22 +38,29 @@ function ForInstitutionsPage() {
               <Building2 className="h-3.5 w-3.5" /> Portal da instituição
             </div>
             <h1 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight max-w-3xl mx-auto">
-              Sua instituição no maior marketplace de bolsas do Brasil
+              Venda mais matrículas preenchendo <span className="text-primary">vagas ociosas</span> com bolsas inteligentes
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Cadastre cursos, defina suas bolsas, controle vagas e receba alunos qualificados —
-              tudo de forma self-service.
+              Cadastre cursos, defina suas bolsas, controle vagas e receba alunos qualificados — tudo de forma
+              self-service no maior marketplace de bolsas do Brasil.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button size="lg" asChild>
                 <Link to="/instituicao/cadastrar">Solicitar credenciamento</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/bolsas">Ver como funciona para alunos</Link>
+                <a
+                  href="https://wa.me/5511999999999?text=Quero%20falar%20com%20um%20consultor%20do%20T%C3%B4%20de%20Bolsa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Falar com consultor
+                </a>
               </Button>
             </div>
           </div>
         </section>
+
 
         <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -74,11 +81,12 @@ function ForInstitutionsPage() {
             <h2 className="font-display text-3xl md:text-4xl font-extrabold text-center mb-10">
               Como funciona
             </h2>
-            <ol className="grid gap-4 md:grid-cols-3">
+            <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                { n: 1, t: "Solicite cadastro", d: "Envie os dados da sua instituição em poucos minutos." },
-                { n: 2, t: "Cadastre cursos", d: "Adicione cursos, unidades, vagas e bolsas." },
-                { n: 3, t: "Receba alunos", d: "Alunos descobrem sua bolsa, reservam e se matriculam." },
+                { n: 1, t: "Credenciamento", d: "Envie os dados da sua instituição. Aprovação em até 48h." },
+                { n: 2, t: "Cadastro de cursos", d: "Adicione cursos, unidades, turnos e vagas disponíveis." },
+                { n: 3, t: "Publicação de bolsas", d: "Defina percentuais, regras e prazos para cada bolsa." },
+                { n: 4, t: "Recebimento de alunos", d: "Receba reservas, confirme matrículas e fature." },
               ].map((s) => (
                 <li key={s.n} className="rounded-2xl bg-card border border-border p-6">
                   <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-extrabold mb-3">

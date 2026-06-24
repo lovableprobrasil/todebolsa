@@ -5,6 +5,9 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CategoryGrid } from "@/components/site/CategoryGrid";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
+import { SearchBar } from "@/components/site/SearchBar";
+import { TrustBadges } from "@/components/site/TrustBadges";
+import { StudentTestimonials } from "@/components/site/StudentTestimonials";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer } from "@/lib/scholarships";
@@ -58,6 +61,8 @@ function HomePage() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <HomeSearch />
+        <TrustBadges />
         <PopularBar />
         <CategorySection />
         <StatsBar />
@@ -67,6 +72,7 @@ function HomePage() {
         <HowItWorks />
         <UgeCallout />
         <BenefitsSection />
+        <StudentTestimonials />
         <CitiesSection />
         <FaqSection />
         <CtaInstitution />
@@ -75,6 +81,17 @@ function HomePage() {
     </div>
   );
 }
+
+function HomeSearch() {
+  return (
+    <section id="busca-bolsas" className="relative bg-gradient-to-b from-hero to-background -mt-px scroll-mt-24">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pt-2 pb-10">
+        <SearchBar />
+      </div>
+    </section>
+  );
+}
+
 
 function Hero() {
   return (
@@ -119,9 +136,9 @@ function Hero() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Button size="lg" className="rounded-xl h-12 px-6 text-base" asChild>
-                <Link to="/bolsas">
-                  Encontrar minha bolsa <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
+                <a href="#busca-bolsas">
+                  Buscar bolsas agora <ArrowRight className="h-4 w-4 ml-1" />
+                </a>
               </Button>
               <Button
                 size="lg"
@@ -129,10 +146,11 @@ function Hero() {
                 className="rounded-xl h-12 px-6 text-base bg-transparent border-white/25 text-hero-foreground hover:bg-white/10 hover:text-hero-foreground"
                 asChild
               >
-                <Link to="/bolsas">Criar conta grátis</Link>
+                <Link to="/carteira-uge">Ver cursos com Carteira UGE</Link>
               </Button>
             </div>
           </div>
+
 
           <div className="relative">
             <div aria-hidden className="absolute inset-x-8 bottom-6 h-40 rounded-[3rem] bg-primary/20 blur-3xl" />

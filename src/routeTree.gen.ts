@@ -15,6 +15,7 @@ import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ParaInstituicoesRouteImport } from './routes/para-instituicoes'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as CarteiraUgeRouteImport } from './routes/carteira-uge'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -85,6 +86,11 @@ const ParaInstituicoesRoute = ParaInstituicoesRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarteiraUgeRoute = CarteiraUgeRouteImport.update({
+  id: '/carteira-uge',
+  path: '/carteira-uge',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -317,6 +323,7 @@ const AuthenticatedAdminCrmAtividadesRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/carteira-uge': typeof CarteiraUgeRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -365,6 +372,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/carteira-uge': typeof CarteiraUgeRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -412,6 +420,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/carteira-uge': typeof CarteiraUgeRoute
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -462,6 +471,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/carteira-uge'
     | '/faq'
     | '/para-instituicoes'
     | '/privacidade'
@@ -510,6 +520,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/carteira-uge'
     | '/faq'
     | '/para-instituicoes'
     | '/privacidade'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/carteira-uge'
     | '/faq'
     | '/para-instituicoes'
     | '/privacidade'
@@ -606,6 +618,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CarteiraUgeRoute: typeof CarteiraUgeRoute
   FaqRoute: typeof FaqRoute
   ParaInstituicoesRoute: typeof ParaInstituicoesRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
@@ -661,6 +674,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/carteira-uge': {
+      id: '/carteira-uge'
+      path: '/carteira-uge'
+      fullPath: '/carteira-uge'
+      preLoaderRoute: typeof CarteiraUgeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -1083,6 +1103,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  CarteiraUgeRoute: CarteiraUgeRoute,
   FaqRoute: FaqRoute,
   ParaInstituicoesRoute: ParaInstituicoesRoute,
   PrivacidadeRoute: PrivacidadeRoute,

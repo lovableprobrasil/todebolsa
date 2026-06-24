@@ -5,7 +5,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SearchBar } from "@/components/site/SearchBar";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
-import { listScholarships } from "@/lib/scholarships";
+import { listScholarships, listInstitutionsLite } from "@/lib/scholarships";
 import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -66,6 +66,13 @@ function BolsasPage() {
   const [modality, setModality] = useState<string | undefined>(search.modality);
   const [maxPrice, setMaxPrice] = useState<number>(search.maxPrice ?? 0);
   const [sort, setSort] = useState<BolsasSearch["sort"]>(search.sort ?? "relevance");
+  const [institutionId, setInstitutionId] = useState<string | undefined>(undefined);
+
+  const { data: institutionOpts = [] } = useQuery({
+    queryKey: ["institutions", "lite"],
+    queryFn: listInstitutionsLite,
+    staleTime: 60_000,
+  });
 
   const filters = useMemo(
     () => ({
@@ -73,17 +80,19 @@ function BolsasPage() {
       query: search.q,
       city: search.city,
       modality,
+      institutionId,
       minDiscount: minDiscount > 0 ? minDiscount : undefined,
       maxPrice: maxPrice > 0 ? maxPrice : undefined,
       sort,
     }),
-    [search.level, search.q, search.city, modality, minDiscount, maxPrice, sort],
+    [search.level, search.q, search.city, modality, institutionId, minDiscount, maxPrice, sort],
   );
 
   const { data, isLoading } = useQuery({
     queryKey: ["scholarships", "list", filters],
     queryFn: () => listScholarships(filters),
   });
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -133,6 +142,20 @@ function BolsasPage() {
             </div>
 
             <div className="mb-5">
+              <Label className="mb-2 block">Instituição</Label>
+              <select
+                value={institutionId ?? ""}
+                onChange={(e) => setInstitutionId(e.target.value || undefined)}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Todas as instituições</option>
+                {institutionOpts.map((i) => (
+                  <option key={i.id} value={i.id}>{i.trade_name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-5">
               <Label className="mb-2 block">Modalidade</Label>
               <div className="space-y-2">
                 {["PRESENCIAL", "SEMIPRESENCIAL", "EAD"].map((m) => (
@@ -146,6 +169,7 @@ function BolsasPage() {
                 ))}
               </div>
             </div>
+
 
             <div className="mb-2">
               <Label className="mb-2 block">
@@ -183,6 +207,7 @@ function BolsasPage() {
                 setModality(undefined);
                 setMaxPrice(0);
                 setSort("relevance");
+                setInstitutionId(undefined);
               }}
             >
               Limpar filtros
@@ -204,7 +229,7 @@ function BolsasPage() {
               onChange={(e) => setSort(e.target.value as BolsasSearch["sort"])}
               className="rounded-xl border border-border bg-background px-3 py-2 text-sm"
             >
-              <option value="relevance">Ordenar: relevância</option>
+              <option value="relevance">Mais procuradas</option>
               <option value="discount-desc">Maior desconto</option>
               <option value="price-asc">Menor mensalidade</option>
               <option value="price-desc">Maior mensalidade</option>
