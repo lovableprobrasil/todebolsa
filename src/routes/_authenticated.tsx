@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, redirect, useNavigate, useRouterState } from "@tanstack/react-router";
-import { GraduationCap, LayoutDashboard, Heart, Bookmark, IdCard, UserCircle, LogOut, Menu, X, Building2, Bell } from "lucide-react";
+import { GraduationCap, LayoutDashboard, Heart, Bookmark, IdCard, UserCircle, LogOut, Menu, X, Building2, Bell, Shield } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -32,10 +32,13 @@ const NAV = [
 ] as const;
 
 function AuthenticatedLayout() {
-  const { profile, user, signOut } = useAuth();
+  const { profile, user, signOut, isPlatformAdmin } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const nav = isPlatformAdmin
+    ? [...NAV, { to: "/admin", label: "Painel master", icon: Shield } as const]
+    : NAV;
 
   async function handleSignOut() {
     await signOut();
