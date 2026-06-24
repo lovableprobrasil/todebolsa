@@ -28,6 +28,7 @@ const TABS = [
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet, exact: false },
   { to: "/admin/analytics", label: "Analytics", icon: Activity, exact: false },
   { to: "/admin/avaliacoes", label: "Avaliações", icon: Star, exact: false },
+  { to: "/admin/indicacoes", label: "Indicações", icon: Gift, exact: false },
   { to: "/admin/usuarios", label: "Usuários", icon: Users, exact: false },
 ] as const;
 

@@ -35,12 +35,14 @@ import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.catego
 import { Route as ApiPublicSitemapRouteImport } from './routes/api/public/sitemap'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
 import { Route as AuthenticatedPerfilPrivacidadeRouteImport } from './routes/_authenticated/perfil.privacidade'
+import { Route as AuthenticatedPerfilIndicacoesRouteImport } from './routes/_authenticated/perfil.indicacoes'
 import { Route as AuthenticatedInstituicaoCadastrarRouteImport } from './routes/_authenticated/instituicao.cadastrar'
 import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminReservasRouteImport } from './routes/_authenticated/admin.reservas'
 import { Route as AuthenticatedAdminMatriculasRouteImport } from './routes/_authenticated/admin.matriculas'
 import { Route as AuthenticatedAdminInstituicoesRouteImport } from './routes/_authenticated/admin.instituicoes'
+import { Route as AuthenticatedAdminIndicacoesRouteImport } from './routes/_authenticated/admin.indicacoes'
 import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
@@ -188,6 +190,12 @@ const AuthenticatedPerfilPrivacidadeRoute =
     path: '/privacidade',
     getParentRoute: () => AuthenticatedPerfilRoute,
   } as any)
+const AuthenticatedPerfilIndicacoesRoute =
+  AuthenticatedPerfilIndicacoesRouteImport.update({
+    id: '/indicacoes',
+    path: '/indicacoes',
+    getParentRoute: () => AuthenticatedPerfilRoute,
+  } as any)
 const AuthenticatedInstituicaoCadastrarRoute =
   AuthenticatedInstituicaoCadastrarRouteImport.update({
     id: '/instituicao/cadastrar',
@@ -222,6 +230,12 @@ const AuthenticatedAdminInstituicoesRoute =
   AuthenticatedAdminInstituicoesRouteImport.update({
     id: '/instituicoes',
     path: '/instituicoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminIndicacoesRoute =
+  AuthenticatedAdminIndicacoesRouteImport.update({
+    id: '/indicacoes',
+    path: '/indicacoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminFinanceiroRoute =
@@ -333,12 +347,14 @@ export interface FileRoutesByFullPath {
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
+  '/admin/indicacoes': typeof AuthenticatedAdminIndicacoesRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/perfil/indicacoes': typeof AuthenticatedPerfilIndicacoesRoute
   '/perfil/privacidade': typeof AuthenticatedPerfilPrivacidadeRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/api/public/sitemap': typeof ApiPublicSitemapRoute
@@ -377,12 +393,14 @@ export interface FileRoutesByTo {
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/admin/indicacoes': typeof AuthenticatedAdminIndicacoesRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/perfil/indicacoes': typeof AuthenticatedPerfilIndicacoesRoute
   '/perfil/privacidade': typeof AuthenticatedPerfilPrivacidadeRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/api/public/sitemap': typeof ApiPublicSitemapRoute
@@ -426,12 +444,14 @@ export interface FileRoutesById {
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
+  '/_authenticated/admin/indicacoes': typeof AuthenticatedAdminIndicacoesRoute
   '/_authenticated/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/_authenticated/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
   '/_authenticated/admin/reservas': typeof AuthenticatedAdminReservasRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/_authenticated/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
+  '/_authenticated/perfil/indicacoes': typeof AuthenticatedPerfilIndicacoesRoute
   '/_authenticated/perfil/privacidade': typeof AuthenticatedPerfilPrivacidadeRoute
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/api/public/sitemap': typeof ApiPublicSitemapRoute
@@ -475,12 +495,14 @@ export interface FileRouteTypes {
     | '/admin/bootstrap'
     | '/admin/crm'
     | '/admin/financeiro'
+    | '/admin/indicacoes'
     | '/admin/instituicoes'
     | '/admin/matriculas'
     | '/admin/reservas'
     | '/admin/usuarios'
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
+    | '/perfil/indicacoes'
     | '/perfil/privacidade'
     | '/reservas/$id'
     | '/api/public/sitemap'
@@ -519,12 +541,14 @@ export interface FileRouteTypes {
     | '/admin/avaliacoes'
     | '/admin/bolsas'
     | '/admin/bootstrap'
+    | '/admin/indicacoes'
     | '/admin/instituicoes'
     | '/admin/matriculas'
     | '/admin/reservas'
     | '/admin/usuarios'
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
+    | '/perfil/indicacoes'
     | '/perfil/privacidade'
     | '/reservas/$id'
     | '/api/public/sitemap'
@@ -567,12 +591,14 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/bootstrap'
     | '/_authenticated/admin/crm'
     | '/_authenticated/admin/financeiro'
+    | '/_authenticated/admin/indicacoes'
     | '/_authenticated/admin/instituicoes'
     | '/_authenticated/admin/matriculas'
     | '/_authenticated/admin/reservas'
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/instituicao/$id'
     | '/_authenticated/instituicao/cadastrar'
+    | '/_authenticated/perfil/indicacoes'
     | '/_authenticated/perfil/privacidade'
     | '/_authenticated/reservas/$id'
     | '/api/public/sitemap'
@@ -792,6 +818,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPerfilPrivacidadeRouteImport
       parentRoute: typeof AuthenticatedPerfilRoute
     }
+    '/_authenticated/perfil/indicacoes': {
+      id: '/_authenticated/perfil/indicacoes'
+      path: '/indicacoes'
+      fullPath: '/perfil/indicacoes'
+      preLoaderRoute: typeof AuthenticatedPerfilIndicacoesRouteImport
+      parentRoute: typeof AuthenticatedPerfilRoute
+    }
     '/_authenticated/instituicao/cadastrar': {
       id: '/_authenticated/instituicao/cadastrar'
       path: '/instituicao/cadastrar'
@@ -832,6 +865,13 @@ declare module '@tanstack/react-router' {
       path: '/instituicoes'
       fullPath: '/admin/instituicoes'
       preLoaderRoute: typeof AuthenticatedAdminInstituicoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/indicacoes': {
+      id: '/_authenticated/admin/indicacoes'
+      path: '/indicacoes'
+      fullPath: '/admin/indicacoes'
+      preLoaderRoute: typeof AuthenticatedAdminIndicacoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/financeiro': {
@@ -986,6 +1026,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRouteWithChildren
   AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRouteWithChildren
+  AuthenticatedAdminIndicacoesRoute: typeof AuthenticatedAdminIndicacoesRoute
   AuthenticatedAdminInstituicoesRoute: typeof AuthenticatedAdminInstituicoesRoute
   AuthenticatedAdminMatriculasRoute: typeof AuthenticatedAdminMatriculasRoute
   AuthenticatedAdminReservasRoute: typeof AuthenticatedAdminReservasRoute
@@ -1001,6 +1042,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRouteWithChildren,
   AuthenticatedAdminFinanceiroRoute:
     AuthenticatedAdminFinanceiroRouteWithChildren,
+  AuthenticatedAdminIndicacoesRoute: AuthenticatedAdminIndicacoesRoute,
   AuthenticatedAdminInstituicoesRoute: AuthenticatedAdminInstituicoesRoute,
   AuthenticatedAdminMatriculasRoute: AuthenticatedAdminMatriculasRoute,
   AuthenticatedAdminReservasRoute: AuthenticatedAdminReservasRoute,
@@ -1012,10 +1054,12 @@ const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedPerfilRouteChildren {
+  AuthenticatedPerfilIndicacoesRoute: typeof AuthenticatedPerfilIndicacoesRoute
   AuthenticatedPerfilPrivacidadeRoute: typeof AuthenticatedPerfilPrivacidadeRoute
 }
 
 const AuthenticatedPerfilRouteChildren: AuthenticatedPerfilRouteChildren = {
+  AuthenticatedPerfilIndicacoesRoute: AuthenticatedPerfilIndicacoesRoute,
   AuthenticatedPerfilPrivacidadeRoute: AuthenticatedPerfilPrivacidadeRoute,
 }
 
