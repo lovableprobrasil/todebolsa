@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as ParaInstituicoesRouteImport } from './routes/para-instituicoes'
@@ -47,6 +48,11 @@ import { Route as AuthenticatedAdminCrmLeadsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminCrmInstituicoesRouteImport } from './routes/_authenticated/admin.crm.instituicoes'
 import { Route as AuthenticatedAdminCrmAtividadesRouteImport } from './routes/_authenticated/admin.crm.atividades'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -258,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
@@ -296,6 +303,7 @@ export interface FileRoutesByTo {
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
@@ -333,6 +341,7 @@ export interface FileRoutesById {
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/carteira': typeof AuthenticatedCarteiraRoute
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
@@ -373,6 +382,7 @@ export interface FileRouteTypes {
     | '/para-instituicoes'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/admin'
     | '/carteira'
     | '/favoritos'
@@ -411,6 +421,7 @@ export interface FileRouteTypes {
     | '/para-instituicoes'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/carteira'
     | '/favoritos'
     | '/notificacoes'
@@ -447,6 +458,7 @@ export interface FileRouteTypes {
     | '/para-instituicoes'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/carteira'
     | '/_authenticated/favoritos'
@@ -487,11 +499,19 @@ export interface RootRouteChildren {
   ParaInstituicoesRoute: typeof ParaInstituicoesRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -888,6 +908,7 @@ const rootRouteChildren: RootRouteChildren = {
   ParaInstituicoesRoute: ParaInstituicoesRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
 }
 export const routeTree = rootRouteImport
