@@ -654,3 +654,133 @@ function SelectUI({
     </Select>
   );
 }
+
+// ---------------- Enrollments Tab ----------------
+function EnrollmentsTab({ institutionId }: { institutionId: string }) {
+  const qc = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ["inst-reservations", institutionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("reservations")
+        .select("id, reservation_code, status, payment_status, amount_paid, created_at, user_id, scholarship_id, course_offering_id")
+        .eq("institution_id", institutionId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const confirmMut = useMutation({
+    mutationFn: async ({ id, approve, notes }: { id: string; approve: boolean; notes?: string }) => {
+      const { error } = await supabase.rpc("confirm_enrollment", {
+        p_reservation_id: id, p_approve: approve, p_notes: notes ?? null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["inst-reservations", institutionId] });
+      toast.success("Status atualizado.");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  if (isLoading) return <div className="h-40 rounded-2xl bg-muted animate-pulse" />;
+  const rows = data ?? [];
+  const pending = rows.filter((r) => r.payment_status === "PAID" && ["CONFIRMED","AWAITING_ENROLLMENT","UNDER_REVIEW"].includes(r.status));
+  const done = rows.filter((r) => ["ENROLLMENT_APPROVED","ENROLLMENT_REJECTED"].includes(r.status));
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-border bg-card p-5">
+        <h2 className="font-display text-lg font-bold mb-1">Como funciona</h2>
+        <p className="text-sm text-muted-foreground">
+          O aluno paga a <strong>taxa de matrícula ao Tô de Bolsa</strong>. Quando o pagamento é confirmado, a reserva entra
+          nesta fila para você <strong>efetivar a matrícula</strong> no sistema da sua instituição. Após efetivada, marque como
+          aprovada — o aluno é notificado automaticamente.
+        </p>
+      </div>
+
+      <section>
+        <h3 className="font-display text-base font-bold mb-3">A efetivar ({pending.length})</h3>
+        {pending.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+            Nenhuma matrícula aguardando efetivação no momento.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {pending.map((r) => (
+              <EnrollmentRow key={r.id} r={r} onApprove={() => confirmMut.mutate({ id: r.id, approve: true })}
+                onReject={(notes) => confirmMut.mutate({ id: r.id, approve: false, notes })} loading={confirmMut.isPending} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {done.length > 0 && (
+        <section>
+          <h3 className="font-display text-base font-bold mb-3">Histórico</h3>
+          <div className="space-y-2">
+            {done.map((r) => (
+              <div key={r.id} className="flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3">
+                <div className="flex items-center gap-3">
+                  {r.status === "ENROLLMENT_APPROVED" ? (
+                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-destructive" />
+                  )}
+                  <div>
+                    <div className="font-medium text-sm">{r.reservation_code}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {r.status === "ENROLLMENT_APPROVED" ? "Matrícula efetivada" : "Matrícula recusada"} · {new Date(r.created_at).toLocaleDateString("pt-BR")}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-sm font-semibold">{formatBRL(Number(r.amount_paid ?? 0))}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+
+function EnrollmentRow({ r, onApprove, onReject, loading }: {
+  r: { id: string; reservation_code: string; status: string; amount_paid: number | null; created_at: string };
+  onApprove: () => void; onReject: (notes: string) => void; loading: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [notes, setNotes] = useState("");
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <div className="font-semibold text-sm">{r.reservation_code}</div>
+        <div className="text-xs text-muted-foreground">
+          Pago em {new Date(r.created_at).toLocaleDateString("pt-BR")} · {formatBRL(Number(r.amount_paid ?? 0))}
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <Button size="sm" onClick={onApprove} disabled={loading}>
+          <CheckCircle2 className="h-4 w-4 mr-1" /> Efetivar matrícula
+        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm" variant="outline" disabled={loading}>
+              <XCircle className="h-4 w-4 mr-1" /> Recusar
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Recusar matrícula</DialogTitle></DialogHeader>
+            <Label>Motivo (será enviado ao aluno)</Label>
+            <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={4} maxLength={500} />
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+              <Button variant="destructive" onClick={() => { onReject(notes); setOpen(false); }}>Confirmar recusa</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+}
