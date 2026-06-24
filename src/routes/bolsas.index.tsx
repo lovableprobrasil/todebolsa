@@ -186,7 +186,9 @@ function BolsasPage() {
             >
               Limpar filtros
             </Button>
-          </div>
+            </div>
+          </details>
+
         </aside>
 
         <section>
