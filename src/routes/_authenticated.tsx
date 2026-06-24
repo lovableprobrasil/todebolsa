@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, redirect, useNavigate, useRouterState } from "@tanstack/react-router";
-import { GraduationCap, LayoutDashboard, Heart, Bookmark, IdCard, UserCircle, LogOut, Menu, X } from "lucide-react";
+import { GraduationCap, LayoutDashboard, Heart, Bookmark, IdCard, UserCircle, LogOut, Menu, X, Building2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -25,6 +25,7 @@ const NAV = [
   { to: "/favoritos", label: "Favoritos", icon: Heart },
   { to: "/reservas", label: "Minhas reservas", icon: Bookmark },
   { to: "/carteira", label: "Carteira UGE", icon: IdCard },
+  { to: "/instituicao", label: "Portal da instituição", icon: Building2 },
   { to: "/perfil", label: "Meu perfil", icon: UserCircle },
 ] as const;
 
