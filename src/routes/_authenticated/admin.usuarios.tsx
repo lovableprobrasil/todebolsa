@@ -12,6 +12,15 @@ export const Route = createFileRoute("/_authenticated/admin/usuarios")({
 });
 
 const ROLES = ["STUDENT", "GUARDIAN", "INSTITUTION_USER", "INSTITUTION_ADMIN", "PLATFORM_SALES", "PLATFORM_ADMIN"] as const;
+const ROLE_LABELS: Record<string, string> = {
+  STUDENT: "Estudante",
+  GUARDIAN: "Responsável",
+  INSTITUTION_USER: "Usuário da instituição",
+  INSTITUTION_ADMIN: "Administrador da instituição",
+  PLATFORM_SALES: "Comercial da plataforma",
+  PLATFORM_ADMIN: "Administrador da plataforma",
+};
+const roleLabel = (r: string) => ROLE_LABELS[r] ?? r;
 
 function AdminUsers() {
   const qc = useQueryClient();
