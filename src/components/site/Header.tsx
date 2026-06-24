@@ -128,7 +128,7 @@ export function Header() {
             <div className="grid grid-cols-2 gap-2 mt-2">
               {user ? (
                 <Button className="col-span-2" asChild>
-                  <Link to="/painel" onClick={() => setOpen(false)}>Meu painel</Link>
+                  <Link to={homeTo} onClick={() => setOpen(false)}>{homeLabel}</Link>
                 </Button>
               ) : (
                 <>
