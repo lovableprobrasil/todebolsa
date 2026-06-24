@@ -59,6 +59,7 @@ import { Route as AuthenticatedAdminFinanceiroInstituicoesRouteImport } from './
 import { Route as AuthenticatedAdminCrmLeadsRouteImport } from './routes/_authenticated/admin.crm.leads'
 import { Route as AuthenticatedAdminCrmInstituicoesRouteImport } from './routes/_authenticated/admin.crm.instituicoes'
 import { Route as AuthenticatedAdminCrmAtividadesRouteImport } from './routes/_authenticated/admin.crm.atividades'
+import { Route as ApiPublicUgeValidarCodigoRouteImport } from './routes/api/public/uge.validar.$codigo'
 
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
@@ -331,6 +332,12 @@ const AuthenticatedAdminCrmAtividadesRoute =
     path: '/atividades',
     getParentRoute: () => AuthenticatedAdminCrmRoute,
   } as any)
+const ApiPublicUgeValidarCodigoRoute =
+  ApiPublicUgeValidarCodigoRouteImport.update({
+    id: '/api/public/uge/validar/$codigo',
+    path: '/api/public/uge/validar/$codigo',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -382,6 +389,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
+  '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -430,6 +438,7 @@ export interface FileRoutesByTo {
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroIndexRoute
+  '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -483,6 +492,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/_authenticated/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
+  '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -536,6 +546,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/reembolsos'
     | '/admin/crm/'
     | '/admin/financeiro/'
+    | '/api/public/uge/validar/$codigo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -584,6 +595,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/reembolsos'
     | '/admin/crm'
     | '/admin/financeiro'
+    | '/api/public/uge/validar/$codigo'
   id:
     | '__root__'
     | '/'
@@ -636,6 +648,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/financeiro/reembolsos'
     | '/_authenticated/admin/crm/'
     | '/_authenticated/admin/financeiro/'
+    | '/api/public/uge/validar/$codigo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -656,6 +669,7 @@ export interface RootRouteChildren {
   BolsasIndexRoute: typeof BolsasIndexRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
+  ApiPublicUgeValidarCodigoRoute: typeof ApiPublicUgeValidarCodigoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1010,6 +1024,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCrmAtividadesRouteImport
       parentRoute: typeof AuthenticatedAdminCrmRoute
     }
+    '/api/public/uge/validar/$codigo': {
+      id: '/api/public/uge/validar/$codigo'
+      path: '/api/public/uge/validar/$codigo'
+      fullPath: '/api/public/uge/validar/$codigo'
+      preLoaderRoute: typeof ApiPublicUgeValidarCodigoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1157,6 +1178,7 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasIndexRoute: BolsasIndexRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
+  ApiPublicUgeValidarCodigoRoute: ApiPublicUgeValidarCodigoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
