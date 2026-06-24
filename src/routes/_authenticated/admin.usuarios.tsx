@@ -81,7 +81,7 @@ function AdminUsers() {
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {(u.roles ?? []).map((r: string) => (
-                    <Badge key={r} className="bg-secondary text-foreground border-0">{r}</Badge>
+                    <Badge key={r} className="bg-secondary text-foreground border-0">{roleLabel(r)}</Badge>
                   ))}
                 </div>
               </div>
@@ -90,7 +90,7 @@ function AdminUsers() {
                 <RoleSelector currentRoles={u.roles ?? []} onGrant={(role) => grant.mutate({ uid: u.id, role: role as Role })} />
                 {(u.roles ?? []).filter((r: string) => r !== "STUDENT").map((r: string) => (
                   <Button key={r} size="sm" variant="ghost" onClick={() => revoke.mutate({ uid: u.id, role: r as Role })}>
-                    <ShieldOff className="h-3.5 w-3.5 mr-1" /> Remover {r}
+                    <ShieldOff className="h-3.5 w-3.5 mr-1" /> Remover {roleLabel(r)}
                   </Button>
                 ))}
               </div>
