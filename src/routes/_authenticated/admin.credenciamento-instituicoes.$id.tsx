@@ -42,9 +42,9 @@ function AdminApplicationDetail() {
   });
 
   const setStatus = useMutation({
-    mutationFn: async (status: string) => {
+    mutationFn: async (status: "SUBMITTED" | "UNDER_REVIEW" | "NEEDS_INFO" | "REJECTED" | "SUSPENDED" | "APPROVED" | "DRAFT") => {
       const { error } = await supabase.rpc("set_application_status", {
-        p_id: id, p_status: status, p_message: reason || null,
+        p_id: id, p_status: status, p_message: reason || undefined,
       });
       if (error) throw error;
     },
