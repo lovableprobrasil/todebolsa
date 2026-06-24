@@ -185,6 +185,16 @@ export async function listFeaturedInstitutions() {
   return data ?? [];
 }
 
+export async function listInstitutionsLite() {
+  const { data, error } = await supabase
+    .from("institutions")
+    .select("id, trade_name")
+    .eq("status", "APPROVED")
+    .order("trade_name");
+  if (error) throw error;
+  return data ?? [];
+
+
 export async function getInstitutionBySlug(slug: string) {
   const { data, error } = await supabase
     .from("institutions")
