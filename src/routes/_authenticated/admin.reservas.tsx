@@ -29,18 +29,22 @@ function AdminReservations() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-reservations"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: rs, error } = await supabase
         .from("reservations")
         .select(`
-          id, reservation_code, status, payment_status, amount_paid, expires_at, created_at,
+          id, user_id, reservation_code, status, payment_status, amount_paid, expires_at, created_at,
           institution:institutions(trade_name),
-          scholarship:scholarships(title, course_offering:course_offerings(course:courses(name))),
-          user:profiles!reservations_user_id_fkey(name, email)
+          scholarship:scholarships(title, course_offering:course_offerings(course:courses(name)))
         `)
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) throw error;
-      return data ?? [];
+      const ids = Array.from(new Set((rs ?? []).map((r) => r.user_id)));
+      const { data: profs } = ids.length
+        ? await supabase.from("profiles").select("id, name, email").in("id", ids)
+        : { data: [] as { id: string; name: string | null; email: string | null }[] };
+      const byId = new Map((profs ?? []).map((p) => [p.id, p]));
+      return (rs ?? []).map((r) => ({ ...r, user: byId.get(r.user_id) ?? null }));
     },
   });
 

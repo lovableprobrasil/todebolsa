@@ -21,16 +21,17 @@ function AdminUsers() {
     queryKey: ["admin-users", q],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("admin_list_users", {
-        p_search: q || null, p_limit: 100, p_offset: 0,
+        p_search: q ? q : undefined, p_limit: 100, p_offset: 0,
       });
       if (error) throw error;
       return data ?? [];
     },
   });
 
+  type Role = "STUDENT" | "GUARDIAN" | "INSTITUTION_USER" | "INSTITUTION_ADMIN" | "PLATFORM_SALES" | "PLATFORM_ADMIN";
   const grant = useMutation({
-    mutationFn: async ({ uid, role }: { uid: string; role: string }) => {
-      const { error } = await supabase.rpc("assign_user_role", { p_user_id: uid, p_role: role, p_institution_id: null });
+    mutationFn: async ({ uid, role }: { uid: string; role: Role }) => {
+      const { error } = await supabase.rpc("assign_user_role", { p_user_id: uid, p_role: role, p_institution_id: undefined });
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-users"] }); toast.success("Função atribuída."); },
@@ -38,8 +39,8 @@ function AdminUsers() {
   });
 
   const revoke = useMutation({
-    mutationFn: async ({ uid, role }: { uid: string; role: string }) => {
-      const { error } = await supabase.rpc("revoke_user_role", { p_user_id: uid, p_role: role, p_institution_id: null });
+    mutationFn: async ({ uid, role }: { uid: string; role: Role }) => {
+      const { error } = await supabase.rpc("revoke_user_role", { p_user_id: uid, p_role: role, p_institution_id: undefined });
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-users"] }); toast.success("Função removida."); },
