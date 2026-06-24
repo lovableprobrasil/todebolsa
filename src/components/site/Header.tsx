@@ -15,7 +15,9 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
+  const { user, profile, isPlatformAdmin } = useAuth();
+  const homeTo = isPlatformAdmin ? "/admin" : "/painel";
+  const homeLabel = isPlatformAdmin ? "Painel master" : "Meu painel";
   const initials = (profile?.name ?? user?.email ?? "?")
     .split(" ")
     .map((p) => p[0])
