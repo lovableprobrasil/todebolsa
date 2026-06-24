@@ -78,6 +78,7 @@ function AuthenticatedLayout() {
                 <div className="text-xs text-muted-foreground truncate max-w-[160px]">{user?.email}</div>
               </div>
             </div>
+            <NotificationsBell />
             <Button variant="ghost" size="sm" onClick={handleSignOut} className="gap-1.5">
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Sair</span>
