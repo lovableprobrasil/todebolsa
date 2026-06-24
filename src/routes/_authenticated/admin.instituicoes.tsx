@@ -36,7 +36,7 @@ function AdminInstitutions() {
   });
 
   const setStatusMut = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({ id, status }: { id: string; status: "APPROVED" | "PENDING" | "SUSPENDED" | "REJECTED" }) => {
       const { error } = await supabase.rpc("set_institution_status", { p_institution_id: id, p_status: status });
       if (error) throw error;
     },

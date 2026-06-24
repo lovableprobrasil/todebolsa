@@ -20,10 +20,10 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 const TABS = [
   { to: "/admin", label: "Visão geral", icon: LayoutDashboard, exact: true },
-  { to: "/admin/instituicoes", label: "Instituições", icon: Building2 },
-  { to: "/admin/bolsas", label: "Bolsas", icon: GraduationCap },
-  { to: "/admin/reservas", label: "Reservas", icon: Bookmark },
-  { to: "/admin/usuarios", label: "Usuários", icon: Users },
+  { to: "/admin/instituicoes", label: "Instituições", icon: Building2, exact: false },
+  { to: "/admin/bolsas", label: "Bolsas", icon: GraduationCap, exact: false },
+  { to: "/admin/reservas", label: "Reservas", icon: Bookmark, exact: false },
+  { to: "/admin/usuarios", label: "Usuários", icon: Users, exact: false },
 ] as const;
 
 function AdminLayout() {
