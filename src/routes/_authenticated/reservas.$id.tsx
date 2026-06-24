@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { ReviewForm } from "@/components/reviews/ReviewForm";
 
 export const Route = createFileRoute("/_authenticated/reservas/$id")({
   component: ReservationDetailPage,
@@ -59,7 +60,7 @@ function ReservationDetailPage() {
       const { data, error } = await supabase
         .from("reservations")
         .select(`
-          id, status, payment_status, reservation_code, expires_at, reserved_at, amount_paid,
+          id, status, payment_status, reservation_code, expires_at, reserved_at, amount_paid, institution_id,
           scholarship:scholarships(id, title, price_with_scholarship,
             course_offering:course_offerings(
               course:courses(name, original_price, institution:institutions(trade_name, slug)),
@@ -213,6 +214,14 @@ function ReservationDetailPage() {
             A instituição entrará em contato em até 48 horas para concluir a matrícula. Acompanhe atualizações em suas notificações.
           </p>
         </section>
+      )}
+
+      {r.status === "ENROLLMENT_APPROVED" && user && r.institution_id && (
+        <ReviewForm
+          reservationId={r.id}
+          institutionId={r.institution_id}
+          userId={user.id}
+        />
       )}
 
       {isFinal && (

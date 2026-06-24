@@ -1,12 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Star, MapPin, Globe, Phone, Mail } from "lucide-react";
+import { MapPin, Globe, Phone, Mail } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { Button } from "@/components/ui/button";
 import { getInstitutionBySlug, type ScholarshipListItem } from "@/lib/scholarships";
 import { supabase } from "@/integrations/supabase/client";
+import { ReviewsSection } from "@/components/reviews/ReviewsSection";
+import { ReviewStars } from "@/components/reviews/ReviewStars";
 
 export const Route = createFileRoute("/instituicoes/$slug")({
   loader: async ({ params }) => {
@@ -121,13 +123,16 @@ function InstitutionPage() {
               {inst.description && (
                 <p className="mt-2 text-muted-foreground max-w-2xl">{inst.description}</p>
               )}
-              <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                {inst.rating ? (
-                  <span className="inline-flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-warning text-warning" />
-                    <strong className="text-foreground">{Number(inst.rating).toFixed(1)}</strong> de avaliação
+              <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground items-center">
+                {Number(inst.rating_count) > 0 ? (
+                  <span className="inline-flex items-center gap-2">
+                    <ReviewStars value={Number(inst.rating_avg)} readOnly />
+                    <strong className="text-foreground">{Number(inst.rating_avg).toFixed(1)}</strong>
+                    <span>· {inst.rating_count} avaliações</span>
                   </span>
-                ) : null}
+                ) : (
+                  <span className="text-xs">Ainda sem avaliações</span>
+                )}
                 {inst.website && (
                   <a href={inst.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
                     <Globe className="h-4 w-4" /> {inst.website.replace(/^https?:\/\//, "")}
@@ -156,6 +161,12 @@ function InstitutionPage() {
             </div>
           )}
         </section>
+
+        <ReviewsSection
+          institutionId={inst.id}
+          ratingAvg={Number(inst.rating_avg ?? 0)}
+          ratingCount={Number(inst.rating_count ?? 0)}
+        />
       </main>
       <Footer />
     </div>

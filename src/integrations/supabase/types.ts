@@ -437,6 +437,66 @@ export type Database = {
           },
         ]
       }
+      institution_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          institution_id: string
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_notes: string | null
+          rating: number
+          reservation_id: string
+          status: Database["public"]["Enums"]["review_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_notes?: string | null
+          rating: number
+          reservation_id: string
+          status?: Database["public"]["Enums"]["review_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_notes?: string | null
+          rating?: number
+          reservation_id?: string
+          status?: Database["public"]["Enums"]["review_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_reviews_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_reviews_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: true
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institution_units: {
         Row: {
           address: string | null
@@ -504,6 +564,8 @@ export type Database = {
           mec_code: string | null
           phone: string | null
           rating: number | null
+          rating_avg: number
+          rating_count: number
           slug: string
           status: Database["public"]["Enums"]["institution_status"]
           trade_name: string
@@ -523,6 +585,8 @@ export type Database = {
           mec_code?: string | null
           phone?: string | null
           rating?: number | null
+          rating_avg?: number
+          rating_count?: number
           slug: string
           status?: Database["public"]["Enums"]["institution_status"]
           trade_name: string
@@ -542,6 +606,8 @@ export type Database = {
           mec_code?: string | null
           phone?: string | null
           rating?: number | null
+          rating_avg?: number
+          rating_count?: number
           slug?: string
           status?: Database["public"]["Enums"]["institution_status"]
           trade_name?: string
@@ -1164,6 +1230,29 @@ export type Database = {
         Returns: boolean
       }
       is_platform_admin: { Args: { _uid?: string }; Returns: boolean }
+      moderate_review: {
+        Args: { p_approve: boolean; p_notes?: string; p_review_id: string }
+        Returns: {
+          comment: string | null
+          created_at: string
+          id: string
+          institution_id: string
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_notes: string | null
+          rating: number
+          reservation_id: string
+          status: Database["public"]["Enums"]["review_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "institution_reviews"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       pay_reservation: {
         Args: { p_method: string; p_reservation_id: string }
         Returns: {
@@ -1187,6 +1276,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      recalc_institution_rating: {
+        Args: { p_institution_id: string }
+        Returns: undefined
       }
       request_refund: {
         Args: { p_reason: string; p_reservation_id: string }
@@ -1235,6 +1328,8 @@ export type Database = {
           mec_code: string | null
           phone: string | null
           rating: number | null
+          rating_avg: number
+          rating_count: number
           slug: string
           status: Database["public"]["Enums"]["institution_status"]
           trade_name: string
@@ -1328,6 +1423,7 @@ export type Database = {
         | "ENROLLMENT_REJECTED"
         | "EXPIRED"
         | "CANCELLED"
+      review_status: "PENDING" | "APPROVED" | "REJECTED"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1523,6 +1619,7 @@ export const Constants = {
         "EXPIRED",
         "CANCELLED",
       ],
+      review_status: ["PENDING", "APPROVED", "REJECTED"],
     },
   },
 } as const
