@@ -7,7 +7,20 @@ import { Button } from "@/components/ui/button";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { recommendScholarships } from "@/lib/scholarships";
 
+import { redirect } from "@tanstack/react-router";
+
 export const Route = createFileRoute("/_authenticated/painel")({
+  beforeLoad: async () => {
+    const { data: u } = await supabase.auth.getUser();
+    if (!u.user) return;
+    const { data: adminRole } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", u.user.id)
+      .eq("role", "PLATFORM_ADMIN")
+      .maybeSingle();
+    if (adminRole) throw redirect({ to: "/admin" });
+  },
   component: PainelPage,
 });
 
