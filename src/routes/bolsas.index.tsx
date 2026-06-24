@@ -228,7 +228,7 @@ function BolsasPage() {
               onChange={(e) => setSort(e.target.value as BolsasSearch["sort"])}
               className="rounded-xl border border-border bg-background px-3 py-2 text-sm"
             >
-              <option value="relevance">Ordenar: relevância</option>
+              <option value="relevance">Mais procuradas</option>
               <option value="discount-desc">Maior desconto</option>
               <option value="price-asc">Menor mensalidade</option>
               <option value="price-desc">Maior mensalidade</option>
