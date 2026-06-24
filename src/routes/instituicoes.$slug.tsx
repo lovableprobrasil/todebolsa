@@ -176,11 +176,34 @@ function InstitutionPage() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
-          <h2 className="font-display text-2xl font-extrabold mb-6">Bolsas disponíveis</h2>
+          <h2 className="font-display text-2xl font-extrabold mb-6">Bolsas disponíveis por unidade</h2>
           {scholarships && scholarships.length > 0 ? (
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {scholarships.map((s) => <ScholarshipCard key={s.id} s={s} />)}
-            </div>
+            (() => {
+              const groups = new Map<string, ScholarshipListItem[]>();
+              for (const s of scholarships) {
+                const u = s.course_offering.institution_unit;
+                const key = `${u.city} / ${u.state} — ${u.name}`;
+                const arr = groups.get(key) ?? [];
+                arr.push(s);
+                groups.set(key, arr);
+              }
+              return (
+                <div className="space-y-10">
+                  {Array.from(groups.entries()).map(([loc, items]) => (
+                    <div key={loc}>
+                      <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-4">
+                        <MapPin className="h-4 w-4 text-primary" />
+                        <span className="text-foreground">{loc}</span>
+                        <span className="text-xs">· {items.length} {items.length === 1 ? "bolsa" : "bolsas"}</span>
+                      </div>
+                      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                        {items.map((s) => <ScholarshipCard key={s.id} s={s} />)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()
           ) : (
             <div className="rounded-2xl border border-dashed border-border p-12 text-center text-muted-foreground">
               Nenhuma bolsa ativa no momento.
