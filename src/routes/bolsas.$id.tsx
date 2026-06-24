@@ -253,7 +253,46 @@ function ScholarshipDetail() {
                 </div>
               </div>
             </Section>
+
+            <Section title="Como funciona em 4 passos">
+              <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  { n: 1, t: "Reservar", d: "Garanta sua bolsa em poucos cliques." },
+                  { n: 2, t: "Documentos", d: "Envie os documentos pelo painel." },
+                  { n: 3, t: "Aprovação", d: "A instituição confirma sua matrícula." },
+                  { n: 4, t: "Matrícula + UGE", d: "Comece o curso e receba sua carteira." },
+                ].map((p) => (
+                  <li key={p.n} className="rounded-2xl border border-border bg-secondary/40 p-4">
+                    <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-extrabold mb-2">
+                      {p.n}
+                    </div>
+                    <div className="font-bold text-sm">{p.t}</div>
+                    <div className="text-xs text-muted-foreground mt-1">{p.d}</div>
+                  </li>
+                ))}
+              </ol>
+            </Section>
+
+            <Section title="Perguntas frequentes">
+              <div className="space-y-3">
+                {[
+                  { q: "Como faço para garantir a bolsa?", a: "Clique em 'Garantir bolsa agora', crie sua conta (se ainda não tiver) e envie os documentos pelo painel. A instituição confirma sua matrícula em seguida." },
+                  { q: "A bolsa pode ser renovada?", a: "Sim. A renovação segue as regras de desempenho e frequência da instituição parceira para o curso escolhido." },
+                  { q: "Posso cancelar a reserva?", a: "Sim, antes da confirmação da matrícula. Após o pagamento, o cancelamento segue a política de reembolso aplicável." },
+                  { q: "Como recebo a Carteira UGE?", a: "Após a confirmação da matrícula no curso, você fica elegível e recebe as instruções para emissão da Carteira Estudantil Digital UGE." },
+                ].map((f, i) => (
+                  <details key={i} className="group rounded-xl border border-border bg-secondary/40 p-4">
+                    <summary className="cursor-pointer list-none font-semibold text-sm flex items-center justify-between gap-2">
+                      {f.q}
+                      <span aria-hidden className="text-muted-foreground transition-transform group-open:rotate-180">▾</span>
+                    </summary>
+                    <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </Section>
           </div>
+
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-3xl border border-border bg-card shadow-[var(--shadow-card)] p-6">
