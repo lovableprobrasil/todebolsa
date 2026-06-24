@@ -81,11 +81,12 @@ function ForInstitutionsPage() {
             <h2 className="font-display text-3xl md:text-4xl font-extrabold text-center mb-10">
               Como funciona
             </h2>
-            <ol className="grid gap-4 md:grid-cols-3">
+            <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                { n: 1, t: "Solicite cadastro", d: "Envie os dados da sua instituição em poucos minutos." },
-                { n: 2, t: "Cadastre cursos", d: "Adicione cursos, unidades, vagas e bolsas." },
-                { n: 3, t: "Receba alunos", d: "Alunos descobrem sua bolsa, reservam e se matriculam." },
+                { n: 1, t: "Credenciamento", d: "Envie os dados da sua instituição. Aprovação em até 48h." },
+                { n: 2, t: "Cadastro de cursos", d: "Adicione cursos, unidades, turnos e vagas disponíveis." },
+                { n: 3, t: "Publicação de bolsas", d: "Defina percentuais, regras e prazos para cada bolsa." },
+                { n: 4, t: "Recebimento de alunos", d: "Receba reservas, confirme matrículas e fature." },
               ].map((s) => (
                 <li key={s.n} className="rounded-2xl bg-card border border-border p-6">
                   <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-extrabold mb-3">
