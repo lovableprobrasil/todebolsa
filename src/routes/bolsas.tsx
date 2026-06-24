@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { useMemo, useState } from "react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -16,11 +16,11 @@ import { Slider } from "@/components/ui/slider";
 import { SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
-  level: fallback(z.string().optional(), undefined),
-  q: fallback(z.string().optional(), undefined),
-  city: fallback(z.string().optional(), undefined),
-  modality: fallback(z.string().optional(), undefined),
-  minDiscount: fallback(z.number().optional(), undefined),
+  level: z.string().optional().catch(undefined),
+  q: z.string().optional().catch(undefined),
+  city: z.string().optional().catch(undefined),
+  modality: z.string().optional().catch(undefined),
+  minDiscount: z.coerce.number().optional().catch(undefined),
 });
 
 type BolsasSearch = z.infer<typeof searchSchema>;
