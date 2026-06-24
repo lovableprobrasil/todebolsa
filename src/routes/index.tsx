@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, IdCard, ShieldCheck, Users, Award, Star, Percent, Search, Sparkles, Building2, MapPin } from "lucide-react";
+import { ArrowRight, IdCard, ShieldCheck, Users, Award, Star, Percent, Search, Sparkles, Building2, MapPin, GraduationCap, BookOpen } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CategoryGrid } from "@/components/site/CategoryGrid";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { listScholarships, listFeaturedInstitutions, listFaqs } from "@/lib/scholarships";
+import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer } from "@/lib/scholarships";
+import { formatBRL, COURSE_LEVEL_LABEL } from "@/lib/format";
 import heroStudent from "@/assets/hero-student-card.png";
 
 export const Route = createFileRoute("/")({
