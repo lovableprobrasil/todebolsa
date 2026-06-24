@@ -78,9 +78,9 @@ function AdminUsers() {
               </div>
 
               <div className="mt-3 flex flex-wrap gap-2">
-                <RoleSelector currentRoles={u.roles ?? []} onGrant={(role) => grant.mutate({ uid: u.id, role })} />
+                <RoleSelector currentRoles={u.roles ?? []} onGrant={(role) => grant.mutate({ uid: u.id, role: role as Role })} />
                 {(u.roles ?? []).filter((r: string) => r !== "STUDENT").map((r: string) => (
-                  <Button key={r} size="sm" variant="ghost" onClick={() => revoke.mutate({ uid: u.id, role: r })}>
+                  <Button key={r} size="sm" variant="ghost" onClick={() => revoke.mutate({ uid: u.id, role: r as Role })}>
                     <ShieldOff className="h-3.5 w-3.5 mr-1" /> Remover {r}
                   </Button>
                 ))}
