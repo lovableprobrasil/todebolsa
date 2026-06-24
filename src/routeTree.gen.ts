@@ -14,10 +14,10 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as ParaInstituicoesRouteImport } from './routes/para-instituicoes'
 import { Route as FaqRouteImport } from './routes/faq'
-import { Route as BolsasRouteImport } from './routes/bolsas'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BolsasIndexRouteImport } from './routes/bolsas.index'
 import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticated/reservas'
@@ -73,11 +73,6 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BolsasRoute = BolsasRouteImport.update({
-  id: '/bolsas',
-  path: '/bolsas',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -92,15 +87,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BolsasIndexRoute = BolsasIndexRouteImport.update({
+  id: '/bolsas/',
+  path: '/bolsas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InstituicoesSlugRoute = InstituicoesSlugRouteImport.update({
   id: '/instituicoes/$slug',
   path: '/instituicoes/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BolsasIdRoute = BolsasIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => BolsasRoute,
+  id: '/bolsas/$id',
+  path: '/bolsas/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedReservasRoute = AuthenticatedReservasRouteImport.update({
   id: '/reservas',
@@ -259,7 +259,6 @@ const AuthenticatedAdminCrmAtividadesRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/bolsas': typeof BolsasRouteWithChildren
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
@@ -274,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/bolsas/': typeof BolsasIndexRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
@@ -298,7 +298,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/bolsas': typeof BolsasRouteWithChildren
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
@@ -312,6 +311,7 @@ export interface FileRoutesByTo {
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/bolsas': typeof BolsasIndexRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
@@ -336,7 +336,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
-  '/bolsas': typeof BolsasRouteWithChildren
   '/faq': typeof FaqRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
@@ -351,6 +350,7 @@ export interface FileRoutesById {
   '/_authenticated/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/bolsas/$id': typeof BolsasIdRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/bolsas/': typeof BolsasIndexRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
@@ -377,7 +377,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/bolsas'
     | '/faq'
     | '/para-instituicoes'
     | '/recuperar-senha'
@@ -392,6 +391,7 @@ export interface FileRouteTypes {
     | '/reservas'
     | '/bolsas/$id'
     | '/instituicoes/$slug'
+    | '/bolsas/'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/crm'
@@ -416,7 +416,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/bolsas'
     | '/faq'
     | '/para-instituicoes'
     | '/recuperar-senha'
@@ -430,6 +429,7 @@ export interface FileRouteTypes {
     | '/reservas'
     | '/bolsas/$id'
     | '/instituicoes/$slug'
+    | '/bolsas'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/instituicoes'
@@ -453,7 +453,6 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/bolsas'
     | '/faq'
     | '/para-instituicoes'
     | '/recuperar-senha'
@@ -468,6 +467,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reservas'
     | '/bolsas/$id'
     | '/instituicoes/$slug'
+    | '/bolsas/'
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
     | '/_authenticated/admin/crm'
@@ -494,13 +494,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
-  BolsasRoute: typeof BolsasRouteWithChildren
   FaqRoute: typeof FaqRoute
   ParaInstituicoesRoute: typeof ParaInstituicoesRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  BolsasIdRoute: typeof BolsasIdRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
+  BolsasIndexRoute: typeof BolsasIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -540,13 +541,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bolsas': {
-      id: '/bolsas'
-      path: '/bolsas'
-      fullPath: '/bolsas'
-      preLoaderRoute: typeof BolsasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -568,6 +562,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bolsas/': {
+      id: '/bolsas/'
+      path: '/bolsas'
+      fullPath: '/bolsas/'
+      preLoaderRoute: typeof BolsasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/instituicoes/$slug': {
       id: '/instituicoes/$slug'
       path: '/instituicoes/$slug'
@@ -577,10 +578,10 @@ declare module '@tanstack/react-router' {
     }
     '/bolsas/$id': {
       id: '/bolsas/$id'
-      path: '/$id'
+      path: '/bolsas/$id'
       fullPath: '/bolsas/$id'
       preLoaderRoute: typeof BolsasIdRouteImport
-      parentRoute: typeof BolsasRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/reservas': {
       id: '/_authenticated/reservas'
@@ -888,28 +889,18 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
-interface BolsasRouteChildren {
-  BolsasIdRoute: typeof BolsasIdRoute
-}
-
-const BolsasRouteChildren: BolsasRouteChildren = {
-  BolsasIdRoute: BolsasIdRoute,
-}
-
-const BolsasRouteWithChildren =
-  BolsasRoute._addFileChildren(BolsasRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
-  BolsasRoute: BolsasRouteWithChildren,
   FaqRoute: FaqRoute,
   ParaInstituicoesRoute: ParaInstituicoesRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  BolsasIdRoute: BolsasIdRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
+  BolsasIndexRoute: BolsasIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
