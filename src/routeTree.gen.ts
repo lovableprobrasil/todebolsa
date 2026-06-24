@@ -29,6 +29,8 @@ import { Route as AuthenticatedCarteiraRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedInstituicaoIndexRouteImport } from './routes/_authenticated/instituicao.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$city'
+import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
 import { Route as AuthenticatedInstituicaoCadastrarRouteImport } from './routes/_authenticated/instituicao.cadastrar'
 import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
@@ -151,6 +153,16 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const BolsasCidadeCityRoute = BolsasCidadeCityRouteImport.update({
+  id: '/bolsas/cidade/$city',
+  path: '/bolsas/cidade/$city',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BolsasCategoriaLevelRoute = BolsasCategoriaLevelRouteImport.update({
+  id: '/bolsas/categoria/$level',
+  path: '/bolsas/categoria/$level',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedReservasIdRoute = AuthenticatedReservasIdRouteImport.update({
   id: '/$id',
@@ -308,6 +320,8 @@ export interface FileRoutesByFullPath {
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
+  '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
   '/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
@@ -347,6 +361,8 @@ export interface FileRoutesByTo {
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
+  '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/instituicao': typeof AuthenticatedInstituicaoIndexRoute
   '/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
@@ -391,6 +407,8 @@ export interface FileRoutesById {
   '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/_authenticated/instituicao/cadastrar': typeof AuthenticatedInstituicaoCadastrarRoute
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
+  '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
   '/_authenticated/admin/crm/atividades': typeof AuthenticatedAdminCrmAtividadesRoute
@@ -435,6 +453,8 @@ export interface FileRouteTypes {
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
     | '/reservas/$id'
+    | '/bolsas/categoria/$level'
+    | '/bolsas/cidade/$city'
     | '/admin/'
     | '/instituicao/'
     | '/admin/crm/atividades'
@@ -474,6 +494,8 @@ export interface FileRouteTypes {
     | '/instituicao/$id'
     | '/instituicao/cadastrar'
     | '/reservas/$id'
+    | '/bolsas/categoria/$level'
+    | '/bolsas/cidade/$city'
     | '/admin'
     | '/instituicao'
     | '/admin/crm/atividades'
@@ -517,6 +539,8 @@ export interface FileRouteTypes {
     | '/_authenticated/instituicao/$id'
     | '/_authenticated/instituicao/cadastrar'
     | '/_authenticated/reservas/$id'
+    | '/bolsas/categoria/$level'
+    | '/bolsas/cidade/$city'
     | '/_authenticated/admin/'
     | '/_authenticated/instituicao/'
     | '/_authenticated/admin/crm/atividades'
@@ -541,6 +565,8 @@ export interface RootRouteChildren {
   BolsasIdRoute: typeof BolsasIdRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
+  BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
+  BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -684,6 +710,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/bolsas/cidade/$city': {
+      id: '/bolsas/cidade/$city'
+      path: '/bolsas/cidade/$city'
+      fullPath: '/bolsas/cidade/$city'
+      preLoaderRoute: typeof BolsasCidadeCityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bolsas/categoria/$level': {
+      id: '/bolsas/categoria/$level'
+      path: '/bolsas/categoria/$level'
+      fullPath: '/bolsas/categoria/$level'
+      preLoaderRoute: typeof BolsasCategoriaLevelRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/reservas/$id': {
       id: '/_authenticated/reservas/$id'
@@ -967,6 +1007,8 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasIdRoute: BolsasIdRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
   BolsasIndexRoute: BolsasIndexRoute,
+  BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
+  BolsasCidadeCityRoute: BolsasCidadeCityRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
