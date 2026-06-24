@@ -33,8 +33,9 @@ export function Footer() {
 
           <FooterCol title="Tô de Bolsa">
             <FooterLink to="/faq">Ajuda</FooterLink>
-            <FooterLink to="/">Termos de uso</FooterLink>
-            <FooterLink to="/">Política de privacidade</FooterLink>
+            <FooterLink to="/termos">Termos de uso</FooterLink>
+            <FooterLink to="/privacidade">Política de privacidade</FooterLink>
+            <FooterLink to="/cookies">Política de cookies</FooterLink>
           </FooterCol>
         </div>
 
