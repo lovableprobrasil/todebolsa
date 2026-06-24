@@ -161,6 +161,12 @@ function InstitutionPage() {
             </div>
           )}
         </section>
+
+        <ReviewsSection
+          institutionId={inst.id}
+          ratingAvg={Number(inst.rating_avg ?? 0)}
+          ratingCount={Number(inst.rating_count ?? 0)}
+        />
       </main>
       <Footer />
     </div>
