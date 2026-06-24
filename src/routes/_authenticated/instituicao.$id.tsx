@@ -674,7 +674,7 @@ function EnrollmentsTab({ institutionId }: { institutionId: string }) {
   const confirmMut = useMutation({
     mutationFn: async ({ id, approve, notes }: { id: string; approve: boolean; notes?: string }) => {
       const { error } = await supabase.rpc("confirm_enrollment", {
-        p_reservation_id: id, p_approve: approve, p_notes: notes ?? null,
+        p_reservation_id: id, p_approve: approve, p_notes: notes ?? undefined,
       });
       if (error) throw error;
     },
