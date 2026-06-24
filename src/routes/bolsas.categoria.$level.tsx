@@ -39,6 +39,18 @@ export const Route = createFileRoute("/bolsas/categoria/$level")({
             url,
           }),
         },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Início", item: `${SITE}/` },
+              { "@type": "ListItem", position: 2, name: "Bolsas", item: `${SITE}/bolsas` },
+              { "@type": "ListItem", position: 3, name: label, item: url },
+            ],
+          }),
+        },
       ],
     };
   },

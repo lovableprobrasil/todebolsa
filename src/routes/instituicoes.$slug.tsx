@@ -20,7 +20,7 @@ export const Route = createFileRoute("/instituicoes/$slug")({
     }
   },
   head: ({ params, loaderData }) => {
-    const inst = loaderData?.institution as { trade_name?: string; description?: string | null; logo_url?: string | null } | null | undefined;
+    const inst = loaderData?.institution as { trade_name?: string; description?: string | null; logo_url?: string | null; website?: string | null } | null | undefined;
     const url = `https://todebolsa.lovable.app/instituicoes/${params.slug}`;
     const name = inst?.trade_name ?? params.slug;
     const title = `${name} — bolsas de estudo | Tô de Bolsa`;
@@ -40,6 +40,32 @@ export const Route = createFileRoute("/instituicoes/$slug")({
         { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            name,
+            description: desc,
+            url,
+            ...(inst?.logo_url ? { logo: inst.logo_url } : {}),
+            ...(inst?.website ? { sameAs: [inst.website] } : {}),
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Início", item: "https://todebolsa.lovable.app/" },
+              { "@type": "ListItem", position: 2, name: "Instituições", item: "https://todebolsa.lovable.app/bolsas" },
+              { "@type": "ListItem", position: 3, name, item: url },
+            ],
+          }),
+        },
+      ],
     };
   },
   notFoundComponent: () => (
