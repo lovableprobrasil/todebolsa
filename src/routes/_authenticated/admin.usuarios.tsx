@@ -123,7 +123,7 @@ function RoleSelector({ currentRoles, onGrant }: { currentRoles: string[]; onGra
             {available.map((r) => (
               <button key={r} onClick={() => { onGrant(r); setOpen(false); }}
                 className="block w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-secondary">
-                {r}
+                {roleLabel(r)}
               </button>
             ))}
           </div>
