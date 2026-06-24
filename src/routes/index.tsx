@@ -415,6 +415,7 @@ function InstitutionsSection() {
                     src={i.logo_url}
                     alt={`Logo ${i.trade_name}`}
                     loading="lazy"
+                    decoding="async"
                     className="max-h-16 max-w-[80%] object-contain"
                   />
                 ) : (
