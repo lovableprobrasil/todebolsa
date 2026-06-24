@@ -155,6 +155,20 @@ function BolsasPage() {
               />
             </div>
 
+            <div className="mb-2">
+              <Label className="mb-2 block">
+                Mensalidade máxima:{" "}
+                <span className="font-bold text-primary">{maxPrice > 0 ? `R$ ${maxPrice}` : "qualquer"}</span>
+              </Label>
+              <Slider
+                value={[maxPrice]}
+                min={0}
+                max={3000}
+                step={50}
+                onValueChange={(v) => setMaxPrice(v[0] ?? 0)}
+              />
+            </div>
+
             <Button
               variant="ghost"
               size="sm"
@@ -162,6 +176,8 @@ function BolsasPage() {
               onClick={() => {
                 setMinDiscount(0);
                 setModality(undefined);
+                setMaxPrice(0);
+                setSort("relevance");
               }}
             >
               Limpar filtros
@@ -170,13 +186,25 @@ function BolsasPage() {
         </aside>
 
         <section>
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-5 flex-wrap gap-2">
             <p className="text-sm text-muted-foreground">
               {isLoading
                 ? "Carregando bolsas..."
                 : `${data?.length ?? 0} ${data?.length === 1 ? "bolsa encontrada" : "bolsas encontradas"}`}
             </p>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as BolsasSearch["sort"])}
+              className="rounded-xl border border-border bg-background px-3 py-2 text-sm"
+            >
+              <option value="relevance">Ordenar: relevância</option>
+              <option value="discount-desc">Maior desconto</option>
+              <option value="price-asc">Menor mensalidade</option>
+              <option value="price-desc">Maior mensalidade</option>
+              <option value="recent">Mais recentes</option>
+            </select>
           </div>
+
 
           {isLoading ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
