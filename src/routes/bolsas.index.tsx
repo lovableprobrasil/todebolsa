@@ -25,7 +25,7 @@ function str(v: unknown): string | undefined {
   return typeof v === "string" && v.length > 0 ? v : undefined;
 }
 
-export const Route = createFileRoute("/bolsas")({
+export const Route = createFileRoute("/bolsas/")({
   validateSearch: (raw: Record<string, unknown>): BolsasSearch => ({
     level: str(raw.level),
     q: str(raw.q),
