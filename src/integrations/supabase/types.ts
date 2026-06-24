@@ -843,6 +843,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      claim_first_admin: { Args: never; Returns: undefined }
       claim_institution: {
         Args: {
           p_city: string
