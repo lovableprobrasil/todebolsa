@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Star, MapPin, Globe, Phone, Mail } from "lucide-react";
+import { MapPin, Globe, Phone, Mail } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
