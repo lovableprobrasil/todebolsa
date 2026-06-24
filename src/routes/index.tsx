@@ -69,8 +69,8 @@ function HomePage() {
         <PopularBar />
         <CategorySection />
         <StatsBar />
-        <FeaturedSection />
         <InstitutionsSection />
+        <FeaturedSection />
         <CoursesSection />
         <HowItWorks />
         <UgeCallout />
