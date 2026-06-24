@@ -48,23 +48,25 @@ function AdminLayout() {
         </div>
       </header>
 
-      <nav className="flex flex-wrap gap-1 rounded-2xl border border-border bg-card p-1">
-        {TABS.map((t) => {
-          const active = t.exact ? pathname === t.to : pathname.startsWith(t.to);
-          const Icon = t.icon;
-          return (
-            <Link
-              key={t.to}
-              to={t.to}
-              className={cn(
-                "flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors",
-                active ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:bg-secondary",
-              )}
-            >
-              <Icon className="h-4 w-4" /> {t.label}
-            </Link>
-          );
-        })}
+      <nav className="-mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex gap-1 overflow-x-auto rounded-2xl border border-border bg-card p-1 scroll-snap-x lg:flex-wrap lg:overflow-visible">
+          {TABS.map((t) => {
+            const active = t.exact ? pathname === t.to : pathname.startsWith(t.to);
+            const Icon = t.icon;
+            return (
+              <Link
+                key={t.to}
+                to={t.to}
+                className={cn(
+                  "scroll-snap-start flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors whitespace-nowrap",
+                  active ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:bg-secondary",
+                )}
+              >
+                <Icon className="h-4 w-4" /> {t.label}
+              </Link>
+            );
+          })}
+        </div>
       </nav>
 
       <Outlet />
