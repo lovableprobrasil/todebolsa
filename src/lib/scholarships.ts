@@ -202,3 +202,87 @@ export async function listFaqs() {
   if (error) throw error;
   return data ?? [];
 }
+
+export type InstitutionOffer = {
+  id: string;
+  slug: string;
+  trade_name: string;
+  logo_url: string | null;
+  rating: number | null;
+  bestDiscount: number;
+  minPrice: number;
+  scholarshipCount: number;
+};
+
+export async function listInstitutionsBestOffer(limit = 10): Promise<InstitutionOffer[]> {
+  const all = await listScholarships({ limit: 500 });
+  const map = new Map<string, InstitutionOffer>();
+  for (const s of all) {
+    const inst = s.course_offering.course.institution;
+    const original = Number(s.course_offering.course.original_price) || 0;
+    const final = Number(s.price_with_scholarship) || 0;
+    const discount = original > 0 ? Math.round(((original - final) / original) * 100) : 0;
+    const cur = map.get(inst.id);
+    if (!cur) {
+      map.set(inst.id, {
+        id: inst.id,
+        slug: inst.slug,
+        trade_name: inst.trade_name,
+        logo_url: inst.logo_url,
+        rating: inst.rating,
+        bestDiscount: discount,
+        minPrice: final,
+        scholarshipCount: 1,
+      });
+    } else {
+      cur.bestDiscount = Math.max(cur.bestDiscount, discount);
+      cur.minPrice = Math.min(cur.minPrice, final);
+      cur.scholarshipCount += 1;
+    }
+  }
+  return Array.from(map.values())
+    .sort((a, b) => b.bestDiscount - a.bestDiscount || a.minPrice - b.minPrice)
+    .slice(0, limit);
+}
+
+export type CourseOffer = {
+  name: string;
+  level: string;
+  bestDiscount: number;
+  minPrice: number;
+  scholarshipCount: number;
+  cities: string[];
+};
+
+export async function listCoursesBestOffer(limit = 10, city?: string): Promise<CourseOffer[]> {
+  const all = await listScholarships({ limit: 500, city });
+  const map = new Map<string, CourseOffer>();
+  for (const s of all) {
+    const course = s.course_offering.course;
+    const unit = s.course_offering.institution_unit;
+    const original = Number(course.original_price) || 0;
+    const final = Number(s.price_with_scholarship) || 0;
+    const discount = original > 0 ? Math.round(((original - final) / original) * 100) : 0;
+    const key = course.name.trim().toUpperCase();
+    const cur = map.get(key);
+    if (!cur) {
+      map.set(key, {
+        name: course.name,
+        level: course.level,
+        bestDiscount: discount,
+        minPrice: final,
+        scholarshipCount: 1,
+        cities: unit?.city ? [unit.city] : [],
+      });
+    } else {
+      cur.bestDiscount = Math.max(cur.bestDiscount, discount);
+      cur.minPrice = Math.min(cur.minPrice, final);
+      cur.scholarshipCount += 1;
+      if (unit?.city && !cur.cities.includes(unit.city)) cur.cities.push(unit.city);
+    }
+  }
+  return Array.from(map.values())
+    .sort((a, b) => b.scholarshipCount - a.scholarshipCount || b.bestDiscount - a.bestDiscount)
+    .slice(0, limit);
+}
+
