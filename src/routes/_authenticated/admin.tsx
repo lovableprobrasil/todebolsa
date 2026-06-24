@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, redirect, useRouterState } from "@tanstack/react-router";
-import { Shield, LayoutDashboard, Building2, GraduationCap, Users, Bookmark, Briefcase, Wallet, Star, FileCheck2, Activity } from "lucide-react";
+import { Shield, LayoutDashboard, Building2, GraduationCap, Users, Bookmark, Briefcase, Wallet, Star, FileCheck2, Activity, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
