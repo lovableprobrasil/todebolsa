@@ -67,7 +67,7 @@ function InstitutionPortalIndex() {
       </header>
 
       {institutionAdminOf.length === 0 ? (
-        <EmptyState />
+        pendingApp ? <PendingApplicationCard status={pendingApp.status} /> : <EmptyState />
       ) : isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 2 }).map((_, i) => (
