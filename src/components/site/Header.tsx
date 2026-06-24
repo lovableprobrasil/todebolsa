@@ -3,6 +3,7 @@ import { GraduationCap, LayoutDashboard, Menu, Search, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
+import { NotificationsBell } from "@/components/site/NotificationsBell";
 
 const NAV = [
   { to: "/bolsas", label: "Bolsas" },
