@@ -724,6 +724,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_institution: {
+        Args: {
+          p_city: string
+          p_cnpj: string
+          p_description: string
+          p_email: string
+          p_legal_name: string
+          p_phone: string
+          p_state: string
+          p_trade_name: string
+          p_unit_name: string
+          p_website: string
+        }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -731,6 +746,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_institution_admin: {
+        Args: { _institution_id: string; _user_id: string }
+        Returns: boolean
+      }
+      unaccent_safe: { Args: { p: string }; Returns: string }
     }
     Enums: {
       app_role:
