@@ -75,15 +75,15 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.04 260);
 
-  /* Laranja vibrante — cor principal */
-  --primary: oklch(0.7 0.19 45);
+  /* Laranja vibrante — cor principal (#F97316) */
+  --primary: oklch(0.705 0.213 47.6);
   --primary-foreground: oklch(0.99 0 0);
-  --primary-soft: oklch(0.96 0.05 60);
+  --primary-soft: oklch(0.961 0.045 70);
 
-  /* Azul de confiança — secundário/marca */
-  --brand-blue: oklch(0.45 0.16 255);
+  /* Azul de confiança — secundário/marca (#2563EB) */
+  --brand-blue: oklch(0.546 0.245 262.9);
   --brand-blue-foreground: oklch(0.99 0 0);
-  --brand-blue-soft: oklch(0.95 0.04 255);
+  --brand-blue-soft: oklch(0.95 0.04 262);
 
   --secondary: oklch(0.96 0.01 250);
   --secondary-foreground: oklch(0.22 0.04 260);
