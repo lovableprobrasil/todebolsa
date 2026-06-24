@@ -114,7 +114,12 @@ export const Route = createFileRoute("/sitemap.xml")({
         }
 
         // Programmatic combo pages: /bolsas/curso/:level/cidade/:city
-        for (const l of LEVELS.map((s) => s.toUpperCase().replace(/-/g, "_"))) {
+        const ENUM_LEVELS = [
+          "FUNDAMENTAL","MEDIO","TECNICO","IDIOMAS","PROFISSIONALIZANTE",
+          "CURSO_LIVRE","PREPARATORIO","EJA","PRE_VESTIBULAR",
+          "GRADUACAO","POS_GRADUACAO","MBA","MESTRADO",
+        ];
+        for (const l of ENUM_LEVELS) {
           for (const c of citySlugs.slice(0, 50)) {
             entries.push({
               path: `/bolsas/curso/${l}/cidade/${c}`,
