@@ -18,6 +18,21 @@ const STATUS_TONE: Record<string, string> = {
   REJECTED: "bg-muted text-muted-foreground",
 };
 
+const STATUS_LABEL: Record<string, string> = {
+  APPROVED: "Aprovada",
+  PENDING: "Pendente",
+  SUSPENDED: "Suspensa",
+  REJECTED: "Recusada",
+};
+
+const STATUS_FILTER_LABEL: Record<string, string> = {
+  ALL: "Todas",
+  PENDING: "Pendentes",
+  APPROVED: "Aprovadas",
+  SUSPENDED: "Suspensas",
+  REJECTED: "Recusadas",
+};
+
 function AdminInstitutions() {
   const qc = useQueryClient();
   const [q, setQ] = useState("");
