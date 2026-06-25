@@ -114,7 +114,7 @@ function AdminInstitutions() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={(STATUS_TONE[i.status] ?? "") + " border-0"}>{i.status}</Badge>
+                  <Badge className={(STATUS_TONE[i.status] ?? "") + " border-0"}>{STATUS_LABEL[i.status] ?? i.status}</Badge>
                   <a href={"/instituicoes/" + i.slug} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                     Ver página <ExternalLink className="h-3 w-3" />
                   </a>
