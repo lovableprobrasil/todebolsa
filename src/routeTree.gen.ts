@@ -21,6 +21,7 @@ import { Route as CarteiraUgeRouteImport } from './routes/carteira-uge'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as GuiaIndexRouteImport } from './routes/guia.index'
 import { Route as BolsasIndexRouteImport } from './routes/bolsas.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -128,6 +129,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasIndexRoute = NoticiasIndexRouteImport.update({
+  id: '/noticias/',
+  path: '/noticias/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuiaIndexRoute = GuiaIndexRouteImport.update({
@@ -432,6 +438,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
+  '/noticias/': typeof NoticiasIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
@@ -493,6 +500,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/bolsas': typeof BolsasIndexRoute
   '/guia': typeof GuiaIndexRoute
+  '/noticias': typeof NoticiasIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
@@ -554,6 +562,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
+  '/noticias/': typeof NoticiasIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
@@ -618,6 +627,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/bolsas/'
     | '/guia/'
+    | '/noticias/'
     | '/admin/analytics'
     | '/admin/avaliacoes'
     | '/admin/blog'
@@ -679,6 +689,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/bolsas'
     | '/guia'
+    | '/noticias'
     | '/admin/analytics'
     | '/admin/avaliacoes'
     | '/admin/blog'
@@ -739,6 +750,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/bolsas/'
     | '/guia/'
+    | '/noticias/'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/avaliacoes'
     | '/_authenticated/admin/blog'
@@ -794,6 +806,7 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
   GuiaIndexRoute: typeof GuiaIndexRoute
+  NoticiasIndexRoute: typeof NoticiasIndexRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
   ApiPublicUgeValidarCodigoRoute: typeof ApiPublicUgeValidarCodigoRoute
@@ -884,6 +897,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias/': {
+      id: '/noticias/'
+      path: '/noticias'
+      fullPath: '/noticias/'
+      preLoaderRoute: typeof NoticiasIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guia/': {
@@ -1402,6 +1422,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   BolsasIndexRoute: BolsasIndexRoute,
   GuiaIndexRoute: GuiaIndexRoute,
+  NoticiasIndexRoute: NoticiasIndexRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
   ApiPublicUgeValidarCodigoRoute: ApiPublicUgeValidarCodigoRoute,
