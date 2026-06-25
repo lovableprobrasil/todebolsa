@@ -1282,6 +1282,42 @@ export type Database = {
           },
         ]
       }
+      news_categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       news_images: {
         Row: {
           alt_text: string | null
@@ -1326,6 +1362,62 @@ export type Database = {
           {
             foreignKeyName: "news_images_article_id_fkey"
             columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news_post_versions: {
+        Row: {
+          change_reason: string | null
+          content: string | null
+          cover_url: string | null
+          created_at: string
+          created_by: string | null
+          excerpt: string | null
+          id: string
+          post_id: string
+          snapshot: Json
+          status: string | null
+          subtitle: string | null
+          title: string
+          version_number: number
+        }
+        Insert: {
+          change_reason?: string | null
+          content?: string | null
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          id?: string
+          post_id: string
+          snapshot: Json
+          status?: string | null
+          subtitle?: string | null
+          title: string
+          version_number: number
+        }
+        Update: {
+          change_reason?: string | null
+          content?: string | null
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          id?: string
+          post_id?: string
+          snapshot?: Json
+          status?: string | null
+          subtitle?: string | null
+          title?: string
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_post_versions_post_id_fkey"
+            columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "blog_posts"
             referencedColumns: ["id"]
@@ -2072,6 +2164,13 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      publish_scheduled_news: {
+        Args: never
+        Returns: {
+          published_id: string
+          published_slug: string
+        }[]
       }
       recalc_institution_rating: {
         Args: { p_institution_id: string }
