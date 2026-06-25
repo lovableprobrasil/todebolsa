@@ -1,11 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Calendar, User, ArrowLeft, BookOpen } from "lucide-react";
+import { Calendar, User, ArrowLeft, BookOpen, Clock, Eye } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { ShareButtons } from "@/components/news/ShareButtons";
+import { NewsletterInline } from "@/components/news/NewsletterInline";
+import { RelatedPosts } from "@/components/news/RelatedPosts";
+import { ViewTracker } from "@/components/news/ViewTracker";
 import { supabase } from "@/integrations/supabase/client";
 
-const SITE = "https://todebolsa.lovable.app";
+const SITE = "https://todebolsa.com.br";
 
 type Post = {
   slug: string;

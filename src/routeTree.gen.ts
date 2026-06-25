@@ -11,10 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ParaInstituicoesRouteImport } from './routes/para-instituicoes'
+import { Route as NewsSitemapDotxmlRouteImport } from './routes/news-sitemap[.]xml'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as CarteiraUgeRouteImport } from './routes/carteira-uge'
@@ -85,6 +87,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RssDotxmlRoute = RssDotxmlRouteImport.update({
+  id: '/rss.xml',
+  path: '/rss.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -103,6 +110,11 @@ const PrivacidadeRoute = PrivacidadeRouteImport.update({
 const ParaInstituicoesRoute = ParaInstituicoesRouteImport.update({
   id: '/para-instituicoes',
   path: '/para-instituicoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsSitemapDotxmlRoute = NewsSitemapDotxmlRouteImport.update({
+  id: '/news-sitemap.xml',
+  path: '/news-sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -434,10 +446,12 @@ export interface FileRoutesByFullPath {
   '/carteira-uge': typeof CarteiraUgeRoute
   '/cookies': typeof CookiesRoute
   '/faq': typeof FaqRoute
+  '/news-sitemap.xml': typeof NewsSitemapDotxmlRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -500,10 +514,12 @@ export interface FileRoutesByTo {
   '/carteira-uge': typeof CarteiraUgeRoute
   '/cookies': typeof CookiesRoute
   '/faq': typeof FaqRoute
+  '/news-sitemap.xml': typeof NewsSitemapDotxmlRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos': typeof TermosRoute
   '/carteira': typeof AuthenticatedCarteiraRoute
@@ -564,10 +580,12 @@ export interface FileRoutesById {
   '/carteira-uge': typeof CarteiraUgeRoute
   '/cookies': typeof CookiesRoute
   '/faq': typeof FaqRoute
+  '/news-sitemap.xml': typeof NewsSitemapDotxmlRoute
   '/para-instituicoes': typeof ParaInstituicoesRoute
   '/privacidade': typeof PrivacidadeRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos': typeof TermosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -632,10 +650,12 @@ export interface FileRouteTypes {
     | '/carteira-uge'
     | '/cookies'
     | '/faq'
+    | '/news-sitemap.xml'
     | '/para-instituicoes'
     | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/termos'
     | '/admin'
@@ -698,10 +718,12 @@ export interface FileRouteTypes {
     | '/carteira-uge'
     | '/cookies'
     | '/faq'
+    | '/news-sitemap.xml'
     | '/para-instituicoes'
     | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/termos'
     | '/carteira'
@@ -761,10 +783,12 @@ export interface FileRouteTypes {
     | '/carteira-uge'
     | '/cookies'
     | '/faq'
+    | '/news-sitemap.xml'
     | '/para-instituicoes'
     | '/privacidade'
     | '/recuperar-senha'
     | '/reset-password'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/termos'
     | '/_authenticated/admin'
@@ -829,10 +853,12 @@ export interface RootRouteChildren {
   CarteiraUgeRoute: typeof CarteiraUgeRoute
   CookiesRoute: typeof CookiesRoute
   FaqRoute: typeof FaqRoute
+  NewsSitemapDotxmlRoute: typeof NewsSitemapDotxmlRoute
   ParaInstituicoesRoute: typeof ParaInstituicoesRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  RssDotxmlRoute: typeof RssDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermosRoute: typeof TermosRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -869,6 +895,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rss.xml': {
+      id: '/rss.xml'
+      path: '/rss.xml'
+      fullPath: '/rss.xml'
+      preLoaderRoute: typeof RssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -895,6 +928,13 @@ declare module '@tanstack/react-router' {
       path: '/para-instituicoes'
       fullPath: '/para-instituicoes'
       preLoaderRoute: typeof ParaInstituicoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news-sitemap.xml': {
+      id: '/news-sitemap.xml'
+      path: '/news-sitemap.xml'
+      fullPath: '/news-sitemap.xml'
+      preLoaderRoute: typeof NewsSitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -1469,10 +1509,12 @@ const rootRouteChildren: RootRouteChildren = {
   CarteiraUgeRoute: CarteiraUgeRoute,
   CookiesRoute: CookiesRoute,
   FaqRoute: FaqRoute,
+  NewsSitemapDotxmlRoute: NewsSitemapDotxmlRoute,
   ParaInstituicoesRoute: ParaInstituicoesRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  RssDotxmlRoute: RssDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermosRoute: TermosRoute,
   BlogSlugRoute: BlogSlugRoute,
