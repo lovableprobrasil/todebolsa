@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
 });
 
-const NAV = [
+const STUDENT_NAV = [
   { to: "/painel", label: "Painel", icon: LayoutDashboard },
   { to: "/favoritos", label: "Favoritos", icon: Heart },
   { to: "/reservas", label: "Minhas reservas", icon: Bookmark },
@@ -33,20 +33,25 @@ const NAV = [
   { to: "/perfil", label: "Meu perfil", icon: UserCircle },
 ] as const;
 
+const ADMIN_NAV = [
+  { to: "/admin", label: "Painel master", icon: Shield },
+  { to: "/notificacoes", label: "Notificações", icon: Bell },
+  { to: "/perfil", label: "Meu perfil", icon: UserCircle },
+] as const;
+
 function AuthenticatedLayout() {
   const { profile, user, signOut, isPlatformAdmin, institutionAdminOf } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const nav = [
-    ...NAV,
-    ...(institutionAdminOf.length > 0
-      ? [{ to: "/instituicao", label: "Portal da instituição", icon: Building2 } as const]
-      : []),
-    ...(isPlatformAdmin
-      ? [{ to: "/admin", label: "Painel master", icon: Shield } as const]
-      : []),
-  ];
+  const nav = isPlatformAdmin
+    ? ADMIN_NAV
+    : [
+        ...STUDENT_NAV,
+        ...(institutionAdminOf.length > 0
+          ? [{ to: "/instituicao", label: "Portal da instituição", icon: Building2 } as const]
+          : []),
+      ];
 
   async function handleSignOut() {
     await signOut();
