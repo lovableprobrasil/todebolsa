@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, Building2, Loader2, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Loader2, Check, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Header } from "@/components/site/Header";
@@ -37,7 +37,7 @@ type FormState = {
   accepted_terms: boolean; accepted_privacy: boolean;
   accepted_truthfulness: boolean; accepted_representation: boolean;
   // Account creation
-  account_name: string; account_email: string; account_password: string; account_password2: string;
+  account_name: string; account_email: string; account_email2: string; account_password: string; account_password2: string;
 };
 
 const EMPTY: FormState = {
@@ -51,7 +51,7 @@ const EMPTY: FormState = {
   has_idle_vacancies: null, avg_discount_pct: "", monthly_vacancies: "",
   accepted_terms: false, accepted_privacy: false,
   accepted_truthfulness: false, accepted_representation: false,
-  account_name: "", account_email: "", account_password: "", account_password2: "",
+  account_name: "", account_email: "", account_email2: "", account_password: "", account_password2: "",
 };
 
 const TYPE_OPTIONS = [
@@ -89,7 +89,7 @@ function ApplicationWizardPage() {
   // Pre-fill account email from institution responsible email
   useEffect(() => {
     if (!user && !form.account_email && form.responsible_email) {
-      setForm((f) => ({ ...f, account_email: f.account_email || f.responsible_email, account_name: f.account_name || f.responsible_name }));
+      setForm((f) => ({ ...f, account_email: f.account_email || f.responsible_email, account_email2: f.account_email2 || f.responsible_email, account_name: f.account_name || f.responsible_name }));
     }
   }, [form.responsible_email, form.responsible_name, user]); // eslint-disable-line
 
@@ -402,22 +402,65 @@ function StepAceites({ form, update }: { form: FormState; update: <K extends key
 }
 
 function StepConta({ form, update }: { form: FormState; update: <K extends keyof FormState>(k: K, v: FormState[K]) => void }) {
+  const [showPw, setShowPw] = useState(false);
+  const [showPw2, setShowPw2] = useState(false);
   const pwMatch = !form.account_password2 || form.account_password === form.account_password2;
+  const emailMatch = !form.account_email2 || form.account_email.trim().toLowerCase() === form.account_email2.trim().toLowerCase();
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
         Crie sua conta para acompanhar a análise, conversar com o time e gerenciar sua instituição depois de aprovado.
       </p>
       <Grid>
-        <Field label="Seu nome *" full><Input value={form.account_name} onChange={(e) => update("account_name", e.target.value)} /></Field>
-        <Field label="E-mail de acesso *" full>
-          <Input type="email" value={form.account_email} onChange={(e) => update("account_email", e.target.value)} />
+        <Field label="Nome completo *" full>
+          <Input value={form.account_name} onChange={(e) => update("account_name", e.target.value)} placeholder="Como aparece no seu documento" />
+        </Field>
+        <Field label="E-mail de acesso *">
+          <Input type="email" autoComplete="email" value={form.account_email} onChange={(e) => update("account_email", e.target.value)} placeholder="voce@instituicao.com" />
+        </Field>
+        <Field label="Confirmar e-mail *">
+          <Input type="email" autoComplete="email" value={form.account_email2} onChange={(e) => update("account_email2", e.target.value)} onPaste={(e) => e.preventDefault()} placeholder="Repita o e-mail" />
+          {!emailMatch && <p className="text-xs text-destructive mt-1">Os e-mails não coincidem.</p>}
         </Field>
         <Field label="Senha *">
-          <Input type="password" value={form.account_password} onChange={(e) => update("account_password", e.target.value)} placeholder="Mínimo 6 caracteres" />
+          <div className="relative">
+            <Input
+              type={showPw ? "text" : "password"}
+              autoComplete="new-password"
+              value={form.account_password}
+              onChange={(e) => update("account_password", e.target.value)}
+              placeholder="Mínimo 6 caracteres"
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPw((v) => !v)}
+              aria-label={showPw ? "Ocultar senha" : "Mostrar senha"}
+              className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-accent"
+            >
+              {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
         </Field>
         <Field label="Confirmar senha *">
-          <Input type="password" value={form.account_password2} onChange={(e) => update("account_password2", e.target.value)} />
+          <div className="relative">
+            <Input
+              type={showPw2 ? "text" : "password"}
+              autoComplete="new-password"
+              value={form.account_password2}
+              onChange={(e) => update("account_password2", e.target.value)}
+              placeholder="Repita a senha"
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPw2((v) => !v)}
+              aria-label={showPw2 ? "Ocultar senha" : "Mostrar senha"}
+              className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-accent"
+            >
+              {showPw2 ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
           {!pwMatch && <p className="text-xs text-destructive mt-1">As senhas não coincidem.</p>}
         </Field>
       </Grid>
@@ -511,6 +554,7 @@ function validateStep(step: number, f: FormState, hasUser: boolean): boolean {
     case 5:
       if (hasUser) return true; // envio
       return !!f.account_name.trim() && /\S+@\S+\.\S+/.test(f.account_email)
+        && f.account_email.trim().toLowerCase() === f.account_email2.trim().toLowerCase()
         && f.account_password.length >= 6 && f.account_password === f.account_password2;
     case 6:
       return true; // envio (sem usuário previamente)
