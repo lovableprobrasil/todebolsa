@@ -589,8 +589,8 @@ function CtaInstitution() {
             É uma instituição de ensino?
           </h3>
           <p className="text-muted-foreground mb-5 max-w-2xl">
-            Cadastre sua instituição e comece a oferecer bolsas para milhares de alunos em todo o Brasil.
-            Aumente suas matrículas e preencha suas vagas.
+            Cadastre sua instituição, publique suas bolsas e alcance estudantes que estão
+            buscando oportunidades reais. Aumente suas matrículas e preencha suas vagas.
           </p>
           <ul className="grid sm:grid-cols-3 gap-3 max-w-2xl">
             {benefits.map((b) => (
