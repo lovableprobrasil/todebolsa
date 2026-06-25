@@ -91,9 +91,8 @@ function Field({ id, label, value, onChange }: { id: string; label: string; valu
       </Label>
       <div className="relative">
         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
+        <PasswordInput
           id={id}
-          type="password"
           required
           minLength={6}
           value={value}
