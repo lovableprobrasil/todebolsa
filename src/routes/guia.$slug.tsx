@@ -30,6 +30,9 @@ type Post = {
   source_name: string | null;
   author: string | null;
   published_at: string | null;
+  updated_at?: string | null;
+  reading_time_minutes?: number | null;
+  view_count?: number | null;
 };
 
 function postQueryOptions(slug: string) {
