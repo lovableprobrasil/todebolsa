@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, CheckCircle2, XCircle, AlertCircle, Pause, Star, Send, Loader2, MessageSquare, FileText } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, AlertCircle, Pause, Star, Send, Loader2, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,7 @@ function AdminApplicationDetail() {
   const [notes, setNotes] = useState("");
   const [msg, setMsg] = useState("");
 
-  const { data: app, isLoading } = useQuery({
+  const { data: app, isLoading, isError, error } = useQuery({
     queryKey: ["admin-app", id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -34,9 +34,10 @@ function AdminApplicationDetail() {
   const { data: messages } = useQuery({
     queryKey: ["admin-app-messages", id],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("institution_application_messages")
         .select("*").eq("application_id", id).order("created_at", { ascending: true });
+      if (error) throw error;
       return data ?? [];
     },
   });
@@ -96,7 +97,27 @@ function AdminApplicationDetail() {
     onSuccess: () => { setMsg(""); qc.invalidateQueries({ queryKey: ["admin-app-messages", id] }); },
   });
 
-  if (isLoading || !app) return <div className="h-40 rounded-2xl bg-muted animate-pulse" />;
+  if (isLoading) return <div className="h-40 rounded-2xl bg-muted animate-pulse" />;
+
+  if (isError) {
+    return (
+      <AdminLoadState
+        title="Não foi possível carregar o credenciamento"
+        message={error instanceof Error ? error.message : "Verifique sua permissão e tente novamente."}
+        onBack={() => navigate({ to: "/admin/credenciamento-instituicoes" })}
+      />
+    );
+  }
+
+  if (!app) {
+    return (
+      <AdminLoadState
+        title="Credenciamento não encontrado"
+        message="O cadastro pode ter sido removido ou o link está incorreto."
+        onBack={() => navigate({ to: "/admin/credenciamento-instituicoes" })}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -115,7 +136,7 @@ function AdminApplicationDetail() {
           </div>
           <div className="flex items-center gap-2">
             {app.high_potential && <Badge className="bg-accent/20 text-accent-foreground border-0"><Star className="h-3 w-3 mr-1 fill-current" /> Alto potencial</Badge>}
-            <Badge className="border-0">{app.status}</Badge>
+            <Badge className="border-0">{statusLabel(app.status)}</Badge>
           </div>
         </div>
       </header>
@@ -249,16 +270,46 @@ function Info({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
+function statusLabel(status?: string | null) {
+  const labels: Record<string, string> = {
+    DRAFT: "Rascunho",
+    SUBMITTED: "Enviado",
+    UNDER_REVIEW: "Em análise",
+    NEEDS_INFO: "Aguardando informações",
+    APPROVED: "Aprovado",
+    REJECTED: "Recusado",
+    SUSPENDED: "Suspenso",
+  };
+  return status ? labels[status] ?? status : "—";
+}
+
+function AdminLoadState({ title, message, onBack }: { title: string; message: string; onBack: () => void }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-8 text-center">
+      <AlertCircle className="mx-auto h-10 w-10 text-destructive" />
+      <h1 className="mt-3 font-display text-xl font-extrabold">{title}</h1>
+      <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">{message}</p>
+      <Button variant="outline" className="mt-5" onClick={onBack}>
+        <ArrowLeft className="mr-1 h-4 w-4" /> Voltar para credenciamentos
+      </Button>
+    </div>
+  );
+}
+
 function DocsList({ appId }: { appId: string }) {
-  const { data } = useQuery({
+  const { data, isError, error } = useQuery({
     queryKey: ["admin-app-docs", appId],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("institution_application_documents")
         .select("*").eq("application_id", appId).order("created_at", { ascending: false });
+      if (error) throw error;
       return data ?? [];
     },
   });
+  if (isError) {
+    return <p className="text-sm text-destructive">Erro ao carregar documentos: {error instanceof Error ? error.message : "tente novamente."}</p>;
+  }
   if (!data || data.length === 0) return <p className="text-sm text-muted-foreground">Nenhum documento enviado.</p>;
   return (
     <ul className="space-y-2">

@@ -23,10 +23,12 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuiaIndexRouteImport } from './routes/guia.index'
 import { Route as BolsasIndexRouteImport } from './routes/bolsas.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticated/reservas'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
@@ -138,6 +140,11 @@ const BolsasIndexRoute = BolsasIndexRouteImport.update({
   path: '/bolsas/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InstituicoesSlugRoute = InstituicoesSlugRouteImport.update({
   id: '/instituicoes/$slug',
   path: '/instituicoes/$slug',
@@ -156,6 +163,11 @@ const GuiaSlugRoute = GuiaSlugRouteImport.update({
 const BolsasIdRoute = BolsasIdRouteImport.update({
   id: '/bolsas/$id',
   path: '/bolsas/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedReservasRoute = AuthenticatedReservasRouteImport.update({
@@ -412,10 +424,12 @@ export interface FileRoutesByFullPath {
   '/painel': typeof AuthenticatedPainelRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -471,10 +485,12 @@ export interface FileRoutesByTo {
   '/painel': typeof AuthenticatedPainelRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/blog': typeof BlogIndexRoute
   '/bolsas': typeof BolsasIndexRoute
   '/guia': typeof GuiaIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -530,10 +546,12 @@ export interface FileRoutesById {
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/reservas': typeof AuthenticatedReservasRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -592,10 +610,12 @@ export interface FileRouteTypes {
     | '/painel'
     | '/perfil'
     | '/reservas'
+    | '/blog/$slug'
     | '/bolsas/$id'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/blog/'
     | '/bolsas/'
     | '/guia/'
     | '/admin/analytics'
@@ -651,10 +671,12 @@ export interface FileRouteTypes {
     | '/painel'
     | '/perfil'
     | '/reservas'
+    | '/blog/$slug'
     | '/bolsas/$id'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/blog'
     | '/bolsas'
     | '/guia'
     | '/admin/analytics'
@@ -709,10 +731,12 @@ export interface FileRouteTypes {
     | '/_authenticated/painel'
     | '/_authenticated/perfil'
     | '/_authenticated/reservas'
+    | '/blog/$slug'
     | '/bolsas/$id'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/blog/'
     | '/bolsas/'
     | '/guia/'
     | '/_authenticated/admin/analytics'
@@ -762,10 +786,12 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermosRoute: typeof TermosRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   BolsasIdRoute: typeof BolsasIdRoute
   GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
   GuiaIndexRoute: typeof GuiaIndexRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
@@ -874,6 +900,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BolsasIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/instituicoes/$slug': {
       id: '/instituicoes/$slug'
       path: '/instituicoes/$slug'
@@ -900,6 +933,13 @@ declare module '@tanstack/react-router' {
       path: '/bolsas/$id'
       fullPath: '/bolsas/$id'
       preLoaderRoute: typeof BolsasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/reservas': {
@@ -1354,10 +1394,12 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermosRoute: TermosRoute,
+  BlogSlugRoute: BlogSlugRoute,
   BolsasIdRoute: BolsasIdRoute,
   GuiaSlugRoute: GuiaSlugRoute,
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
   BolsasIndexRoute: BolsasIndexRoute,
   GuiaIndexRoute: GuiaIndexRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
