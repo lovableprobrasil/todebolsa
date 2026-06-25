@@ -71,7 +71,7 @@ function AdminBlogPage() {
   const [filter, setFilter] = useState<Filter>("ALL");
   const [search, setSearch] = useState("");
 
-  const { data: posts = [], isLoading } = useQuery({
+  const { data: posts = [], isLoading, isError, error } = useQuery({
     queryKey: ["admin-blog-posts"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -225,6 +225,13 @@ function AdminBlogPage() {
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
         {isLoading ? (
           <div className="p-10 text-center text-muted-foreground">Carregando…</div>
+        ) : isError ? (
+          <div className="p-10 text-center">
+            <p className="font-semibold text-destructive">Não foi possível carregar as notícias.</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {error instanceof Error ? error.message : "Verifique sua permissão e tente novamente."}
+            </p>
+          </div>
         ) : filtered.length === 0 ? (
           <div className="p-10 text-center text-muted-foreground">
             {posts.length === 0 ? "Nenhuma notícia cadastrada." : "Nenhuma notícia encontrada com este filtro."}
