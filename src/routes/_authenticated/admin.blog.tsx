@@ -135,7 +135,7 @@ function AdminBlogPage() {
     setSaving(true);
     const slug = form.slug.trim() || slugify(form.title);
     const willPublish = publishNow ?? form.is_published;
-    const payload: Record<string, unknown> = {
+    const payload = {
       slug,
       title: form.title.trim(),
       excerpt: form.excerpt.trim() || null,
@@ -143,8 +143,8 @@ function AdminBlogPage() {
       cover_url: form.cover_url.trim() || null,
       author: form.author.trim() || null,
       is_published: willPublish,
+      published_at: willPublish ? new Date().toISOString() : null,
     };
-    if (willPublish) payload.published_at = new Date().toISOString();
 
     const res = form.id
       ? await supabase.from("blog_posts").update(payload).eq("id", form.id)
