@@ -8,6 +8,7 @@ import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { SearchBar } from "@/components/site/SearchBar";
 import { TrustBadges } from "@/components/site/TrustBadges";
 import { StudentTestimonials } from "@/components/site/StudentTestimonials";
+import { BlogHomeSection } from "@/components/site/BlogHomeSection";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer } from "@/lib/scholarships";
@@ -78,6 +79,7 @@ function HomePage() {
         <StudentTestimonials />
         <CitiesSection />
         <FaqSection />
+        <BlogHomeSection />
         <CtaInstitution />
       </main>
       <Footer />

@@ -53,6 +53,7 @@ import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminCredenciamentoInstituicoesRouteImport } from './routes/_authenticated/admin.credenciamento-instituicoes'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
+import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
 import { Route as AuthenticatedAdminAvaliacoesRouteImport } from './routes/_authenticated/admin.avaliacoes'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
@@ -299,6 +300,11 @@ const AuthenticatedAdminBolsasRoute =
     path: '/bolsas',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminBlogRoute = AuthenticatedAdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminAvaliacoesRoute =
   AuthenticatedAdminAvaliacoesRouteImport.update({
     id: '/avaliacoes',
@@ -407,6 +413,7 @@ export interface FileRoutesByFullPath {
   '/guia/': typeof GuiaIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
+  '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren
@@ -464,6 +471,7 @@ export interface FileRoutesByTo {
   '/guia': typeof GuiaIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
+  '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren
@@ -522,6 +530,7 @@ export interface FileRoutesById {
   '/guia/': typeof GuiaIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
+  '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
   '/_authenticated/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren
@@ -582,6 +591,7 @@ export interface FileRouteTypes {
     | '/guia/'
     | '/admin/analytics'
     | '/admin/avaliacoes'
+    | '/admin/blog'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/credenciamento-instituicoes'
@@ -639,6 +649,7 @@ export interface FileRouteTypes {
     | '/guia'
     | '/admin/analytics'
     | '/admin/avaliacoes'
+    | '/admin/blog'
     | '/admin/bolsas'
     | '/admin/bootstrap'
     | '/admin/credenciamento-instituicoes'
@@ -696,6 +707,7 @@ export interface FileRouteTypes {
     | '/guia/'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/avaliacoes'
+    | '/_authenticated/admin/blog'
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
     | '/_authenticated/admin/credenciamento-instituicoes'
@@ -1061,6 +1073,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBolsasRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/blog': {
+      id: '/_authenticated/admin/blog'
+      path: '/blog'
+      fullPath: '/admin/blog'
+      preLoaderRoute: typeof AuthenticatedAdminBlogRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/avaliacoes': {
       id: '/_authenticated/admin/avaliacoes'
       path: '/avaliacoes'
@@ -1217,6 +1236,7 @@ const AuthenticatedAdminFinanceiroRouteWithChildren =
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminAvaliacoesRoute: typeof AuthenticatedAdminAvaliacoesRoute
+  AuthenticatedAdminBlogRoute: typeof AuthenticatedAdminBlogRoute
   AuthenticatedAdminBolsasRoute: typeof AuthenticatedAdminBolsasRoute
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
   AuthenticatedAdminCredenciamentoInstituicoesRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren
@@ -1233,6 +1253,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
   AuthenticatedAdminAvaliacoesRoute: AuthenticatedAdminAvaliacoesRoute,
+  AuthenticatedAdminBlogRoute: AuthenticatedAdminBlogRoute,
   AuthenticatedAdminBolsasRoute: AuthenticatedAdminBolsasRoute,
   AuthenticatedAdminBootstrapRoute: AuthenticatedAdminBootstrapRoute,
   AuthenticatedAdminCredenciamentoInstituicoesRoute:
