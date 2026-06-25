@@ -55,6 +55,18 @@ function GuiaIndex() {
     },
   });
 
+  const { data: categories = [] } = useQuery({
+    queryKey: ["news-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("news_categories")
+        .select("slug, name, description, color")
+        .order("sort_order");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
