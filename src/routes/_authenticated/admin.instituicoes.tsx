@@ -18,6 +18,21 @@ const STATUS_TONE: Record<string, string> = {
   REJECTED: "bg-muted text-muted-foreground",
 };
 
+const STATUS_LABEL: Record<string, string> = {
+  APPROVED: "Aprovada",
+  PENDING: "Pendente",
+  SUSPENDED: "Suspensa",
+  REJECTED: "Recusada",
+};
+
+const STATUS_FILTER_LABEL: Record<string, string> = {
+  ALL: "Todas",
+  PENDING: "Pendentes",
+  APPROVED: "Aprovadas",
+  SUSPENDED: "Suspensas",
+  REJECTED: "Recusadas",
+};
+
 function AdminInstitutions() {
   const qc = useQueryClient();
   const [q, setQ] = useState("");
@@ -72,7 +87,7 @@ function AdminInstitutions() {
         {["ALL", "PENDING", "APPROVED", "SUSPENDED", "REJECTED"].map((s) => (
           <button key={s} onClick={() => setStatus(s)}
             className={"px-3 h-9 rounded-xl text-xs font-bold " + (status === s ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground/70 hover:bg-muted")}>
-            {s === "ALL" ? "Todas" : s}
+            {STATUS_FILTER_LABEL[s]}
           </button>
         ))}
       </div>
@@ -99,7 +114,7 @@ function AdminInstitutions() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={(STATUS_TONE[i.status] ?? "") + " border-0"}>{i.status}</Badge>
+                  <Badge className={(STATUS_TONE[i.status] ?? "") + " border-0"}>{STATUS_LABEL[i.status] ?? i.status}</Badge>
                   <a href={"/instituicoes/" + i.slug} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                     Ver página <ExternalLink className="h-3 w-3" />
                   </a>
