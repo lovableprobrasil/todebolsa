@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
+import { isValidCPF, maskCPF, onlyDigits } from "@/lib/validators/cnpj";
 
 export const Route = createFileRoute("/_authenticated/indicacoes")({
   component: ReferralPage,
