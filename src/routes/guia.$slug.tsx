@@ -53,9 +53,10 @@ export const Route = createFileRoute("/guia/$slug")({
     context.queryClient.ensureQueryData(postQueryOptions(params.slug)),
   head: ({ params, loaderData }) => {
     const post = loaderData as Post | undefined;
-    const title = post ? `${post.title} | Guia Tô de Bolsa` : "Artigo | Tô de Bolsa";
-    const desc = post?.excerpt ?? "Guia do Estudante — Tô de Bolsa.";
+    const title = post ? `${post.meta_title || post.title} | Tô de Bolsa` : "Artigo | Tô de Bolsa";
+    const desc = post?.meta_description ?? post?.excerpt ?? "Guia do Estudante — Tô de Bolsa.";
     const url = `${SITE}/guia/${params.slug}`;
+    const ogImage = post?.og_image_url ?? post?.cover_url ?? null;
     const meta: Array<Record<string, string>> = [
       { title },
       { name: "description", content: desc },
@@ -67,9 +68,9 @@ export const Route = createFileRoute("/guia/$slug")({
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: desc },
     ];
-    if (post?.cover_url) {
-      meta.push({ property: "og:image", content: post.cover_url });
-      meta.push({ name: "twitter:image", content: post.cover_url });
+    if (ogImage) {
+      meta.push({ property: "og:image", content: ogImage });
+      meta.push({ name: "twitter:image", content: ogImage });
     }
     return {
       meta,
