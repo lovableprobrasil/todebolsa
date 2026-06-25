@@ -580,7 +580,8 @@ function validateStep(step: number, f: FormState, hasUser: boolean): boolean {
       return !!f.trade_name && !!f.institution_type && !!f.cnpj && isValidCNPJ(f.cnpj);
     case 1:
       return !!f.responsible_name && !!f.responsible_role && !!f.responsible_email
-        && !!f.responsible_whatsapp && f.authorization_declared;
+        && !!f.responsible_whatsapp && f.authorization_declared
+        && (!f.responsible_cpf || isValidCPF(f.responsible_cpf));
     case 2:
       return onlyDigits(f.zip).length === 8 && !!f.address && !!f.number && !!f.neighborhood
         && !!f.city && f.state.length === 2 && !!f.service_mode;
