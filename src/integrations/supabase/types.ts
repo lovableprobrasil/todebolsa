@@ -85,41 +85,95 @@ export type Database = {
       }
       blog_posts: {
         Row: {
+          ai_generated: boolean
+          ai_warnings: string[]
           author: string | null
+          category: string | null
           content: string | null
           cover_url: string | null
           created_at: string
           excerpt: string | null
+          featured: boolean
           id: string
+          image_alt: string | null
+          image_credit: string | null
           is_published: boolean
+          main_keyword: string | null
+          meta_description: string | null
+          meta_title: string | null
+          og_image_url: string | null
           published_at: string | null
+          scheduled_at: string | null
+          secondary_keywords: string[]
           slug: string
+          source_name: string | null
+          source_url: string | null
+          status: Database["public"]["Enums"]["news_status"]
+          subtitle: string | null
+          tags: string[]
+          thumbnail_url: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          ai_generated?: boolean
+          ai_warnings?: string[]
           author?: string | null
+          category?: string | null
           content?: string | null
           cover_url?: string | null
           created_at?: string
           excerpt?: string | null
+          featured?: boolean
           id?: string
+          image_alt?: string | null
+          image_credit?: string | null
           is_published?: boolean
+          main_keyword?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          og_image_url?: string | null
           published_at?: string | null
+          scheduled_at?: string | null
+          secondary_keywords?: string[]
           slug: string
+          source_name?: string | null
+          source_url?: string | null
+          status?: Database["public"]["Enums"]["news_status"]
+          subtitle?: string | null
+          tags?: string[]
+          thumbnail_url?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          ai_generated?: boolean
+          ai_warnings?: string[]
           author?: string | null
+          category?: string | null
           content?: string | null
           cover_url?: string | null
           created_at?: string
           excerpt?: string | null
+          featured?: boolean
           id?: string
+          image_alt?: string | null
+          image_credit?: string | null
           is_published?: boolean
+          main_keyword?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          og_image_url?: string | null
           published_at?: string | null
+          scheduled_at?: string | null
+          secondary_keywords?: string[]
           slug?: string
+          source_name?: string | null
+          source_url?: string | null
+          status?: Database["public"]["Enums"]["news_status"]
+          subtitle?: string | null
+          tags?: string[]
+          thumbnail_url?: string | null
           title?: string
           updated_at?: string
         }
@@ -1186,6 +1240,97 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      news_ai_generations: {
+        Row: {
+          article_id: string | null
+          created_at: string
+          generation_type: string
+          id: string
+          input_payload: Json | null
+          model_provider: string | null
+          output_payload: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          article_id?: string | null
+          created_at?: string
+          generation_type: string
+          id?: string
+          input_payload?: Json | null
+          model_provider?: string | null
+          output_payload?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          article_id?: string | null
+          created_at?: string
+          generation_type?: string
+          id?: string
+          input_payload?: Json | null
+          model_provider?: string | null
+          output_payload?: Json | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_ai_generations_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news_images: {
+        Row: {
+          alt_text: string | null
+          article_id: string | null
+          aspect_ratio: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          image_type: string
+          image_url: string
+          prompt: string | null
+          selected: boolean
+          style: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          article_id?: string | null
+          aspect_ratio?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_type?: string
+          image_url: string
+          prompt?: string | null
+          selected?: boolean
+          style?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          article_id?: string | null
+          aspect_ratio?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_type?: string
+          image_url?: string
+          prompt?: string | null
+          selected?: boolean
+          style?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_images_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -2374,6 +2519,12 @@ export type Database = {
         | "ENROLLMENT_IN_PROGRESS"
         | "ENROLLMENT_DONE"
         | "LOST"
+      news_status:
+        | "DRAFT"
+        | "IN_REVIEW"
+        | "SCHEDULED"
+        | "PUBLISHED"
+        | "ARCHIVED"
       offering_status: "ACTIVE" | "PAUSED" | "SOLD_OUT" | "ARCHIVED"
       payment_status:
         | "PENDING"
@@ -2589,6 +2740,7 @@ export const Constants = {
         "ENROLLMENT_DONE",
         "LOST",
       ],
+      news_status: ["DRAFT", "IN_REVIEW", "SCHEDULED", "PUBLISHED", "ARCHIVED"],
       offering_status: ["ACTIVE", "PAUSED", "SOLD_OUT", "ARCHIVED"],
       payment_status: [
         "PENDING",

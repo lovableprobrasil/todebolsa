@@ -10,9 +10,20 @@ const SITE = "https://todebolsa.lovable.app";
 type Post = {
   slug: string;
   title: string;
+  subtitle: string | null;
   excerpt: string | null;
   content: string | null;
   cover_url: string | null;
+  thumbnail_url: string | null;
+  og_image_url: string | null;
+  image_alt: string | null;
+  image_credit: string | null;
+  category: string | null;
+  tags: string[] | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  source_url: string | null;
+  source_name: string | null;
   author: string | null;
   published_at: string | null;
 };
@@ -23,7 +34,9 @@ function postQueryOptions(slug: string) {
     queryFn: async (): Promise<Post> => {
       const { data, error } = await supabase
         .from("blog_posts")
-        .select("slug, title, excerpt, content, cover_url, author, published_at")
+        .select(
+          "slug, title, subtitle, excerpt, content, cover_url, thumbnail_url, og_image_url, image_alt, image_credit, category, tags, meta_title, meta_description, source_url, source_name, author, published_at",
+        )
         .eq("slug", slug)
         .eq("is_published", true)
         .maybeSingle();
@@ -40,9 +53,10 @@ export const Route = createFileRoute("/guia/$slug")({
     context.queryClient.ensureQueryData(postQueryOptions(params.slug)),
   head: ({ params, loaderData }) => {
     const post = loaderData as Post | undefined;
-    const title = post ? `${post.title} | Guia Tô de Bolsa` : "Artigo | Tô de Bolsa";
-    const desc = post?.excerpt ?? "Guia do Estudante — Tô de Bolsa.";
+    const title = post ? `${post.meta_title || post.title} | Tô de Bolsa` : "Artigo | Tô de Bolsa";
+    const desc = post?.meta_description ?? post?.excerpt ?? "Guia do Estudante — Tô de Bolsa.";
     const url = `${SITE}/guia/${params.slug}`;
+    const ogImage = post?.og_image_url ?? post?.cover_url ?? null;
     const meta: Array<Record<string, string>> = [
       { title },
       { name: "description", content: desc },
@@ -54,9 +68,9 @@ export const Route = createFileRoute("/guia/$slug")({
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: desc },
     ];
-    if (post?.cover_url) {
-      meta.push({ property: "og:image", content: post.cover_url });
-      meta.push({ name: "twitter:image", content: post.cover_url });
+    if (ogImage) {
+      meta.push({ property: "og:image", content: ogImage });
+      meta.push({ name: "twitter:image", content: ogImage });
     }
     return {
       meta,
@@ -135,16 +149,35 @@ function PostPage() {
       <article className="flex-1">
         {post.cover_url && (
           <div className="w-full aspect-[21/9] bg-muted overflow-hidden">
-            <img src={post.cover_url} alt={post.title} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+            <img
+              src={post.cover_url}
+              alt={post.image_alt || post.title}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+            {post.image_credit && (
+              <div className="text-[11px] text-muted-foreground text-right max-w-3xl mx-auto px-4 pt-1">
+                {post.image_credit}
+              </div>
+            )}
           </div>
         )}
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
           <Link to="/guia" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-4">
             <ArrowLeft className="h-4 w-4" /> Guia do Estudante
           </Link>
+          {post.category && (
+            <span className="inline-block text-xs font-semibold uppercase tracking-wide text-primary mb-2">
+              {post.category}
+            </span>
+          )}
           <h1 className="font-display text-3xl md:text-4xl font-extrabold leading-tight">
             {post.title}
           </h1>
+          {post.subtitle && (
+            <p className="mt-2 text-lg md:text-xl text-muted-foreground">{post.subtitle}</p>
+          )}
           <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted-foreground">
             {post.author && (
               <span className="inline-flex items-center gap-1.5">
@@ -175,6 +208,34 @@ function PostPage() {
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           )}
+
+          {post.tags && post.tags.length > 0 && (
+            <div className="mt-8 flex flex-wrap gap-2">
+              {post.tags.map((t) => (
+                <span
+                  key={t}
+                  className="text-xs rounded-full bg-muted px-3 py-1 text-muted-foreground"
+                >
+                  #{t}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {post.source_url && (
+            <p className="mt-6 text-xs text-muted-foreground">
+              Fonte:{" "}
+              <a
+                href={post.source_url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary hover:underline"
+              >
+                {post.source_name || post.source_url}
+              </a>
+            </p>
+          )}
+
 
           <div className="mt-12 rounded-2xl bg-primary-soft/40 border border-primary/20 p-6 text-center">
             <h2 className="font-display text-xl font-bold">Pronto para encontrar sua bolsa?</h2>
