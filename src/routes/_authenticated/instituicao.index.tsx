@@ -18,9 +18,9 @@ const STATUS: Record<string, { label: string; tone: string; icon: React.Componen
 };
 
 function InstitutionPortalIndex() {
-  const { institutionAdminOf, user } = useAuth();
+  const { institutionAdminOf, isInstitutionApplicant, user } = useAuth();
 
-  const { data: pendingApp } = useQuery({
+  const { data: pendingApp, isLoading: loadingApp } = useQuery({
     enabled: !!user && institutionAdminOf.length === 0,
     queryKey: ["my-pending-app", user?.id],
     queryFn: async () => {
@@ -48,6 +48,12 @@ function InstitutionPortalIndex() {
     },
   });
 
+  // Mostra o card de "em análise" para qualquer candidato (papel APPLICANT) ou
+  // quando encontramos uma aplicação registrada para o usuário — mesmo se a
+  // consulta ainda estiver carregando.
+  const hasPendingApplication =
+    institutionAdminOf.length === 0 && (isInstitutionApplicant || !!pendingApp);
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
@@ -69,7 +75,13 @@ function InstitutionPortalIndex() {
       </header>
 
       {institutionAdminOf.length === 0 ? (
-        pendingApp ? <PendingApplicationCard status={pendingApp.status} /> : <EmptyState />
+        hasPendingApplication ? (
+          <PendingApplicationCard status={pendingApp?.status ?? "SUBMITTED"} />
+        ) : loadingApp ? (
+          <div className="h-40 rounded-3xl bg-muted animate-pulse" />
+        ) : (
+          <EmptyState />
+        )
       ) : isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 2 }).map((_, i) => (
