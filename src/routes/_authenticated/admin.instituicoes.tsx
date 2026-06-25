@@ -87,7 +87,7 @@ function AdminInstitutions() {
         {["ALL", "PENDING", "APPROVED", "SUSPENDED", "REJECTED"].map((s) => (
           <button key={s} onClick={() => setStatus(s)}
             className={"px-3 h-9 rounded-xl text-xs font-bold " + (status === s ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground/70 hover:bg-muted")}>
-            {s === "ALL" ? "Todas" : s}
+            {STATUS_FILTER_LABEL[s]}
           </button>
         ))}
       </div>
