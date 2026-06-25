@@ -265,8 +265,11 @@ function PostPage() {
             </p>
           )}
 
+          <ShareButtons url={url} title={post.title} slug={slug} />
 
-          <div className="mt-12 rounded-2xl bg-primary-soft/40 border border-primary/20 p-6 text-center">
+          <NewsletterInline />
+
+          <div className="mt-10 rounded-2xl bg-primary-soft/40 border border-primary/20 p-6 text-center">
             <h2 className="font-display text-xl font-bold">Pronto para encontrar sua bolsa?</h2>
             <p className="text-muted-foreground text-sm mt-1">
               Mais de 50 mil bolsas com até 90% de desconto esperando por você.
@@ -278,6 +281,8 @@ function PostPage() {
               Buscar bolsas
             </Link>
           </div>
+
+          <RelatedPosts currentSlug={slug} category={post.category} />
         </div>
       </article>
       <Footer />
