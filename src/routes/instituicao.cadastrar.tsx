@@ -309,7 +309,7 @@ function StepResponsavel({ form, update }: { form: FormState; update: <K extends
     <Grid>
       <Field label="Nome completo *"><Input value={form.responsible_name} onChange={(e) => update("responsible_name", e.target.value)} /></Field>
       <Field label="Cargo / função *"><Input value={form.responsible_role} onChange={(e) => update("responsible_role", e.target.value)} placeholder="Ex.: Diretor" /></Field>
-      <Field label="CPF"><Input value={form.responsible_cpf} onChange={(e) => update("responsible_cpf", maskCPF(e.target.value))} placeholder="000.000.000-00" /></Field>
+      <Field label="CPF"><CpfField value={form.responsible_cpf} onChange={(v) => update("responsible_cpf", v)} /></Field>
       <Field label="E-mail *"><Input type="email" value={form.responsible_email} onChange={(e) => update("responsible_email", e.target.value)} /></Field>
       <Field label="WhatsApp *" full><Input value={form.responsible_whatsapp} onChange={(e) => update("responsible_whatsapp", maskPhone(e.target.value))} placeholder="(11) 99999-9999" /></Field>
       <div className="sm:col-span-2 flex items-start gap-2">
