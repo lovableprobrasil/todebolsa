@@ -174,7 +174,7 @@ function ApplicationWizardPage() {
         if (uid) {
           await supabase.from("profiles").upsert({
             id: uid,
-            name: form.account_name || form.responsible_name || null,
+            name: form.account_name || form.responsible_name || undefined,
             phone: form.responsible_whatsapp ? onlyDigits(form.responsible_whatsapp) : null,
             cpf: form.responsible_cpf ? onlyDigits(form.responsible_cpf) : null,
             email: form.account_email || form.responsible_email || null,
