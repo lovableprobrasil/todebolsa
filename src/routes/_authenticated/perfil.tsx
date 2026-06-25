@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { isValidCPF, maskCPF, onlyDigits } from "@/lib/validators/cnpj";
 
 export const Route = createFileRoute("/_authenticated/perfil")({
   component: PerfilPage,
