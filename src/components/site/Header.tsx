@@ -8,7 +8,8 @@ import { NotificationsBell } from "@/components/site/NotificationsBell";
 const NAV = [
   { to: "/bolsas", label: "Bolsas" },
   { to: "/para-instituicoes", label: "Instituições" },
-  { to: "/faq", label: "Blog" },
+  { to: "/guia", label: "Notícias" },
+  { to: "/faq", label: "FAQ" },
 ] as const;
 
 export function Header() {
