@@ -68,7 +68,7 @@ function InstitutionPortalIndex() {
         {institutionAdminOf.length > 0 && (
           <Button asChild className="gap-2">
             <Link to="/instituicao/cadastrar">
-              <Plus className="h-4 w-4" /> Cadastrar instituição
+              <Plus className="h-4 w-4" /> Cadastrar nova instituição
             </Link>
           </Button>
         )}
