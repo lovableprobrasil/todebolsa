@@ -103,6 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(null);
     setInstitutionAdminOf([]);
     setIsPlatformAdmin(false);
+    setIsInstitutionApplicant(false);
   }
 
   async function refreshProfile() {
@@ -114,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Ctx.Provider value={{ user, session, profile, institutionAdminOf, isPlatformAdmin, loading, signOut, refreshProfile, refreshRoles }}>
+    <Ctx.Provider value={{ user, session, profile, institutionAdminOf, isInstitutionApplicant, isPlatformAdmin, loading, signOut, refreshProfile, refreshRoles }}>
       {children}
     </Ctx.Provider>
   );
