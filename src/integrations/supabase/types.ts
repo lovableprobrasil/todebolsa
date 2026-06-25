@@ -1669,6 +1669,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_institution_applications: {
+        Args: never
+        Returns: {
+          city: string
+          cnpj: string
+          created_at: string
+          high_potential: boolean
+          id: string
+          legal_name: string
+          responsible_email: string
+          responsible_name: string
+          state: string
+          status: Database["public"]["Enums"]["institution_application_status"]
+          submitted_at: string
+          trade_name: string
+        }[]
+      }
       admin_list_users: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
         Returns: {
