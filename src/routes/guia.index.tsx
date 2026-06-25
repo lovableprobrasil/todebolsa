@@ -47,7 +47,7 @@ function GuiaIndex() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("blog_posts")
-        .select("slug, title, excerpt, cover_url, author, published_at")
+        .select("slug, title, excerpt, cover_url, author, published_at, is_featured")
         .eq("is_published", true)
         .order("published_at", { ascending: false });
       if (error) throw error;
@@ -66,6 +66,18 @@ function GuiaIndex() {
       return data ?? [];
     },
   });
+
+  const { data: topPosts = [] } = useQuery({
+    queryKey: ["news-top-posts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("news_top_posts", { _days: 7, _limit: 5 });
+      if (error) return [];
+      return data ?? [];
+    },
+  });
+
+  const featured = data?.find((p) => p.is_featured) ?? data?.[0];
+  const rest = data?.filter((p) => p.slug !== featured?.slug) ?? [];
 
   return (
     <div className="min-h-screen flex flex-col">
