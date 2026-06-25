@@ -66,6 +66,7 @@ import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
 import { Route as AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport } from './routes/_authenticated/admin.credenciamento-instituicoes.index'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as ApiPublicNewsPublishScheduledRouteImport } from './routes/api/public/news.publish-scheduled'
 import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
 import { Route as AuthenticatedAdminFinanceiroReceitasRouteImport } from './routes/_authenticated/admin.financeiro.receitas'
@@ -379,6 +380,12 @@ const AuthenticatedAdminCredenciamentoInstituicoesIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminCredenciamentoInstituicoesRoute,
   } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicNewsPublishScheduledRoute =
   ApiPublicNewsPublishScheduledRouteImport.update({
     id: '/api/public/news/publish-scheduled',
@@ -502,6 +509,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -566,6 +574,7 @@ export interface FileRoutesByTo {
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -636,6 +645,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/_authenticated/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/_authenticated/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/_authenticated/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -706,6 +716,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/lovable/email/queue/process'
     | '/admin/credenciamento-instituicoes/'
     | '/admin/crm/'
     | '/admin/financeiro/'
@@ -770,6 +781,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/lovable/email/queue/process'
     | '/admin/credenciamento-instituicoes'
     | '/admin/crm'
     | '/admin/financeiro'
@@ -839,6 +851,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/financeiro/receitas'
     | '/_authenticated/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/lovable/email/queue/process'
     | '/_authenticated/admin/credenciamento-instituicoes/'
     | '/_authenticated/admin/crm/'
     | '/_authenticated/admin/financeiro/'
@@ -875,6 +888,7 @@ export interface RootRouteChildren {
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
   GuiaCategoriaSlugRoute: typeof GuiaCategoriaSlugRoute
   ApiPublicNewsPublishScheduledRoute: typeof ApiPublicNewsPublishScheduledRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
   ApiPublicUgeValidarCodigoRoute: typeof ApiPublicUgeValidarCodigoRoute
   BolsasCursoCourseCidadeCityRoute: typeof BolsasCursoCourseCidadeCityRoute
 }
@@ -1280,6 +1294,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesRoute
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news/publish-scheduled': {
       id: '/api/public/news/publish-scheduled'
       path: '/api/public/news/publish-scheduled'
@@ -1531,19 +1552,10 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
   GuiaCategoriaSlugRoute: GuiaCategoriaSlugRoute,
   ApiPublicNewsPublishScheduledRoute: ApiPublicNewsPublishScheduledRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
   ApiPublicUgeValidarCodigoRoute: ApiPublicUgeValidarCodigoRoute,
   BolsasCursoCourseCidadeCityRoute: BolsasCursoCourseCidadeCityRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
