@@ -15,6 +15,7 @@ type AuthCtx = {
   session: Session | null;
   profile: Profile | null;
   institutionAdminOf: string[];
+  isInstitutionApplicant: boolean;
   isPlatformAdmin: boolean;
   loading: boolean;
   signOut: () => Promise<void>;
