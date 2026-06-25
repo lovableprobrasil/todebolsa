@@ -38,6 +38,19 @@ export function maskCPF(v: string) {
     .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 }
 
+export function isValidCPF(value: string): boolean {
+  const cpf = onlyDigits(value);
+  if (cpf.length !== 11) return false;
+  if (/^(\d)\1+$/.test(cpf)) return false;
+  const calc = (len: number) => {
+    let sum = 0;
+    for (let i = 0; i < len; i++) sum += parseInt(cpf[i], 10) * (len + 1 - i);
+    const r = (sum * 10) % 11;
+    return r === 10 ? 0 : r;
+  };
+  return calc(9) === parseInt(cpf[9], 10) && calc(10) === parseInt(cpf[10], 10);
+}
+
 export function maskPhone(v: string) {
   const d = onlyDigits(v).slice(0, 11);
   if (d.length <= 10) return d.replace(/(\d{2})(\d{4})(\d)/, "($1) $2-$3");
