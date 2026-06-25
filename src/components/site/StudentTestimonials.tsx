@@ -10,30 +10,6 @@ type Testimonial = {
   rating: number;
 };
 
-const FALLBACK: Testimonial[] = [
-  {
-    name: "Mariana Souza",
-    course: "Direito · São Paulo",
-    text: "Consegui uma bolsa de 70% em uma faculdade ótima. Sem o Tô de Bolsa eu não teria conseguido começar a faculdade esse ano.",
-    initials: "MS",
-    rating: 5,
-  },
-  {
-    name: "Lucas Pereira",
-    course: "Engenharia de Software · EAD",
-    text: "Em duas semanas eu já tinha reservado minha vaga e recebido a carteira UGE. Processo simples e rápido demais.",
-    initials: "LP",
-    rating: 5,
-  },
-  {
-    name: "Aline Ferreira",
-    course: "Pedagogia · Belo Horizonte",
-    text: "Comparei várias opções na mesma plataforma. Achei a bolsa certa, no curso certo, na cidade certa. Recomendo demais.",
-    initials: "AF",
-    rating: 5,
-  },
-];
-
 function shortName(full: string | null | undefined): { display: string; initials: string } {
   const name = (full ?? "").trim();
   if (!name) return { display: "Estudante", initials: "ES" };
@@ -48,7 +24,7 @@ function shortName(full: string | null | undefined): { display: string; initials
 }
 
 export function StudentTestimonials() {
-  const [items, setItems] = useState<Testimonial[]>(FALLBACK);
+  const [items, setItems] = useState<Testimonial[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -61,7 +37,11 @@ export function StudentTestimonials() {
         .order("created_at", { ascending: false })
         .limit(6);
 
-      if (cancelled || !reviews || reviews.length === 0) return;
+      if (cancelled) return;
+      if (!reviews || reviews.length === 0) {
+        setItems([]);
+        return;
+      }
 
       const userIds = Array.from(new Set(reviews.map((r) => r.user_id)));
       const instIds = Array.from(new Set(reviews.map((r) => r.institution_id)));
@@ -88,12 +68,14 @@ export function StudentTestimonials() {
           };
         });
 
-      if (mapped.length > 0) setItems(mapped);
+      setItems(mapped);
     })();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  if (!items || items.length === 0) return null;
 
   return (
     <section className="bg-secondary/40 py-14 md:py-20">
@@ -104,11 +86,8 @@ export function StudentTestimonials() {
             Histórias reais
           </div>
           <h2 className="font-display text-3xl md:text-4xl font-extrabold">
-            Alunos que já garantiram sua bolsa
+            O que dizem nossos alunos
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            Mais de 200 mil alunos beneficiados em todo o Brasil.
-          </p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-3">
