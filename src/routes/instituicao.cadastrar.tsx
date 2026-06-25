@@ -518,6 +518,24 @@ function Field({ label, full, children }: { label: string; full?: boolean; child
   );
 }
 
+function CpfField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const digits = onlyDigits(value);
+  const showError = digits.length === 11 && !isValidCPF(value);
+  return (
+    <>
+      <Input
+        value={value}
+        onChange={(e) => onChange(maskCPF(e.target.value))}
+        placeholder="000.000.000-00"
+        inputMode="numeric"
+        aria-invalid={showError || undefined}
+        className={showError ? "border-destructive focus-visible:ring-destructive" : ""}
+      />
+      {showError && <p className="text-xs text-destructive mt-1">CPF inválido.</p>}
+    </>
+  );
+}
+
 function buildPayload(f: FormState) {
   return {
     trade_name: f.trade_name || null,
