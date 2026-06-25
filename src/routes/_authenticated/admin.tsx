@@ -31,7 +31,7 @@ const TABS = [
   { to: "/admin/avaliacoes", label: "Avaliações", icon: Star, exact: false },
   { to: "/admin/indicacoes", label: "Indicações", icon: Gift, exact: false },
   { to: "/admin/usuarios", label: "Usuários", icon: Users, exact: false },
-  { to: "/admin/blog", label: "Blog", icon: Newspaper, exact: false },
+  { to: "/admin/blog", label: "Notícias", icon: Newspaper, exact: false },
 ] as const;
 
 function AdminLayout() {
