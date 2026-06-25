@@ -59,11 +59,13 @@ function InstitutionPortalIndex() {
             Gerencie suas instituições, unidades, cursos e bolsas.
           </p>
         </div>
-        <Button asChild className="gap-2">
-          <Link to="/instituicao/cadastrar">
-            <Plus className="h-4 w-4" /> Cadastrar instituição
-          </Link>
-        </Button>
+        {institutionAdminOf.length > 0 && (
+          <Button asChild className="gap-2">
+            <Link to="/instituicao/cadastrar">
+              <Plus className="h-4 w-4" /> Cadastrar instituição
+            </Link>
+          </Button>
+        )}
       </header>
 
       {institutionAdminOf.length === 0 ? (

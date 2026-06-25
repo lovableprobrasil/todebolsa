@@ -93,6 +93,26 @@ function ApplicationWizardPage() {
     }
   }, [form.responsible_email, form.responsible_name, user]); // eslint-disable-line
 
+  // Redirect to status page if user already has a submitted application
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("institution_applications")
+        .select("status")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (cancelled) return;
+      if (data && data.status && data.status !== "DRAFT") {
+        navigate({ to: "/instituicao/credenciamento" });
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user]); // eslint-disable-line
+
   // Persist draft locally
   useEffect(() => {
     try {
