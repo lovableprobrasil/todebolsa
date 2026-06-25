@@ -25,6 +25,7 @@ import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as GuiaIndexRouteImport } from './routes/guia.index'
 import { Route as BolsasIndexRouteImport } from './routes/bolsas.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
@@ -149,6 +150,11 @@ const BolsasIndexRoute = BolsasIndexRouteImport.update({
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
+  id: '/noticias/$slug',
+  path: '/noticias/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstituicoesSlugRoute = InstituicoesSlugRouteImport.update({
@@ -435,6 +441,7 @@ export interface FileRoutesByFullPath {
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
@@ -497,6 +504,7 @@ export interface FileRoutesByTo {
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/blog': typeof BlogIndexRoute
   '/bolsas': typeof BolsasIndexRoute
   '/guia': typeof GuiaIndexRoute
@@ -559,6 +567,7 @@ export interface FileRoutesById {
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
@@ -624,6 +633,7 @@ export interface FileRouteTypes {
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/noticias/$slug'
     | '/blog/'
     | '/bolsas/'
     | '/guia/'
@@ -686,6 +696,7 @@ export interface FileRouteTypes {
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/noticias/$slug'
     | '/blog'
     | '/bolsas'
     | '/guia'
@@ -747,6 +758,7 @@ export interface FileRouteTypes {
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/noticias/$slug'
     | '/blog/'
     | '/bolsas/'
     | '/guia/'
@@ -803,6 +815,7 @@ export interface RootRouteChildren {
   GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
+  NoticiasSlugRoute: typeof NoticiasSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
   GuiaIndexRoute: typeof GuiaIndexRoute
@@ -925,6 +938,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias/$slug': {
+      id: '/noticias/$slug'
+      path: '/noticias/$slug'
+      fullPath: '/noticias/$slug'
+      preLoaderRoute: typeof NoticiasSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/instituicoes/$slug': {
@@ -1419,6 +1439,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuiaSlugRoute: GuiaSlugRoute,
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
+  NoticiasSlugRoute: NoticiasSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   BolsasIndexRoute: BolsasIndexRoute,
   GuiaIndexRoute: GuiaIndexRoute,
