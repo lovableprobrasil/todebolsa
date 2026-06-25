@@ -19,4 +19,5 @@ Disallow: /recuperar-senha
 Disallow: /reset-password
 Disallow: /api/
 
-Sitemap: https://todebolsa.lovable.app/sitemap.xml
+Sitemap: https://todebolsa.com.br/sitemap.xml
+Sitemap: https://todebolsa.com.br/news-sitemap.xml

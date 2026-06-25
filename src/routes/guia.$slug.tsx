@@ -1,11 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Calendar, User, ArrowLeft, BookOpen } from "lucide-react";
+import { Calendar, User, ArrowLeft, BookOpen, Clock, Eye } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { ShareButtons } from "@/components/news/ShareButtons";
+import { NewsletterInline } from "@/components/news/NewsletterInline";
+import { RelatedPosts } from "@/components/news/RelatedPosts";
+import { ViewTracker } from "@/components/news/ViewTracker";
 import { supabase } from "@/integrations/supabase/client";
 
-const SITE = "https://todebolsa.lovable.app";
+const SITE = "https://todebolsa.com.br";
 
 type Post = {
   slug: string;
@@ -26,6 +30,9 @@ type Post = {
   source_name: string | null;
   author: string | null;
   published_at: string | null;
+  updated_at?: string | null;
+  reading_time_minutes?: number | null;
+  view_count?: number | null;
 };
 
 function postQueryOptions(slug: string) {
@@ -35,7 +42,7 @@ function postQueryOptions(slug: string) {
       const { data, error } = await supabase
         .from("blog_posts")
         .select(
-          "slug, title, subtitle, excerpt, content, cover_url, thumbnail_url, og_image_url, image_alt, image_credit, category, tags, meta_title, meta_description, source_url, source_name, author, published_at",
+          "slug, title, subtitle, excerpt, content, cover_url, thumbnail_url, og_image_url, image_alt, image_credit, category, tags, meta_title, meta_description, source_url, source_name, author, published_at, updated_at, reading_time_minutes, view_count",
         )
         .eq("slug", slug)
         .eq("is_published", true)
@@ -81,18 +88,25 @@ export const Route = createFileRoute("/guia/$slug")({
               type: "application/ld+json",
               children: JSON.stringify({
                 "@context": "https://schema.org",
-                "@type": "Article",
+                "@type": "NewsArticle",
                 headline: post.title,
                 description: desc,
-                image: post.cover_url ?? undefined,
+                image: ogImage ? [ogImage] : undefined,
                 datePublished: post.published_at ?? undefined,
+                dateModified: post.updated_at ?? post.published_at ?? undefined,
                 author: { "@type": "Person", name: post.author ?? "Equipe Tô de Bolsa" },
                 publisher: {
                   "@type": "Organization",
                   name: "Tô de Bolsa",
                   url: SITE,
+                  logo: {
+                    "@type": "ImageObject",
+                    url: `${SITE}/favicon.ico`,
+                  },
                 },
-                mainEntityOfPage: url,
+                mainEntityOfPage: { "@type": "WebPage", "@id": url },
+                articleSection: post.category ?? undefined,
+                keywords: post.tags?.join(", ") ?? undefined,
               }),
             },
             {
@@ -142,9 +156,11 @@ export const Route = createFileRoute("/guia/$slug")({
 function PostPage() {
   const { slug } = Route.useParams();
   const { data: post } = useSuspenseQuery(postQueryOptions(slug));
+  const url = `${SITE}/guia/${slug}`;
 
   return (
     <div className="min-h-screen flex flex-col">
+      <ViewTracker slug={slug} />
       <Header />
       <article className="flex-1">
         {post.cover_url && (
@@ -194,7 +210,20 @@ function PostPage() {
                 })}
               </span>
             )}
+            {post.reading_time_minutes ? (
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="h-4 w-4" /> {post.reading_time_minutes} min de leitura
+              </span>
+            ) : null}
+            {typeof post.view_count === "number" && post.view_count > 0 ? (
+              <span className="inline-flex items-center gap-1.5">
+                <Eye className="h-4 w-4" /> {post.view_count.toLocaleString("pt-BR")} visualizações
+              </span>
+            ) : null}
           </div>
+
+          <ShareButtons url={url} title={post.title} slug={slug} />
+
 
           {post.excerpt && (
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed border-l-4 border-primary/40 pl-4">
@@ -236,8 +265,11 @@ function PostPage() {
             </p>
           )}
 
+          <ShareButtons url={url} title={post.title} slug={slug} />
 
-          <div className="mt-12 rounded-2xl bg-primary-soft/40 border border-primary/20 p-6 text-center">
+          <NewsletterInline />
+
+          <div className="mt-10 rounded-2xl bg-primary-soft/40 border border-primary/20 p-6 text-center">
             <h2 className="font-display text-xl font-bold">Pronto para encontrar sua bolsa?</h2>
             <p className="text-muted-foreground text-sm mt-1">
               Mais de 50 mil bolsas com até 90% de desconto esperando por você.
@@ -249,6 +281,8 @@ function PostPage() {
               Buscar bolsas
             </Link>
           </div>
+
+          <RelatedPosts currentSlug={slug} category={post.category} />
         </div>
       </article>
       <Footer />

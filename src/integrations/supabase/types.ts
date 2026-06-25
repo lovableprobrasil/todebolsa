@@ -97,14 +97,17 @@ export type Database = {
           id: string
           image_alt: string | null
           image_credit: string | null
+          is_featured: boolean
           is_published: boolean
           main_keyword: string | null
           meta_description: string | null
           meta_title: string | null
           og_image_url: string | null
           published_at: string | null
+          reading_time_minutes: number | null
           scheduled_at: string | null
           secondary_keywords: string[]
+          share_count: number
           slug: string
           source_name: string | null
           source_url: string | null
@@ -114,6 +117,7 @@ export type Database = {
           thumbnail_url: string | null
           title: string
           updated_at: string
+          view_count: number
         }
         Insert: {
           ai_generated?: boolean
@@ -128,14 +132,17 @@ export type Database = {
           id?: string
           image_alt?: string | null
           image_credit?: string | null
+          is_featured?: boolean
           is_published?: boolean
           main_keyword?: string | null
           meta_description?: string | null
           meta_title?: string | null
           og_image_url?: string | null
           published_at?: string | null
+          reading_time_minutes?: number | null
           scheduled_at?: string | null
           secondary_keywords?: string[]
+          share_count?: number
           slug: string
           source_name?: string | null
           source_url?: string | null
@@ -145,6 +152,7 @@ export type Database = {
           thumbnail_url?: string | null
           title: string
           updated_at?: string
+          view_count?: number
         }
         Update: {
           ai_generated?: boolean
@@ -159,14 +167,17 @@ export type Database = {
           id?: string
           image_alt?: string | null
           image_credit?: string | null
+          is_featured?: boolean
           is_published?: boolean
           main_keyword?: string | null
           meta_description?: string | null
           meta_title?: string | null
           og_image_url?: string | null
           published_at?: string | null
+          reading_time_minutes?: number | null
           scheduled_at?: string | null
           secondary_keywords?: string[]
+          share_count?: number
           slug?: string
           source_name?: string | null
           source_url?: string | null
@@ -176,6 +187,7 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+          view_count?: number
         }
         Relationships: []
       }
@@ -2091,6 +2103,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_news_share: { Args: { _slug: string }; Returns: undefined }
+      increment_news_view: { Args: { _slug: string }; Returns: undefined }
       institution_paid_leads_report: {
         Args: { p_institution_id: string }
         Returns: Json
@@ -2123,6 +2137,18 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      news_top_posts: {
+        Args: { _days?: number; _limit?: number }
+        Returns: {
+          category: string
+          cover_url: string
+          id: string
+          published_at: string
+          slug: string
+          title: string
+          view_count: number
+        }[]
       }
       pay_reservation: {
         Args: { p_method: string; p_reservation_id: string }

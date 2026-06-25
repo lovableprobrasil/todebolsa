@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Calendar, ArrowRight } from "lucide-react";
+import { BookOpen, Calendar, ArrowRight, TrendingUp, Rss } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
-const SITE = "https://todebolsa.lovable.app";
+const SITE = "https://todebolsa.com.br";
 
 export const Route = createFileRoute("/guia/")({
   head: () => {
@@ -47,7 +47,7 @@ function GuiaIndex() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("blog_posts")
-        .select("slug, title, excerpt, cover_url, author, published_at")
+        .select("slug, title, excerpt, cover_url, author, published_at, is_featured")
         .eq("is_published", true)
         .order("published_at", { ascending: false });
       if (error) throw error;
@@ -66,6 +66,18 @@ function GuiaIndex() {
       return data ?? [];
     },
   });
+
+  const { data: topPosts = [] } = useQuery({
+    queryKey: ["news-top-posts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("news_top_posts", { _days: 7, _limit: 5 });
+      if (error) return [];
+      return data ?? [];
+    },
+  });
+
+  const featured = data?.find((p) => p.is_featured) ?? data?.[0];
+  const rest = data?.filter((p) => p.slug !== featured?.slug) ?? [];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -111,7 +123,83 @@ function GuiaIndex() {
             </div>
           </section>
         )}
+        {featured && !isLoading && (
+          <section>
+            <Link
+              to="/guia/$slug"
+              params={{ slug: featured.slug }}
+              className="group block rounded-3xl border border-border bg-card overflow-hidden hover:shadow-xl hover:border-primary/40 transition-all"
+            >
+              <div className="grid md:grid-cols-2">
+                <div className="aspect-[16/10] md:aspect-auto bg-muted overflow-hidden">
+                  {featured.cover_url ? (
+                    <img
+                      src={featured.cover_url}
+                      alt={featured.title}
+                      loading="eager"
+                      decoding="async"
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-gradient-to-br from-primary-soft to-accent/20 flex items-center justify-center">
+                      <BookOpen className="h-16 w-16 text-primary/40" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-6 md:p-10 flex flex-col justify-center">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-primary mb-3">
+                    <TrendingUp className="h-3.5 w-3.5" /> Destaque editorial
+                  </span>
+                  <h2 className="font-display text-2xl md:text-3xl font-extrabold leading-tight group-hover:text-primary">
+                    {featured.title}
+                  </h2>
+                  {featured.excerpt && (
+                    <p className="text-muted-foreground mt-3 line-clamp-3">{featured.excerpt}</p>
+                  )}
+                  <span className="mt-4 inline-flex items-center gap-2 font-semibold text-primary">
+                    Ler artigo completo <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </section>
+        )}
+
+        {topPosts.length > 0 && (
+          <section>
+            <h2 className="font-display text-xl font-bold mb-4 inline-flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" /> Mais lidos da semana
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {topPosts.map((p, i) => (
+                <Link
+                  key={p.slug}
+                  to="/guia/$slug"
+                  params={{ slug: p.slug }}
+                  className="group rounded-xl border border-border bg-card p-4 hover:shadow-md hover:border-primary/40 transition-all"
+                >
+                  <div className="text-2xl font-display font-extrabold text-primary/30 mb-1">
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+                  <div className="font-semibold text-sm leading-snug group-hover:text-primary line-clamp-3">
+                    {p.title}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         <section>
+          <div className="flex items-end justify-between mb-4">
+            <h2 className="font-display text-xl font-bold">Todos os artigos</h2>
+            <a
+              href="/rss.xml"
+              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary"
+            >
+              <Rss className="h-3.5 w-3.5" /> RSS
+            </a>
+          </div>
 
         {isLoading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -119,9 +207,9 @@ function GuiaIndex() {
               <div key={i} className="h-[340px] rounded-2xl bg-muted animate-pulse" />
             ))}
           </div>
-        ) : data && data.length > 0 ? (
+        ) : rest.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {data.map((p) => (
+            {rest.map((p) => (
               <Link
                 key={p.slug}
                 to="/guia/$slug"
@@ -144,9 +232,9 @@ function GuiaIndex() {
                   )}
                 </div>
                 <div className="p-5">
-                  <h2 className="font-display font-bold text-lg leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                  <h3 className="font-display font-bold text-lg leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {p.title}
-                  </h2>
+                  </h3>
                   {p.excerpt && (
                     <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{p.excerpt}</p>
                   )}

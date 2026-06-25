@@ -1,68 +1,61 @@
+# Fase 3 — Distribuição, Engajamento e Analytics
 
-# Módulo de Notícias com IA — Plano de Implementação
+Foco: depois de criar e publicar (Fases 1 e 2), agora o objetivo é **fazer a notícia chegar ao leitor, gerar interação e medir resultado**.
 
-O escopo descrito é grande (CMS completo + IA de texto + IA de imagem + SEO + agendamento + workflow). Vou entregar em **3 fases**, cada uma testável de forma independente. Começo pela Fase 1 (MVP) assim que aprovar.
+## 1. SEO e descoberta avançada
 
----
+- **RSS Feed** em `/guia/rss.xml` com últimas 30 notícias (server route público).
+- **Sitemap dedicado** `/news-sitemap.xml` no padrão Google News (notícias dos últimos 2 dias com `<news:news>`).
+- **JSON-LD `NewsArticle`** na página `/guia/$slug` (hoje só temos OG básico) com `author`, `datePublished`, `dateModified`, `publisher`, `image`.
+- **Posts relacionados** ao final do artigo (mesma categoria/tag, 3 cards).
+- **Breadcrumb** com schema `BreadcrumbList`.
 
-## Stack e decisões técnicas
+## 2. Engajamento do leitor
 
-- **IA de texto:** Lovable AI Gateway com `google/gemini-3-flash-preview` (já configurado, sem chave extra).
-- **IA de imagem:** Lovable AI Gateway com `google/gemini-3.1-flash-image` (Nano Banana 2) para capa/thumb/OG.
-- **Backend:** server functions TanStack (`createServerFn`) sob `src/lib/news.functions.ts`.
-- **Storage de imagens:** bucket público `news-images` no Lovable Cloud.
-- **Extração de URL:** `fetch` no servidor + extração simples de `<title>`, `<meta description>`, `<article>`/`<p>` (sem dependência nova).
-- **Base de dados:** estendo `blog_posts` existente (já em uso em `/guia`) com novos campos em vez de criar `news_articles` paralela — evita duplicação de catálogo e mantém `/guia` e `/admin/blog` funcionando. Adiciono tabelas auxiliares `news_ai_generations` e `news_images`.
+- **Contador de visualizações** (`view_count` em `blog_posts`) incrementado por RPC pública com throttle por sessão.
+- **Tempo de leitura** calculado e exibido (já temos `reading_time_minutes`, garantir cálculo automático no save).
+- **Botões de compartilhamento** (WhatsApp, X, LinkedIn, copiar link) com tracking.
+- **Newsletter inline**: bloco "Receba novidades" no final do post grava em `leads` com origem = `newsletter_news`.
 
----
+## 3. Analytics editorial no admin
 
-## Fase 1 — MVP (esta entrega)
+- Nova aba **"Desempenho"** em `/admin/blog` mostrando, por post: views, compartilhamentos, tempo médio, taxa de conversão para newsletter.
+- Dashboard agregado em `/admin/blog` (topo): top 5 posts da semana, total de views, novos leads via newsletter.
+- Eventos gravados em `analytics_events` (já existe) com `event_type` = `news_view`, `news_share`, `news_newsletter_signup`.
 
-**Backend / DB**
-- Migração estendendo `blog_posts`: `subtitle`, `category`, `tags[]`, `meta_title`, `meta_description`, `main_keyword`, `secondary_keywords[]`, `thumbnail_url`, `og_image_url`, `image_alt`, `image_credit`, `source_url`, `source_name`, `status` (`DRAFT|IN_REVIEW|SCHEDULED|PUBLISHED|ARCHIVED`), `scheduled_at`, `featured`, `ai_generated`, `ai_warnings`.
-- Novas tabelas `news_ai_generations` e `news_images` (com RLS: admin gerencia).
-- Bucket `news-images` (público) + policies.
-- Server functions (admin-only via `requireSupabaseAuth` + `is_platform_admin`):
-  - `aiGenerateArticle` — gera título/subtítulo/resumo/conteúdo HTML/SEO/prompt de imagem a partir de briefing/título/URL.
-  - `aiExtractUrl` — busca a URL, extrai título+texto (limita a ~6KB) para servir de referência.
-  - `aiGenerateImage` — chama o modelo de imagem, faz upload no bucket, registra em `news_images`, retorna URL.
-  - `aiGenerateSeo` / `aiRewrite` / `aiGenerateSocial` — utilitários menores reutilizando o mesmo gateway.
+## 4. Página `/guia` reformulada
 
-**Admin UI (`/admin/blog` reformulado)**
-- Editor em **abas**: Conteúdo · IA · Imagens · SEO · Publicação.
-- Bloco "Gerar notícia com IA" (título + briefing + URL opcional + tom + tamanho + objetivo).
-- Bloco "Gerar imagem com IA" com aspect ratios (16:9 capa, 1:1 thumb, 1200×630 OG) e botões "Usar como capa/thumb/OG".
-- Status, agendar, destacar, checklist de publicação (bloqueia publicar se faltar título/slug/conteúdo/capa/meta description).
-- Aviso "Conteúdo gerado por IA — revisar".
+- Hero com **destaque editorial** (post marcado como `is_featured`).
+- Seção "Mais lidos da semana" (ordem por views dos últimos 7 dias).
+- Mantém grid atual de categorias e listagem cronológica.
 
-**Site público**
-- `/guia` continua funcionando (compat). Adiciono redirects `/noticias` → `/guia` e `/noticias/$slug` → `/guia/$slug` para não duplicar URLs (o blog já está indexado lá). Posso inverter depois se preferir `/noticias` como canônico.
-- Página da notícia ganha: subtítulo, tags, OG image dinâmica, CTAs (bolsas / carteira UGE / instituições), bloco "Notícias relacionadas" por categoria/tags.
+## Estrutura técnica
 
-**Limites do MVP (intencionais)**
-- Sem histórico de versões, sem múltiplos autores, sem workflow multi-etapa de revisão.
-- Agendamento grava `scheduled_at` + status `SCHEDULED`; publicação efetiva por cron fica para Fase 2.
-- Galeria interna fica para Fase 2 (capa + thumb + OG já cobrem o essencial).
+```text
+src/routes/api/public/
+  rss.xml.ts                  → RSS feed
+  news-sitemap.xml.ts         → Google News sitemap
+  news.track-view.ts          → POST p/ incrementar views
 
----
+src/lib/
+  news-analytics.functions.ts → server fns (top posts, métricas)
 
-## Fase 2 — Automação e workflow
-- Cron (`pg_cron` chamando `/api/public/news/publish-scheduled`) para publicar agendadas.
-- Histórico de versões + restaurar.
-- Geração de variações de imagem (2/4) e galeria interna.
-- Geração de cards para redes sociais (1:1 e 9:16) com texto sobreposto opcional.
-- Categorias como tabela própria + rotas `/guia/categoria/$slug` e `/guia/tag/$slug`.
+src/components/news/
+  ShareButtons.tsx
+  NewsletterInline.tsx
+  RelatedPosts.tsx
+  Breadcrumbs.tsx
 
-## Fase 3 — Editorial avançado
-- Workflow `DRAFT → IN_REVIEW → PUBLISHED` com aprovador.
-- Múltiplos autores (roles `EDITOR`).
-- FAQ estruturado + JSON-LD `Article` + `FAQPage`.
-- Painel de performance por notícia (views, CTR de CTA) usando `analytics_events`.
+Migração SQL:
+  - blog_posts.view_count, share_count, is_featured
+  - RPC public increment_news_view(post_id, session_hash)
+  - índice em (status, published_at desc) p/ feed
+```
 
----
+## Fora do escopo desta fase
 
-## Pontos que preciso confirmar antes de codar
+- Comentários de leitores (requer moderação dedicada → fase futura).
+- Push notifications / e-mail blast real (depende de provedor SMTP).
+- A/B test de manchetes.
 
-1. **URL canônica do blog:** mantenho `/guia` (já indexado) e faço `/noticias` redirecionar, ou prefere migrar tudo para `/noticias` (com 301 reverso)?
-2. **Bucket público OK?** Imagens de capa/OG precisam ser públicas para `<meta og:image>` funcionar — confirmo bucket `news-images` público.
-3. **Posso prosseguir direto com a Fase 1** ou quer ajustar algo no escopo do MVP?
+Posso começar pela migração SQL + RSS/sitemap, depois UI de engajamento, e fechar com o painel de desempenho. Confirma?
