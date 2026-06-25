@@ -115,7 +115,7 @@ function Hero() {
                 </span>
                 <div className="min-w-0">
                   <div className="font-display text-base font-extrabold text-primary leading-none">ATÉ 90% OFF</div>
-                  <div className="text-xs text-hero-muted mt-1">nas melhores instituições · 50 mil+ bolsas</div>
+                  <div className="text-xs text-hero-muted mt-1">em instituições parceiras cadastradas</div>
                 </div>
               </div>
               <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur px-4 py-3">
