@@ -51,6 +51,8 @@ import {
   aiGenerateImage,
   aiRewriteText,
 } from "@/lib/news.functions";
+import { listPostVersions, restorePostVersion } from "@/lib/news-versions.functions";
+import { History, RotateCcw } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/blog")({
   component: AdminBlogPage,
@@ -518,7 +520,7 @@ function NewsEditor({
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="w-full">
-      <TabsList className="grid grid-cols-5 w-full">
+      <TabsList className={`grid w-full ${form.id ? "grid-cols-6" : "grid-cols-5"}`}>
         <TabsTrigger value="content">Conteúdo</TabsTrigger>
         <TabsTrigger value="ai">
           <Sparkles className="h-3.5 w-3.5 mr-1" />
@@ -530,6 +532,12 @@ function NewsEditor({
         </TabsTrigger>
         <TabsTrigger value="seo">SEO</TabsTrigger>
         <TabsTrigger value="publish">Publicação</TabsTrigger>
+        {form.id && (
+          <TabsTrigger value="versions">
+            <History className="h-3.5 w-3.5 mr-1" />
+            Versões
+          </TabsTrigger>
+        )}
       </TabsList>
 
       {/* Aviso IA */}
