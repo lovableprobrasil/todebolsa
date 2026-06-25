@@ -18,9 +18,9 @@ const STATUS: Record<string, { label: string; tone: string; icon: React.Componen
 };
 
 function InstitutionPortalIndex() {
-  const { institutionAdminOf, user } = useAuth();
+  const { institutionAdminOf, isInstitutionApplicant, user } = useAuth();
 
-  const { data: pendingApp } = useQuery({
+  const { data: pendingApp, isLoading: loadingApp } = useQuery({
     enabled: !!user && institutionAdminOf.length === 0,
     queryKey: ["my-pending-app", user?.id],
     queryFn: async () => {
@@ -48,6 +48,12 @@ function InstitutionPortalIndex() {
     },
   });
 
+  // Mostra o card de "em análise" para qualquer candidato (papel APPLICANT) ou
+  // quando encontramos uma aplicação registrada para o usuário — mesmo se a
+  // consulta ainda estiver carregando.
+  const hasPendingApplication =
+    institutionAdminOf.length === 0 && (isInstitutionApplicant || !!pendingApp);
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
@@ -69,7 +75,13 @@ function InstitutionPortalIndex() {
       </header>
 
       {institutionAdminOf.length === 0 ? (
-        pendingApp ? <PendingApplicationCard status={pendingApp.status} /> : <EmptyState />
+        hasPendingApplication ? (
+          <PendingApplicationCard status={pendingApp?.status ?? "SUBMITTED"} />
+        ) : loadingApp ? (
+          <div className="h-40 rounded-3xl bg-muted animate-pulse" />
+        ) : (
+          <EmptyState />
+        )
       ) : isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 2 }).map((_, i) => (
@@ -137,26 +149,64 @@ function EmptyState() {
 }
 
 function PendingApplicationCard({ status }: { status: string }) {
-  const label = status === "DRAFT" ? "Continuar cadastro" : "Ver status do credenciamento";
+  const STATUS_COPY: Record<string, { title: string; message: string }> = {
+    DRAFT: {
+      title: "Você tem um cadastro em rascunho",
+      message:
+        "Conclua o preenchimento do formulário de credenciamento para enviá-lo à nossa equipe.",
+    },
+    SUBMITTED: {
+      title: "Sua instituição ainda não foi aprovada",
+      message:
+        "Suas informações estão em análise pela nossa equipe. Tão logo a avaliação seja concluída, entraremos em contato pelo e-mail cadastrado.",
+    },
+    UNDER_REVIEW: {
+      title: "Sua instituição está em análise",
+      message:
+        "Nossa equipe está revisando os dados enviados. Tão logo a avaliação seja concluída, entraremos em contato pelo e-mail cadastrado.",
+    },
+    NEEDS_INFO: {
+      title: "Precisamos de mais informações",
+      message:
+        "Nossa equipe solicitou ajustes no seu cadastro. Acompanhe as mensagens no pré-painel para concluir a análise.",
+    },
+    REJECTED: {
+      title: "Cadastro recusado",
+      message:
+        "Infelizmente sua solicitação não foi aprovada nesta etapa. Confira o motivo no pré-painel.",
+    },
+    SUSPENDED: {
+      title: "Cadastro suspenso",
+      message:
+        "Seu credenciamento foi suspenso. Entre em contato com a nossa equipe para mais informações.",
+    },
+  };
+
+  const copy = STATUS_COPY[status] ?? STATUS_COPY.SUBMITTED;
+  const isDraft = status === "DRAFT";
+  const isReadOnly = status === "SUBMITTED" || status === "UNDER_REVIEW";
+
   return (
     <div className="rounded-3xl border border-border bg-card p-10 text-center">
       <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-warning/15 text-warning-foreground mb-4">
         <Clock className="h-7 w-7" />
       </div>
-      <h2 className="font-display text-xl font-bold mb-2">Seu credenciamento está em andamento</h2>
-      <p className="text-muted-foreground mb-5 max-w-md mx-auto">
-        Status atual: <strong>{status}</strong>. Acompanhe pelo pré-painel ou continue o cadastro.
-      </p>
-      <div className="flex flex-wrap gap-2 justify-center">
-        <Button asChild>
-          <Link to="/instituicao/credenciamento">{label}</Link>
-        </Button>
-        {status === "DRAFT" && (
-          <Button variant="outline" asChild>
-            <Link to="/instituicao/cadastrar">Continuar formulário</Link>
+      <h2 className="font-display text-xl font-bold mb-2">{copy.title}</h2>
+      <p className="text-muted-foreground mb-5 max-w-md mx-auto">{copy.message}</p>
+      {!isReadOnly && (
+        <div className="flex flex-wrap gap-2 justify-center">
+          <Button asChild>
+            <Link to="/instituicao/credenciamento">
+              {isDraft ? "Continuar cadastro" : "Ver status do credenciamento"}
+            </Link>
           </Button>
-        )}
-      </div>
+          {isDraft && (
+            <Button variant="outline" asChild>
+              <Link to="/instituicao/cadastrar">Continuar formulário</Link>
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
