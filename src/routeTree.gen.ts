@@ -67,6 +67,8 @@ import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
 import { Route as AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport } from './routes/_authenticated/admin.credenciamento-instituicoes.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicNewsPublishScheduledRouteImport } from './routes/api/public/news.publish-scheduled'
 import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
 import { Route as AuthenticatedAdminFinanceiroReceitasRouteImport } from './routes/_authenticated/admin.financeiro.receitas'
@@ -386,6 +388,16 @@ const LovableEmailQueueProcessRoute =
     path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNewsPublishScheduledRoute =
   ApiPublicNewsPublishScheduledRouteImport.update({
     id: '/api/public/news/publish-scheduled',
@@ -509,6 +521,8 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
@@ -574,6 +588,8 @@ export interface FileRoutesByTo {
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
@@ -645,6 +661,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/_authenticated/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/_authenticated/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
@@ -716,6 +734,8 @@ export interface FileRouteTypes {
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
     | '/admin/credenciamento-instituicoes/'
     | '/admin/crm/'
@@ -781,6 +801,8 @@ export interface FileRouteTypes {
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
     | '/admin/credenciamento-instituicoes'
     | '/admin/crm'
@@ -851,6 +873,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/financeiro/receitas'
     | '/_authenticated/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
     | '/_authenticated/admin/credenciamento-instituicoes/'
     | '/_authenticated/admin/crm/'
@@ -888,6 +912,8 @@ export interface RootRouteChildren {
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
   GuiaCategoriaSlugRoute: typeof GuiaCategoriaSlugRoute
   ApiPublicNewsPublishScheduledRoute: typeof ApiPublicNewsPublishScheduledRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
   ApiPublicUgeValidarCodigoRoute: typeof ApiPublicUgeValidarCodigoRoute
   BolsasCursoCourseCidadeCityRoute: typeof BolsasCursoCourseCidadeCityRoute
@@ -1301,6 +1327,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news/publish-scheduled': {
       id: '/api/public/news/publish-scheduled'
       path: '/api/public/news/publish-scheduled'
@@ -1552,6 +1592,8 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
   GuiaCategoriaSlugRoute: GuiaCategoriaSlugRoute,
   ApiPublicNewsPublishScheduledRoute: ApiPublicNewsPublishScheduledRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
   ApiPublicUgeValidarCodigoRoute: ApiPublicUgeValidarCodigoRoute,
   BolsasCursoCourseCidadeCityRoute: BolsasCursoCourseCidadeCityRoute,
