@@ -511,6 +511,7 @@ function validateStep(step: number, f: FormState, hasUser: boolean): boolean {
     case 5:
       if (hasUser) return true; // envio
       return !!f.account_name.trim() && /\S+@\S+\.\S+/.test(f.account_email)
+        && f.account_email.trim().toLowerCase() === f.account_email2.trim().toLowerCase()
         && f.account_password.length >= 6 && f.account_password === f.account_password2;
     case 6:
       return true; // envio (sem usuário previamente)
