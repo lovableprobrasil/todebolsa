@@ -14,10 +14,18 @@ export const Route = createFileRoute("/api/public/uge/validar/$codigo")({
     handlers: {
       GET: async ({ params }) => {
         const codigo = String(params.codigo || "").trim().toUpperCase();
-        if (!codigo || codigo.length < 6) {
+        // Hardening: enforce strict format to prevent abuse / injection-ish lookups
+        if (!/^[A-Z0-9-]{6,32}$/.test(codigo)) {
           return Response.json(
             { valid: false, reason: "Código inválido" },
-            { status: 400 },
+            { status: 400, headers: { "cache-control": "no-store" } },
+          );
+        }
+
+        if (!process.env.SUPABASE_URL || !process.env.SUPABASE_PUBLISHABLE_KEY) {
+          return Response.json(
+            { valid: false, reason: "Serviço indisponível" },
+            { status: 503, headers: { "cache-control": "no-store" } },
           );
         }
 
