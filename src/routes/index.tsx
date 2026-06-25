@@ -11,7 +11,7 @@ import { StudentTestimonials } from "@/components/site/StudentTestimonials";
 import { BlogHomeSection } from "@/components/site/BlogHomeSection";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer } from "@/lib/scholarships";
+import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer, getPlatformStats } from "@/lib/scholarships";
 import { formatBRL, COURSE_LEVEL_LABEL } from "@/lib/format";
 import heroStudent from "@/assets/hero-student-card.webp";
 
