@@ -37,7 +37,7 @@ type FormState = {
   accepted_terms: boolean; accepted_privacy: boolean;
   accepted_truthfulness: boolean; accepted_representation: boolean;
   // Account creation
-  account_name: string; account_email: string; account_password: string; account_password2: string;
+  account_name: string; account_email: string; account_email2: string; account_password: string; account_password2: string;
 };
 
 const EMPTY: FormState = {
