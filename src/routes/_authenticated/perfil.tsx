@@ -27,7 +27,7 @@ function PerfilPage() {
     }
     if (user?.id) {
       supabase.from("profiles").select("cpf").eq("id", user.id).maybeSingle().then(({ data }) => {
-        if (data?.cpf) setCpf(data.cpf);
+        if (data?.cpf) setCpf(maskCPF(data.cpf));
       });
     }
   }, [profile, user]);
