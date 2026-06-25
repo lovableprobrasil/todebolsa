@@ -89,7 +89,7 @@ function ApplicationWizardPage() {
   // Pre-fill account email from institution responsible email
   useEffect(() => {
     if (!user && !form.account_email && form.responsible_email) {
-      setForm((f) => ({ ...f, account_email: f.account_email || f.responsible_email, account_name: f.account_name || f.responsible_name }));
+      setForm((f) => ({ ...f, account_email: f.account_email || f.responsible_email, account_email2: f.account_email2 || f.responsible_email, account_name: f.account_name || f.responsible_name }));
     }
   }, [form.responsible_email, form.responsible_name, user]); // eslint-disable-line
 
