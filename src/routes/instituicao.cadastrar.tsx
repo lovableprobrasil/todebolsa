@@ -172,14 +172,13 @@ function ApplicationWizardPage() {
         const { data: au } = await supabase.auth.getUser();
         const uid = au.user?.id;
         if (uid) {
-          const profilePayload: Record<string, unknown> = {
+          await supabase.from("profiles").upsert({
             id: uid,
-            name: (form.account_name || form.responsible_name || null) as string | null,
+            name: form.account_name || form.responsible_name || null,
             phone: form.responsible_whatsapp ? onlyDigits(form.responsible_whatsapp) : null,
             cpf: form.responsible_cpf ? onlyDigits(form.responsible_cpf) : null,
             email: form.account_email || form.responsible_email || null,
-          };
-          await supabase.from("profiles").upsert(profilePayload, { onConflict: "id" });
+          }, { onConflict: "id" });
         }
       }
 
