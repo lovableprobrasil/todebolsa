@@ -1863,6 +1863,7 @@ export type Database = {
         Returns: boolean
       }
       is_platform_admin: { Args: { _uid?: string }; Returns: boolean }
+      is_platform_sales: { Args: never; Returns: boolean }
       moderate_review: {
         Args: { p_approve: boolean; p_notes?: string; p_review_id: string }
         Returns: {
