@@ -39,19 +39,23 @@ const ADMIN_NAV = [
   { to: "/perfil", label: "Meu perfil", icon: UserCircle },
 ] as const;
 
+const INSTITUTION_NAV = [
+  { to: "/instituicao", label: "Portal da instituição", icon: Building2 },
+  { to: "/notificacoes", label: "Notificações", icon: Bell },
+  { to: "/perfil", label: "Meu perfil", icon: UserCircle },
+] as const;
+
 function AuthenticatedLayout() {
-  const { profile, user, signOut, isPlatformAdmin, institutionAdminOf } = useAuth();
+  const { profile, user, signOut, isPlatformAdmin, institutionAdminOf, isInstitutionApplicant } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isInstitutionUser = institutionAdminOf.length > 0 || isInstitutionApplicant;
   const nav = isPlatformAdmin
     ? ADMIN_NAV
-    : [
-        ...STUDENT_NAV,
-        ...(institutionAdminOf.length > 0
-          ? [{ to: "/instituicao", label: "Portal da instituição", icon: Building2 } as const]
-          : []),
-      ];
+    : isInstitutionUser
+      ? INSTITUTION_NAV
+      : STUDENT_NAV;
 
   async function handleSignOut() {
     await signOut();
