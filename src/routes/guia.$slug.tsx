@@ -156,9 +156,11 @@ export const Route = createFileRoute("/guia/$slug")({
 function PostPage() {
   const { slug } = Route.useParams();
   const { data: post } = useSuspenseQuery(postQueryOptions(slug));
+  const url = `${SITE}/guia/${slug}`;
 
   return (
     <div className="min-h-screen flex flex-col">
+      <ViewTracker slug={slug} />
       <Header />
       <article className="flex-1">
         {post.cover_url && (
