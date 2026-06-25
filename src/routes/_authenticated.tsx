@@ -46,13 +46,14 @@ const INSTITUTION_NAV = [
 ] as const;
 
 function AuthenticatedLayout() {
-  const { profile, user, signOut, isPlatformAdmin, institutionAdminOf } = useAuth();
+  const { profile, user, signOut, isPlatformAdmin, institutionAdminOf, isInstitutionApplicant } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isInstitutionUser = institutionAdminOf.length > 0 || isInstitutionApplicant;
   const nav = isPlatformAdmin
     ? ADMIN_NAV
-    : institutionAdminOf.length > 0
+    : isInstitutionUser
       ? INSTITUTION_NAV
       : STUDENT_NAV;
 
