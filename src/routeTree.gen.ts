@@ -42,6 +42,7 @@ import { Route as AuthenticatedCarteiraRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedInstituicaoIndexRouteImport } from './routes/_authenticated/instituicao.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as GuiaCategoriaSlugRouteImport } from './routes/guia.categoria.$slug'
 import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$city'
 import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
@@ -63,6 +64,7 @@ import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
 import { Route as AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport } from './routes/_authenticated/admin.credenciamento-instituicoes.index'
+import { Route as ApiPublicNewsPublishScheduledRouteImport } from './routes/api/public/news.publish-scheduled'
 import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
 import { Route as AuthenticatedAdminFinanceiroReceitasRouteImport } from './routes/_authenticated/admin.financeiro.receitas'
 import { Route as AuthenticatedAdminFinanceiroInstituicoesRouteImport } from './routes/_authenticated/admin.financeiro.instituicoes'
@@ -239,6 +241,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const GuiaCategoriaSlugRoute = GuiaCategoriaSlugRouteImport.update({
+  id: '/guia/categoria/$slug',
+  path: '/guia/categoria/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BolsasCidadeCityRoute = BolsasCidadeCityRouteImport.update({
   id: '/bolsas/cidade/$city',
   path: '/bolsas/cidade/$city',
@@ -360,6 +367,12 @@ const AuthenticatedAdminCredenciamentoInstituicoesIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminCredenciamentoInstituicoesRoute,
   } as any)
+const ApiPublicNewsPublishScheduledRoute =
+  ApiPublicNewsPublishScheduledRouteImport.update({
+    id: '/api/public/news/publish-scheduled',
+    path: '/api/public/news/publish-scheduled',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdminFinanceiroReembolsosRoute =
   AuthenticatedAdminFinanceiroReembolsosRouteImport.update({
     id: '/reembolsos',
@@ -464,6 +477,7 @@ export interface FileRoutesByFullPath {
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
+  '/guia/categoria/$slug': typeof GuiaCategoriaSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
   '/admin/credenciamento-instituicoes/$id': typeof AuthenticatedAdminCredenciamentoInstituicoesIdRoute
@@ -473,6 +487,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
+  '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
   '/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -524,6 +539,7 @@ export interface FileRoutesByTo {
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
+  '/guia/categoria/$slug': typeof GuiaCategoriaSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/instituicao': typeof AuthenticatedInstituicaoIndexRoute
   '/admin/credenciamento-instituicoes/$id': typeof AuthenticatedAdminCredenciamentoInstituicoesIdRoute
@@ -533,6 +549,7 @@ export interface FileRoutesByTo {
   '/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
+  '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
   '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -590,6 +607,7 @@ export interface FileRoutesById {
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
+  '/guia/categoria/$slug': typeof GuiaCategoriaSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
   '/_authenticated/admin/credenciamento-instituicoes/$id': typeof AuthenticatedAdminCredenciamentoInstituicoesIdRoute
@@ -599,6 +617,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
   '/_authenticated/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/_authenticated/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
+  '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
   '/_authenticated/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/_authenticated/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -656,6 +675,7 @@ export interface FileRouteTypes {
     | '/reservas/$id'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
+    | '/guia/categoria/$slug'
     | '/admin/'
     | '/instituicao/'
     | '/admin/credenciamento-instituicoes/$id'
@@ -665,6 +685,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/instituicoes'
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
+    | '/api/public/news/publish-scheduled'
     | '/admin/credenciamento-instituicoes/'
     | '/admin/crm/'
     | '/admin/financeiro/'
@@ -716,6 +737,7 @@ export interface FileRouteTypes {
     | '/reservas/$id'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
+    | '/guia/categoria/$slug'
     | '/admin'
     | '/instituicao'
     | '/admin/credenciamento-instituicoes/$id'
@@ -725,6 +747,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/instituicoes'
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
+    | '/api/public/news/publish-scheduled'
     | '/admin/credenciamento-instituicoes'
     | '/admin/crm'
     | '/admin/financeiro'
@@ -781,6 +804,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reservas/$id'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
+    | '/guia/categoria/$slug'
     | '/_authenticated/admin/'
     | '/_authenticated/instituicao/'
     | '/_authenticated/admin/credenciamento-instituicoes/$id'
@@ -790,6 +814,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/financeiro/instituicoes'
     | '/_authenticated/admin/financeiro/receitas'
     | '/_authenticated/admin/financeiro/reembolsos'
+    | '/api/public/news/publish-scheduled'
     | '/_authenticated/admin/credenciamento-instituicoes/'
     | '/_authenticated/admin/crm/'
     | '/_authenticated/admin/financeiro/'
@@ -822,6 +847,8 @@ export interface RootRouteChildren {
   NoticiasIndexRoute: typeof NoticiasIndexRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
+  GuiaCategoriaSlugRoute: typeof GuiaCategoriaSlugRoute
+  ApiPublicNewsPublishScheduledRoute: typeof ApiPublicNewsPublishScheduledRoute
   ApiPublicUgeValidarCodigoRoute: typeof ApiPublicUgeValidarCodigoRoute
   BolsasCursoCourseCidadeCityRoute: typeof BolsasCursoCourseCidadeCityRoute
 }
@@ -1059,6 +1086,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/guia/categoria/$slug': {
+      id: '/guia/categoria/$slug'
+      path: '/guia/categoria/$slug'
+      fullPath: '/guia/categoria/$slug'
+      preLoaderRoute: typeof GuiaCategoriaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bolsas/cidade/$city': {
       id: '/bolsas/cidade/$city'
       path: '/bolsas/cidade/$city'
@@ -1205,6 +1239,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/credenciamento-instituicoes/'
       preLoaderRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesRoute
+    }
+    '/api/public/news/publish-scheduled': {
+      id: '/api/public/news/publish-scheduled'
+      path: '/api/public/news/publish-scheduled'
+      fullPath: '/api/public/news/publish-scheduled'
+      preLoaderRoute: typeof ApiPublicNewsPublishScheduledRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/financeiro/reembolsos': {
       id: '/_authenticated/admin/financeiro/reembolsos'
@@ -1446,6 +1487,8 @@ const rootRouteChildren: RootRouteChildren = {
   NoticiasIndexRoute: NoticiasIndexRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
+  GuiaCategoriaSlugRoute: GuiaCategoriaSlugRoute,
+  ApiPublicNewsPublishScheduledRoute: ApiPublicNewsPublishScheduledRoute,
   ApiPublicUgeValidarCodigoRoute: ApiPublicUgeValidarCodigoRoute,
   BolsasCursoCourseCidadeCityRoute: BolsasCursoCourseCidadeCityRoute,
 }

@@ -59,8 +59,7 @@ export const restorePostVersion = createServerFn({ method: "POST" })
     const payload: Record<string, any> = {};
     for (const f of fields) if (f in snap) payload[f] = snap[f];
     // restoring keeps current status (don't auto-publish past version)
-    const { error: upErr } = await context.supabase
-      .from("blog_posts")
+    const { error: upErr } = await (context.supabase.from("blog_posts") as any)
       .update(payload)
       .eq("id", data.postId);
     if (upErr) throw new Error(upErr.message);
