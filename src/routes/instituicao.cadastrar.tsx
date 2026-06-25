@@ -51,7 +51,7 @@ const EMPTY: FormState = {
   has_idle_vacancies: null, avg_discount_pct: "", monthly_vacancies: "",
   accepted_terms: false, accepted_privacy: false,
   accepted_truthfulness: false, accepted_representation: false,
-  account_name: "", account_email: "", account_password: "", account_password2: "",
+  account_name: "", account_email: "", account_email2: "", account_password: "", account_password2: "",
 };
 
 const TYPE_OPTIONS = [
