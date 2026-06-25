@@ -14,8 +14,8 @@ export function Footer() {
               <span className="font-display font-bold">Tô de Bolsa</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-xs">
-              O maior marketplace de bolsas de estudo do Brasil. Educação acessível
-              para todas as idades.
+              Marketplace de bolsas de estudo com oportunidades reais publicadas
+              por instituições parceiras.
             </p>
           </div>
 

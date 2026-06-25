@@ -219,6 +219,55 @@ export async function listFaqs() {
   return data ?? [];
 }
 
+export type PlatformStats = {
+  institutions: number;
+  scholarships: number;
+  vacancies: number;
+  maxDiscount: number;
+};
+
+export async function getPlatformStats(): Promise<PlatformStats> {
+  const [{ count: instCount }, schRes, offRes] = await Promise.all([
+    supabase
+      .from("institutions")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "APPROVED"),
+    supabase
+      .from("scholarships")
+      .select("price_with_scholarship, course_offering:course_offerings!inner(status, course:courses!inner(original_price))")
+      .eq("is_active", true),
+    supabase
+      .from("course_offerings")
+      .select("vacancies_available")
+      .eq("status", "ACTIVE"),
+  ]);
+
+  type SchRow = {
+    price_with_scholarship: number;
+    course_offering: { status: string; course: { original_price: number } } | null;
+  };
+  const scholarships = ((schRes.data ?? []) as unknown as SchRow[]).filter(
+    (s) => s.course_offering?.status === "ACTIVE",
+  );
+  const vacancies = (offRes.data ?? []).reduce(
+    (acc, o) => acc + (Number(o.vacancies_available) || 0),
+    0,
+  );
+  let maxDiscount = 0;
+  for (const s of scholarships) {
+    const original = Number(s.course_offering?.course?.original_price) || 0;
+    const final = Number(s.price_with_scholarship) || 0;
+    const pct = original > 0 ? Math.round(((original - final) / original) * 100) : 0;
+    if (pct > maxDiscount) maxDiscount = pct;
+  }
+  return {
+    institutions: instCount ?? 0,
+    scholarships: scholarships.length,
+    vacancies,
+    maxDiscount,
+  };
+}
+
 export type InstitutionOffer = {
   id: string;
   slug: string;

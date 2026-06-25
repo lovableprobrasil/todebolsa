@@ -11,7 +11,7 @@ import { StudentTestimonials } from "@/components/site/StudentTestimonials";
 import { BlogHomeSection } from "@/components/site/BlogHomeSection";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer } from "@/lib/scholarships";
+import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer, getPlatformStats } from "@/lib/scholarships";
 import { formatBRL, COURSE_LEVEL_LABEL } from "@/lib/format";
 import heroStudent from "@/assets/hero-student-card.webp";
 
@@ -115,7 +115,7 @@ function Hero() {
                 </span>
                 <div className="min-w-0">
                   <div className="font-display text-base font-extrabold text-primary leading-none">ATÉ 90% OFF</div>
-                  <div className="text-xs text-hero-muted mt-1">nas melhores instituições · 50 mil+ bolsas</div>
+                  <div className="text-xs text-hero-muted mt-1">em instituições parceiras cadastradas</div>
                 </div>
               </div>
               <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur px-4 py-3">
@@ -216,16 +216,18 @@ function CategorySection() {
 }
 
 function StatsBar() {
-  const stats = [
-    { value: "50.000+", label: "Bolsas disponíveis" },
-    { value: "200.000+", label: "Alunos beneficiados" },
-    { value: "500+", label: "Instituições parceiras" },
-    { value: "Até 90%", label: "De desconto" },
-  ];
+  const { data } = useQuery({ queryKey: ["platform-stats"], queryFn: getPlatformStats });
+  if (!data) return null;
+  const stats: { value: string; label: string }[] = [];
+  if (data.scholarships > 0) stats.push({ value: data.scholarships.toLocaleString("pt-BR"), label: data.scholarships === 1 ? "Bolsa ativa" : "Bolsas ativas" });
+  if (data.institutions > 0) stats.push({ value: data.institutions.toLocaleString("pt-BR"), label: data.institutions === 1 ? "Instituição parceira" : "Instituições parceiras" });
+  if (data.vacancies > 0) stats.push({ value: data.vacancies.toLocaleString("pt-BR"), label: "Vagas disponíveis" });
+  if (data.maxDiscount > 0) stats.push({ value: `Até ${data.maxDiscount}%`, label: "De desconto" });
+  if (stats.length === 0) return null;
   return (
     <section className="bg-brand-blue text-brand-blue-foreground">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-14">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className={`grid gap-6 ${stats.length >= 4 ? "grid-cols-2 md:grid-cols-4" : stats.length === 3 ? "grid-cols-1 sm:grid-cols-3" : stats.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <div className="font-display text-3xl md:text-4xl font-extrabold text-primary">{s.value}</div>
@@ -587,8 +589,8 @@ function CtaInstitution() {
             É uma instituição de ensino?
           </h3>
           <p className="text-muted-foreground mb-5 max-w-2xl">
-            Cadastre sua instituição e comece a oferecer bolsas para milhares de alunos em todo o Brasil.
-            Aumente suas matrículas e preencha suas vagas.
+            Cadastre sua instituição, publique suas bolsas e alcance estudantes que estão
+            buscando oportunidades reais. Aumente suas matrículas e preencha suas vagas.
           </p>
           <ul className="grid sm:grid-cols-3 gap-3 max-w-2xl">
             {benefits.map((b) => (
