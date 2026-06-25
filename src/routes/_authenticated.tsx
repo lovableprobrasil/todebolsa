@@ -30,18 +30,23 @@ const NAV = [
   { to: "/reservas", label: "Minhas reservas", icon: Bookmark },
   { to: "/notificacoes", label: "Notificações", icon: Bell },
   { to: "/carteira", label: "Carteira UGE", icon: IdCard },
-  { to: "/instituicao", label: "Portal da instituição", icon: Building2 },
   { to: "/perfil", label: "Meu perfil", icon: UserCircle },
 ] as const;
 
 function AuthenticatedLayout() {
-  const { profile, user, signOut, isPlatformAdmin } = useAuth();
+  const { profile, user, signOut, isPlatformAdmin, institutionAdminOf } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const nav = isPlatformAdmin
-    ? [...NAV, { to: "/admin", label: "Painel master", icon: Shield } as const]
-    : NAV;
+  const nav = [
+    ...NAV,
+    ...(institutionAdminOf.length > 0
+      ? [{ to: "/instituicao", label: "Portal da instituição", icon: Building2 } as const]
+      : []),
+    ...(isPlatformAdmin
+      ? [{ to: "/admin", label: "Painel master", icon: Shield } as const]
+      : []),
+  ];
 
   async function handleSignOut() {
     await signOut();
