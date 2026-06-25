@@ -73,7 +73,17 @@ function PerfilPage() {
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(11) 99999-9999" />
         </Row>
         <Row label="CPF">
-          <Input value={cpf} onChange={(e) => setCpf(e.target.value)} placeholder="000.000.000-00" />
+          <Input
+            value={cpf}
+            onChange={(e) => setCpf(maskCPF(e.target.value))}
+            placeholder="000.000.000-00"
+            inputMode="numeric"
+            aria-invalid={!!cpf && onlyDigits(cpf).length === 11 && !isValidCPF(cpf) || undefined}
+            className={cpf && onlyDigits(cpf).length === 11 && !isValidCPF(cpf) ? "border-destructive focus-visible:ring-destructive" : ""}
+          />
+          {cpf && onlyDigits(cpf).length === 11 && !isValidCPF(cpf) && (
+            <p className="text-xs text-destructive mt-1">CPF inválido.</p>
+          )}
         </Row>
         <div className="pt-2">
           <Button type="submit" disabled={saving} className="gap-2">
