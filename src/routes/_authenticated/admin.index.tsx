@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, GraduationCap, Users, Bookmark, CheckCircle2, AlertCircle, BanknoteIcon, TrendingUp } from "lucide-react";
+import { Building2, GraduationCap, Users, Bookmark, CheckCircle2, AlertCircle, BanknoteIcon, TrendingUp, FileCheck2, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/lib/format";
 
@@ -10,6 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 
 type Stats = {
   institutions_total: number; institutions_pending: number; institutions_approved: number; institutions_suspended: number;
+  applications_pending: number; applications_recent: number;
   scholarships_active: number; scholarships_total: number;
   students_total: number;
   reservations_total: number; reservations_pending: number; reservations_confirmed: number; reservations_expired: number;
@@ -31,6 +32,30 @@ function AdminOverview() {
 
   return (
     <div className="space-y-6">
+      {data.applications_pending > 0 && (
+        <Link
+          to="/admin/credenciamento-instituicoes"
+          className="block rounded-2xl border border-warning/30 bg-gradient-to-br from-warning/15 to-warning/5 p-5 hover:border-warning transition-colors"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-warning/20 text-warning-foreground shrink-0">
+                <FileCheck2 className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <div className="font-display text-lg font-extrabold">
+                  {data.applications_pending} credenciamento{data.applications_pending === 1 ? "" : "s"} aguardando análise
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {data.applications_recent} enviado{data.applications_recent === 1 ? "" : "s"} nos últimos 7 dias · Clique para revisar
+                </div>
+              </div>
+            </div>
+            <ArrowRight className="h-5 w-5 text-foreground/60 shrink-0" />
+          </div>
+        </Link>
+      )}
+
       <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <Stat icon={Building2} label="Instituições" value={data.institutions_total} hint={`${data.institutions_pending} aguardando aprovação`} tone="blue" />
         <Stat icon={GraduationCap} label="Bolsas ativas" value={data.scholarships_active} hint={`${data.scholarships_total} no total`} tone="primary" />
