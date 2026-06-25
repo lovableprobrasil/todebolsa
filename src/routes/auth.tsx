@@ -151,9 +151,8 @@ function LoginForm() {
         />
       </Field>
       <Field id="login-password" label="Senha" icon={Lock}>
-        <Input
+        <PasswordInput
           id="login-password"
-          type="password"
           autoComplete="current-password"
           required
           value={password}
