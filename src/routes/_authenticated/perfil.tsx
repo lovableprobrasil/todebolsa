@@ -35,10 +35,14 @@ function PerfilPage() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!user) return;
+    if (cpf && !isValidCPF(cpf)) {
+      toast.error("CPF inválido.");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ name, phone: phone || null, cpf: cpf || null })
+      .update({ name, phone: phone || null, cpf: cpf ? onlyDigits(cpf) : null })
       .eq("id", user.id);
     setSaving(false);
     if (error) {
