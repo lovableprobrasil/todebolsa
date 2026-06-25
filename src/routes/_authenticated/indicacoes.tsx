@@ -89,11 +89,16 @@ function ReferralPage() {
     } else copy();
   };
 
+  const pixCpfInvalid = pixType === "CPF" && pixKey.length > 0 && !isValidCPF(pixKey);
+
   const requestPayout = useMutation({
     mutationFn: async () => {
+      if (pixType === "CPF" && !isValidCPF(pixKey)) {
+        throw new Error("CPF inválido.");
+      }
       const { error } = await supabase.rpc("request_referral_payout", {
         p_amount: amount,
-        p_pix_key: pixKey,
+        p_pix_key: pixType === "CPF" ? onlyDigits(pixKey) : pixKey,
         p_pix_type: pixType,
       });
       if (error) throw error;
