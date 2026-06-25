@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { isValidCNPJ, maskCNPJ, maskCPF, maskPhone, maskCEP, onlyDigits } from "@/lib/validators/cnpj";
+import { isValidCNPJ, isValidCPF, maskCNPJ, maskCPF, maskPhone, maskCEP, onlyDigits } from "@/lib/validators/cnpj";
 import { lookupCep } from "@/lib/validators/cep";
 
 export const Route = createFileRoute("/instituicao/cadastrar")({
@@ -309,7 +309,7 @@ function StepResponsavel({ form, update }: { form: FormState; update: <K extends
     <Grid>
       <Field label="Nome completo *"><Input value={form.responsible_name} onChange={(e) => update("responsible_name", e.target.value)} /></Field>
       <Field label="Cargo / função *"><Input value={form.responsible_role} onChange={(e) => update("responsible_role", e.target.value)} placeholder="Ex.: Diretor" /></Field>
-      <Field label="CPF"><Input value={form.responsible_cpf} onChange={(e) => update("responsible_cpf", maskCPF(e.target.value))} placeholder="000.000.000-00" /></Field>
+      <Field label="CPF"><CpfField value={form.responsible_cpf} onChange={(v) => update("responsible_cpf", v)} /></Field>
       <Field label="E-mail *"><Input type="email" value={form.responsible_email} onChange={(e) => update("responsible_email", e.target.value)} /></Field>
       <Field label="WhatsApp *" full><Input value={form.responsible_whatsapp} onChange={(e) => update("responsible_whatsapp", maskPhone(e.target.value))} placeholder="(11) 99999-9999" /></Field>
       <div className="sm:col-span-2 flex items-start gap-2">
@@ -518,6 +518,24 @@ function Field({ label, full, children }: { label: string; full?: boolean; child
   );
 }
 
+function CpfField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const digits = onlyDigits(value);
+  const showError = digits.length === 11 && !isValidCPF(value);
+  return (
+    <>
+      <Input
+        value={value}
+        onChange={(e) => onChange(maskCPF(e.target.value))}
+        placeholder="000.000.000-00"
+        inputMode="numeric"
+        aria-invalid={showError || undefined}
+        className={showError ? "border-destructive focus-visible:ring-destructive" : ""}
+      />
+      {showError && <p className="text-xs text-destructive mt-1">CPF inválido.</p>}
+    </>
+  );
+}
+
 function buildPayload(f: FormState) {
   return {
     trade_name: f.trade_name || null,
@@ -562,7 +580,8 @@ function validateStep(step: number, f: FormState, hasUser: boolean): boolean {
       return !!f.trade_name && !!f.institution_type && !!f.cnpj && isValidCNPJ(f.cnpj);
     case 1:
       return !!f.responsible_name && !!f.responsible_role && !!f.responsible_email
-        && !!f.responsible_whatsapp && f.authorization_declared;
+        && !!f.responsible_whatsapp && f.authorization_declared
+        && (!f.responsible_cpf || isValidCPF(f.responsible_cpf));
     case 2:
       return onlyDigits(f.zip).length === 8 && !!f.address && !!f.number && !!f.neighborhood
         && !!f.city && f.state.length === 2 && !!f.service_mode;

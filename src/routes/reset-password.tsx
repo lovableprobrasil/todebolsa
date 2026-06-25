@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { GraduationCap, Loader2, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
@@ -90,9 +90,8 @@ function Field({ id, label, value, onChange }: { id: string; label: string; valu
       </Label>
       <div className="relative">
         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
+        <PasswordInput
           id={id}
-          type="password"
           required
           minLength={6}
           value={value}

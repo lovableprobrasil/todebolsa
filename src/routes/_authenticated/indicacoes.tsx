@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
+import { isValidCPF, maskCPF, onlyDigits } from "@/lib/validators/cnpj";
 
 export const Route = createFileRoute("/_authenticated/indicacoes")({
   component: ReferralPage,
@@ -88,11 +89,16 @@ function ReferralPage() {
     } else copy();
   };
 
+  const pixCpfInvalid = pixType === "CPF" && pixKey.length > 0 && !isValidCPF(pixKey);
+
   const requestPayout = useMutation({
     mutationFn: async () => {
+      if (pixType === "CPF" && !isValidCPF(pixKey)) {
+        throw new Error("CPF inválido.");
+      }
       const { error } = await supabase.rpc("request_referral_payout", {
         p_amount: amount,
-        p_pix_key: pixKey,
+        p_pix_key: pixType === "CPF" ? onlyDigits(pixKey) : pixKey,
         p_pix_type: pixType,
       });
       if (error) throw error;
@@ -143,7 +149,7 @@ function ReferralPage() {
           <p className="text-sm text-muted-foreground">Saldo disponível: <strong>{formatBRL(s?.balance ?? 0)}</strong></p>
           <div className="grid sm:grid-cols-2 gap-2">
             <Input type="number" min={25} step={5} value={amount} onChange={(e) => setAmount(Number(e.target.value))} placeholder="Valor" />
-            <Select value={pixType} onValueChange={setPixType}>
+            <Select value={pixType} onValueChange={(v) => { setPixType(v); setPixKey(""); }}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="CPF">CPF</SelectItem>
@@ -153,9 +159,17 @@ function ReferralPage() {
               </SelectContent>
             </Select>
           </div>
-          <Input value={pixKey} onChange={(e) => setPixKey(e.target.value)} placeholder="Sua chave PIX" />
+          <Input
+            value={pixKey}
+            onChange={(e) => setPixKey(pixType === "CPF" ? maskCPF(e.target.value) : e.target.value)}
+            placeholder={pixType === "CPF" ? "000.000.000-00" : "Sua chave PIX"}
+            inputMode={pixType === "CPF" ? "numeric" : undefined}
+            aria-invalid={pixCpfInvalid || undefined}
+            className={pixCpfInvalid ? "border-destructive focus-visible:ring-destructive" : ""}
+          />
+          {pixCpfInvalid && <p className="text-xs text-destructive">CPF inválido.</p>}
           <Button
-            disabled={requestPayout.isPending || !pixKey || (s?.balance ?? 0) < amount}
+            disabled={requestPayout.isPending || !pixKey || pixCpfInvalid || (s?.balance ?? 0) < amount}
             onClick={() => requestPayout.mutate()}
           >
             Solicitar saque

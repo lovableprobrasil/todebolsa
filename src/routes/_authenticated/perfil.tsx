@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { isValidCPF, maskCPF, onlyDigits } from "@/lib/validators/cnpj";
 
 export const Route = createFileRoute("/_authenticated/perfil")({
   component: PerfilPage,
@@ -26,7 +27,7 @@ function PerfilPage() {
     }
     if (user?.id) {
       supabase.from("profiles").select("cpf").eq("id", user.id).maybeSingle().then(({ data }) => {
-        if (data?.cpf) setCpf(data.cpf);
+        if (data?.cpf) setCpf(maskCPF(data.cpf));
       });
     }
   }, [profile, user]);
@@ -34,10 +35,14 @@ function PerfilPage() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!user) return;
+    if (cpf && !isValidCPF(cpf)) {
+      toast.error("CPF inválido.");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ name, phone: phone || null, cpf: cpf || null })
+      .update({ name, phone: phone || null, cpf: cpf ? onlyDigits(cpf) : null })
       .eq("id", user.id);
     setSaving(false);
     if (error) {
@@ -68,7 +73,17 @@ function PerfilPage() {
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(11) 99999-9999" />
         </Row>
         <Row label="CPF">
-          <Input value={cpf} onChange={(e) => setCpf(e.target.value)} placeholder="000.000.000-00" />
+          <Input
+            value={cpf}
+            onChange={(e) => setCpf(maskCPF(e.target.value))}
+            placeholder="000.000.000-00"
+            inputMode="numeric"
+            aria-invalid={!!cpf && onlyDigits(cpf).length === 11 && !isValidCPF(cpf) || undefined}
+            className={cpf && onlyDigits(cpf).length === 11 && !isValidCPF(cpf) ? "border-destructive focus-visible:ring-destructive" : ""}
+          />
+          {cpf && onlyDigits(cpf).length === 11 && !isValidCPF(cpf) && (
+            <p className="text-xs text-destructive mt-1">CPF inválido.</p>
+          )}
         </Row>
         <div className="pt-2">
           <Button type="submit" disabled={saving} className="gap-2">
