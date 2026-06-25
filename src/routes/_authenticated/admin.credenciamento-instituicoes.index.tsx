@@ -5,7 +5,7 @@ import { Building2, Search, Star, Clock, AlertCircle, CheckCircle2 } from "lucid
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/_authenticated/admin/credenciamento-instituicoes")({
+export const Route = createFileRoute("/_authenticated/admin/credenciamento-instituicoes/")({
   component: AdminApplicationsList,
 });
 
