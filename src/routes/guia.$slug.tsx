@@ -272,7 +272,7 @@ function PostPage() {
           <div className="mt-10 rounded-2xl bg-primary-soft/40 border border-primary/20 p-6 text-center">
             <h2 className="font-display text-xl font-bold">Pronto para encontrar sua bolsa?</h2>
             <p className="text-muted-foreground text-sm mt-1">
-              Mais de 50 mil bolsas com até 90% de desconto esperando por você.
+              Compare oportunidades reais publicadas por instituições parceiras.
             </p>
             <Link
               to="/bolsas"
