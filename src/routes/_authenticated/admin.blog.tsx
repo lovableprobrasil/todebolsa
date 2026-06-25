@@ -169,8 +169,10 @@ function AdminBlogPage() {
 
   async function togglePublish(p: Post) {
     const next = !p.is_published;
-    const payload: Record<string, unknown> = { is_published: next };
-    if (next) payload.published_at = new Date().toISOString();
+    const payload = {
+      is_published: next,
+      published_at: next ? new Date().toISOString() : null,
+    };
     const { error } = await supabase.from("blog_posts").update(payload).eq("id", p.id);
     if (error) return toast.error(error.message);
     toast.success(next ? "Notícia publicada" : "Notícia despublicada");
