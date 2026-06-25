@@ -89,7 +89,30 @@ function GuiaIndex() {
         </div>
       </div>
 
-      <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+        {categories.length > 0 && (
+          <section>
+            <h2 className="font-display text-xl font-bold mb-4">Explore por categoria</h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {categories.map((c) => (
+                <Link
+                  key={c.slug}
+                  to="/guia/categoria/$slug"
+                  params={{ slug: c.slug }}
+                  className="group rounded-xl border border-border bg-card p-4 hover:shadow-md hover:border-primary/40 transition-all"
+                  style={{ borderLeftColor: c.color ?? undefined, borderLeftWidth: c.color ? 4 : 1 }}
+                >
+                  <div className="font-semibold group-hover:text-primary">{c.name}</div>
+                  {c.description && (
+                    <div className="text-xs text-muted-foreground mt-1 line-clamp-2">{c.description}</div>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+        <section>
+
         {isLoading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
