@@ -42,7 +42,7 @@ function postQueryOptions(slug: string) {
       const { data, error } = await supabase
         .from("blog_posts")
         .select(
-          "slug, title, subtitle, excerpt, content, cover_url, thumbnail_url, og_image_url, image_alt, image_credit, category, tags, meta_title, meta_description, source_url, source_name, author, published_at",
+          "slug, title, subtitle, excerpt, content, cover_url, thumbnail_url, og_image_url, image_alt, image_credit, category, tags, meta_title, meta_description, source_url, source_name, author, published_at, updated_at, reading_time_minutes, view_count",
         )
         .eq("slug", slug)
         .eq("is_published", true)
