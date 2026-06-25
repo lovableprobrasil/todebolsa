@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { isValidCNPJ, maskCNPJ, maskCPF, maskPhone, maskCEP, onlyDigits } from "@/lib/validators/cnpj";
+import { isValidCNPJ, isValidCPF, maskCNPJ, maskCPF, maskPhone, maskCEP, onlyDigits } from "@/lib/validators/cnpj";
 import { lookupCep } from "@/lib/validators/cep";
 
 export const Route = createFileRoute("/instituicao/cadastrar")({
