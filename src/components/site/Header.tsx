@@ -85,10 +85,10 @@ export function Header() {
             </>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="text-sm font-medium">
                 <Link to="/auth" search={{ tab: "login" }}>Entrar</Link>
               </Button>
-              <Button size="sm" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
+              <Button size="sm" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90 text-sm font-medium" asChild>
                 <Link to="/auth" search={{ tab: "signup" }}>Cadastrar</Link>
               </Button>
             </>
