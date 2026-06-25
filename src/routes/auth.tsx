@@ -231,9 +231,8 @@ function SignupForm() {
         />
       </Field>
       <Field id="signup-password" label="Senha" icon={Lock}>
-        <Input
+        <PasswordInput
           id="signup-password"
-          type="password"
           autoComplete="new-password"
           required
           minLength={6}
