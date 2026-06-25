@@ -30,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [institutionAdminOf, setInstitutionAdminOf] = useState<string[]>([]);
+  const [isInstitutionApplicant, setIsInstitutionApplicant] = useState(false);
   const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -50,6 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const rows = data ?? [];
     setInstitutionAdminOf(rows.filter((r) => r.role === "INSTITUTION_ADMIN").map((r) => r.institution_id).filter((x): x is string => !!x));
     setIsPlatformAdmin(rows.some((r) => r.role === "PLATFORM_ADMIN"));
+    setIsInstitutionApplicant(rows.some((r) => r.role === "INSTITUTION_APPLICANT"));
   }
 
   useEffect(() => {
