@@ -23,6 +23,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuiaIndexRouteImport } from './routes/guia.index'
 import { Route as BolsasIndexRouteImport } from './routes/bolsas.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
@@ -136,6 +137,11 @@ const GuiaIndexRoute = GuiaIndexRouteImport.update({
 const BolsasIndexRoute = BolsasIndexRouteImport.update({
   id: '/bolsas/',
   path: '/bolsas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstituicoesSlugRoute = InstituicoesSlugRouteImport.update({
@@ -416,6 +422,7 @@ export interface FileRoutesByFullPath {
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -475,6 +482,7 @@ export interface FileRoutesByTo {
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/blog': typeof BlogIndexRoute
   '/bolsas': typeof BolsasIndexRoute
   '/guia': typeof GuiaIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -534,6 +542,7 @@ export interface FileRoutesById {
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
@@ -596,6 +605,7 @@ export interface FileRouteTypes {
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/blog/'
     | '/bolsas/'
     | '/guia/'
     | '/admin/analytics'
@@ -655,6 +665,7 @@ export interface FileRouteTypes {
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/blog'
     | '/bolsas'
     | '/guia'
     | '/admin/analytics'
@@ -713,6 +724,7 @@ export interface FileRouteTypes {
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
+    | '/blog/'
     | '/bolsas/'
     | '/guia/'
     | '/_authenticated/admin/analytics'
@@ -766,6 +778,7 @@ export interface RootRouteChildren {
   GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
   GuiaIndexRoute: typeof GuiaIndexRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
@@ -872,6 +885,13 @@ declare module '@tanstack/react-router' {
       path: '/bolsas'
       fullPath: '/bolsas/'
       preLoaderRoute: typeof BolsasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/instituicoes/$slug': {
@@ -1358,6 +1378,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuiaSlugRoute: GuiaSlugRoute,
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
   BolsasIndexRoute: BolsasIndexRoute,
   GuiaIndexRoute: GuiaIndexRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
