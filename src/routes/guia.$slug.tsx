@@ -10,9 +10,20 @@ const SITE = "https://todebolsa.lovable.app";
 type Post = {
   slug: string;
   title: string;
+  subtitle: string | null;
   excerpt: string | null;
   content: string | null;
   cover_url: string | null;
+  thumbnail_url: string | null;
+  og_image_url: string | null;
+  image_alt: string | null;
+  image_credit: string | null;
+  category: string | null;
+  tags: string[] | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  source_url: string | null;
+  source_name: string | null;
   author: string | null;
   published_at: string | null;
 };
@@ -23,7 +34,9 @@ function postQueryOptions(slug: string) {
     queryFn: async (): Promise<Post> => {
       const { data, error } = await supabase
         .from("blog_posts")
-        .select("slug, title, excerpt, content, cover_url, author, published_at")
+        .select(
+          "slug, title, subtitle, excerpt, content, cover_url, thumbnail_url, og_image_url, image_alt, image_credit, category, tags, meta_title, meta_description, source_url, source_name, author, published_at",
+        )
         .eq("slug", slug)
         .eq("is_published", true)
         .maybeSingle();
