@@ -216,16 +216,18 @@ function CategorySection() {
 }
 
 function StatsBar() {
-  const stats = [
-    { value: "50.000+", label: "Bolsas disponíveis" },
-    { value: "200.000+", label: "Alunos beneficiados" },
-    { value: "500+", label: "Instituições parceiras" },
-    { value: "Até 90%", label: "De desconto" },
-  ];
+  const { data } = useQuery({ queryKey: ["platform-stats"], queryFn: getPlatformStats });
+  if (!data) return null;
+  const stats: { value: string; label: string }[] = [];
+  if (data.scholarships > 0) stats.push({ value: data.scholarships.toLocaleString("pt-BR"), label: data.scholarships === 1 ? "Bolsa ativa" : "Bolsas ativas" });
+  if (data.institutions > 0) stats.push({ value: data.institutions.toLocaleString("pt-BR"), label: data.institutions === 1 ? "Instituição parceira" : "Instituições parceiras" });
+  if (data.vacancies > 0) stats.push({ value: data.vacancies.toLocaleString("pt-BR"), label: "Vagas disponíveis" });
+  if (data.maxDiscount > 0) stats.push({ value: `Até ${data.maxDiscount}%`, label: "De desconto" });
+  if (stats.length === 0) return null;
   return (
     <section className="bg-brand-blue text-brand-blue-foreground">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-14">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className={`grid gap-6 ${stats.length >= 4 ? "grid-cols-2 md:grid-cols-4" : stats.length === 3 ? "grid-cols-1 sm:grid-cols-3" : stats.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <div className="font-display text-3xl md:text-4xl font-extrabold text-primary">{s.value}</div>
