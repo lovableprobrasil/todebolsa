@@ -739,7 +739,69 @@ function NewsEditor({
         </div>
         <Checklist form={form} />
       </TabsContent>
+
+      {form.id && (
+        <TabsContent value="versions" className="mt-4">
+          <VersionsPanel postId={form.id} onRestored={() => { /* parent invalidates on close */ }} />
+        </TabsContent>
+      )}
     </Tabs>
+  );
+}
+
+function VersionsPanel({ postId, onRestored }: { postId: string; onRestored: () => void }) {
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: ["news-versions", postId],
+    queryFn: () => listPostVersions({ data: { postId } }),
+  });
+  const restore = useMutation({
+    mutationFn: (versionId: string) => restorePostVersion({ data: { postId, versionId } }),
+    onSuccess: () => {
+      toast.success("Versão restaurada. Reabra a notícia para ver os campos atualizados.");
+      qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });
+      qc.invalidateQueries({ queryKey: ["news-versions", postId] });
+      onRestored();
+    },
+    onError: (e: any) => toast.error(e.message ?? "Falha ao restaurar"),
+  });
+  if (q.isLoading) return <div className="text-sm text-muted-foreground">Carregando histórico…</div>;
+  if (q.isError) return <div className="text-sm text-destructive">{(q.error as Error).message}</div>;
+  const versions = q.data ?? [];
+  if (versions.length === 0)
+    return (
+      <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground text-center">
+        Nenhuma versão anterior ainda. Cada edição salva uma nova versão automaticamente.
+      </div>
+    );
+  return (
+    <ul className="divide-y divide-border rounded-lg border border-border bg-card">
+      {versions.map((v: any) => (
+        <li key={v.id} className="p-3 flex items-center gap-3">
+          <div className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground shrink-0">
+            v{v.version_number}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-medium truncate">{v.title}</div>
+            <div className="text-xs text-muted-foreground">
+              {v.status} • {new Date(v.created_at).toLocaleString("pt-BR")}
+            </div>
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={restore.isPending}
+            onClick={() => {
+              if (confirm(`Restaurar a versão v${v.version_number}? Os campos atuais serão substituídos.`)) {
+                restore.mutate(v.id);
+              }
+            }}
+          >
+            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Restaurar
+          </Button>
+        </li>
+      ))}
+    </ul>
   );
 }
 
