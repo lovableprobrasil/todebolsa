@@ -88,18 +88,25 @@ export const Route = createFileRoute("/guia/$slug")({
               type: "application/ld+json",
               children: JSON.stringify({
                 "@context": "https://schema.org",
-                "@type": "Article",
+                "@type": "NewsArticle",
                 headline: post.title,
                 description: desc,
-                image: post.cover_url ?? undefined,
+                image: ogImage ? [ogImage] : undefined,
                 datePublished: post.published_at ?? undefined,
+                dateModified: post.updated_at ?? post.published_at ?? undefined,
                 author: { "@type": "Person", name: post.author ?? "Equipe Tô de Bolsa" },
                 publisher: {
                   "@type": "Organization",
                   name: "Tô de Bolsa",
                   url: SITE,
+                  logo: {
+                    "@type": "ImageObject",
+                    url: `${SITE}/favicon.ico`,
+                  },
                 },
-                mainEntityOfPage: url,
+                mainEntityOfPage: { "@type": "WebPage", "@id": url },
+                articleSection: post.category ?? undefined,
+                keywords: post.tags?.join(", ") ?? undefined,
               }),
             },
             {
