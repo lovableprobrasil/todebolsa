@@ -31,17 +31,24 @@ const TONES: Record<string, string> = {
   SUSPENDED: "bg-destructive/15 text-destructive",
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: "Rascunho",
+  SUBMITTED: "Enviado",
+  UNDER_REVIEW: "Em análise",
+  NEEDS_INFO: "Pendência",
+  APPROVED: "Aprovado",
+  REJECTED: "Recusado",
+  SUSPENDED: "Suspenso",
+};
+
 function AdminApplicationsList() {
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("ALL");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["admin-applications"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("institution_applications")
-        .select("id, status, trade_name, cnpj, city, state, responsible_name, responsible_email, submitted_at, created_at, high_potential")
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.rpc("admin_list_institution_applications");
       if (error) throw error;
       return data ?? [];
     },
@@ -53,7 +60,13 @@ function AdminApplicationsList() {
   }, {});
 
   const filtered = (data ?? []).filter((a) => {
-    if (q && !(a.trade_name ?? "").toLowerCase().includes(q.toLowerCase()) && !(a.cnpj ?? "").includes(q)) return false;
+    const term = q.toLowerCase();
+    if (q &&
+      !(a.trade_name ?? "").toLowerCase().includes(term) &&
+      !(a.legal_name ?? "").toLowerCase().includes(term) &&
+      !(a.responsible_email ?? "").toLowerCase().includes(term) &&
+      !(a.cnpj ?? "").includes(q)
+    ) return false;
     if (filter === "ALL") return a.status !== "DRAFT";
     if (filter === "HIGH_POTENTIAL") return a.high_potential;
     if (filter === "DUPLICATE") return a.cnpj && cnpjCounts[a.cnpj] > 1;
@@ -77,6 +90,10 @@ function AdminApplicationsList() {
 
       {isLoading ? (
         <div className="h-40 rounded-2xl bg-muted animate-pulse" />
+      ) : error ? (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/10 p-6 text-sm text-destructive">
+          Não foi possível carregar os credenciamentos. Atualize a página e tente novamente.
+        </div>
       ) : filtered.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground">
           Nenhum credenciamento encontrado.
@@ -107,7 +124,7 @@ function AdminApplicationsList() {
                     {a.status === "APPROVED" ? <CheckCircle2 className="h-3 w-3 mr-1" /> :
                      a.status === "REJECTED" || a.status === "SUSPENDED" ? <AlertCircle className="h-3 w-3 mr-1" /> :
                      <Clock className="h-3 w-3 mr-1" />}
-                    {a.status}
+                    {STATUS_LABELS[a.status] ?? a.status}
                   </Badge>
                 </div>
               </Link>
