@@ -46,7 +46,7 @@ function AdminApplicationsList() {
   const [filter, setFilter] = useState("ALL");
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-applications"],
+    queryKey: ["admin-applications", "rpc"],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("admin_list_institution_applications");
       if (error) throw error;
