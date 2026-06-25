@@ -167,6 +167,21 @@ function ApplicationWizardPage() {
         await refreshRoles();
       }
 
+      // 1b) Sync profile (name/phone/cpf) so /perfil shows the data filled here
+      {
+        const { data: au } = await supabase.auth.getUser();
+        const uid = au.user?.id;
+        if (uid) {
+          await supabase.from("profiles").upsert({
+            id: uid,
+            name: form.account_name || form.responsible_name || undefined,
+            phone: form.responsible_whatsapp ? onlyDigits(form.responsible_whatsapp) : null,
+            cpf: form.responsible_cpf ? onlyDigits(form.responsible_cpf) : null,
+            email: form.account_email || form.responsible_email || null,
+          }, { onConflict: "id" });
+        }
+      }
+
       // 2) start application
       const { data: appId, error: startErr } = await supabase.rpc("start_institution_application");
       if (startErr) throw new Error(startErr.message);
