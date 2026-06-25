@@ -174,6 +174,7 @@ function GuiaIndex() {
             </Link>
           </div>
         )}
+        </section>
       </main>
       <Footer />
     </div>
