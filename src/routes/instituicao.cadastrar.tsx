@@ -1,9 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Building2, Loader2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +15,13 @@ import { toast } from "sonner";
 import { isValidCNPJ, maskCNPJ, maskCPF, maskPhone, maskCEP, onlyDigits } from "@/lib/validators/cnpj";
 import { lookupCep } from "@/lib/validators/cep";
 
-export const Route = createFileRoute("/_authenticated/instituicao/cadastrar")({
+export const Route = createFileRoute("/instituicao/cadastrar")({
+  head: () => ({
+    meta: [
+      { title: "Cadastrar instituição | Tô de Bolsa" },
+      { name: "description", content: "Cadastre sua instituição em poucos minutos e envie para análise da equipe Tô de Bolsa." },
+    ],
+  }),
   component: ApplicationWizardPage,
 });
 
@@ -28,6 +36,8 @@ type FormState = {
   has_idle_vacancies: boolean | null; avg_discount_pct: string; monthly_vacancies: string;
   accepted_terms: boolean; accepted_privacy: boolean;
   accepted_truthfulness: boolean; accepted_representation: boolean;
+  // Account creation
+  account_name: string; account_email: string; account_password: string; account_password2: string;
 };
 
 const EMPTY: FormState = {
@@ -41,6 +51,7 @@ const EMPTY: FormState = {
   has_idle_vacancies: null, avg_discount_pct: "", monthly_vacancies: "",
   accepted_terms: false, accepted_privacy: false,
   accepted_truthfulness: false, accepted_representation: false,
+  account_name: "", account_email: "", account_password: "", account_password2: "",
 };
 
 const TYPE_OPTIONS = [
@@ -56,86 +67,40 @@ const SERVICE_MODES = [
   { v: "POLOS", l: "Polos parceiros" },
 ];
 
-const STEPS = [
-  "Dados da instituição",
-  "Responsável",
-  "Endereço",
-  "Oferta educacional",
-  "Aceites e envio",
-];
+const STORAGE_KEY = "tdb_institution_application_draft";
 
 function ApplicationWizardPage() {
   const navigate = useNavigate();
-  const qc = useQueryClient();
-  const { refreshRoles } = useAuth();
-  const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormState>(EMPTY);
-  const [appId, setAppId] = useState<string | null>(null);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastSaved = useRef<string>("");
-
-  // start or resume application
-  const { data: started, isLoading: starting } = useQuery({
-    queryKey: ["start-institution-application"],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("start_institution_application");
-      if (error) throw error;
-      const id = data as string;
-      const { data: row } = await supabase
-        .from("institution_applications")
-        .select("*").eq("id", id).maybeSingle();
-      return { id, row };
-    },
+  const { user, refreshRoles } = useAuth();
+  const [form, setForm] = useState<FormState>(() => {
+    if (typeof window === "undefined") return EMPTY;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? { ...EMPTY, ...JSON.parse(raw) } : EMPTY;
+    } catch { return EMPTY; }
   });
+  const [step, setStep] = useState(0);
 
+  const steps = useMemo(() => {
+    const base = ["Dados da instituição", "Responsável", "Endereço", "Oferta educacional", "Aceites"];
+    return user ? [...base, "Envio"] : [...base, "Criar conta", "Envio"];
+  }, [user]);
+
+  // Pre-fill account email from institution responsible email
   useEffect(() => {
-    if (started?.id) {
-      setAppId(started.id);
-      const r = started.row;
-      if (r) {
-        setForm({
-          ...EMPTY,
-          trade_name: r.trade_name ?? "", legal_name: r.legal_name ?? "", cnpj: r.cnpj ? maskCNPJ(r.cnpj) : "",
-          institution_type: r.institution_type ?? "", website: r.website ?? "", instagram: r.instagram ?? "",
-          phone: r.phone ?? "", email: r.email ?? "",
-          responsible_name: r.responsible_name ?? "", responsible_role: r.responsible_role ?? "",
-          responsible_cpf: r.responsible_cpf ? maskCPF(r.responsible_cpf) : "",
-          responsible_email: r.responsible_email ?? "", responsible_whatsapp: r.responsible_whatsapp ?? "",
-          authorization_declared: !!r.authorization_declared,
-          zip: r.zip ? maskCEP(r.zip) : "", address: r.address ?? "", number: r.number ?? "",
-          complement: r.complement ?? "", neighborhood: r.neighborhood ?? "",
-          city: r.city ?? "", state: r.state ?? "", service_mode: r.service_mode ?? "",
-          courses_offered: (r.courses_offered ?? []).join(", "),
-          levels: r.levels ?? [], modalities: r.modalities ?? [],
-          has_idle_vacancies: r.has_idle_vacancies,
-          avg_discount_pct: r.avg_discount_pct?.toString() ?? "",
-          monthly_vacancies: r.monthly_vacancies?.toString() ?? "",
-          accepted_terms: !!r.accepted_terms, accepted_privacy: !!r.accepted_privacy,
-          accepted_truthfulness: !!r.accepted_truthfulness, accepted_representation: !!r.accepted_representation,
-        });
-        if (r.status === "APPROVED") {
-          navigate({ to: "/instituicao" });
-        }
-      }
-      refreshRoles();
+    if (!user && !form.account_email && form.responsible_email) {
+      setForm((f) => ({ ...f, account_email: f.account_email || f.responsible_email, account_name: f.account_name || f.responsible_name }));
     }
-  }, [started?.id]); // eslint-disable-line
+  }, [form.responsible_email, form.responsible_name, user]); // eslint-disable-line
 
-  // autosave (debounced)
+  // Persist draft locally
   useEffect(() => {
-    if (!appId) return;
-    const payload = buildPayload(form);
-    const serialized = JSON.stringify(payload);
-    if (serialized === lastSaved.current) return;
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
-      const { error } = await supabase.rpc("save_institution_application", {
-        p_id: appId, p_payload: payload,
-      });
-      if (!error) lastSaved.current = serialized;
-    }, 1200);
-    return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
-  }, [form, appId]);
+    try {
+      const { account_password, account_password2, ...safe } = form;
+      void account_password; void account_password2;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(safe));
+    } catch {/* ignore */}
+  }, [form]);
 
   function update<K extends keyof FormState>(k: K, v: FormState[K]) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -155,82 +120,127 @@ function ApplicationWizardPage() {
     }));
   }
 
-  const stepValid = useMemo(() => validateStep(step, form), [step, form]);
+  const stepValid = useMemo(() => validateStep(step, form, !!user), [step, form, user]);
+  const isLastStep = step === steps.length - 1;
 
   const submitMut = useMutation({
     mutationFn: async () => {
-      if (!appId) throw new Error("Aplicação não inicializada");
-      // ensure latest payload is saved
-      await supabase.rpc("save_institution_application", { p_id: appId, p_payload: buildPayload(form) });
-      const { error } = await supabase.rpc("submit_institution_application", { p_id: appId });
-      if (error) throw error;
+      // 1) sign up if needed
+      if (!user) {
+        const { error: signUpErr } = await supabase.auth.signUp({
+          email: form.account_email.trim(),
+          password: form.account_password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/instituicao/credenciamento`,
+            data: { name: form.account_name.trim() },
+          },
+        });
+        if (signUpErr) throw new Error(signUpErr.message);
+        // Try to ensure a session (if auto-confirm disabled, signIn will fail and we ask user to confirm e-mail)
+        const { data: signInData } = await supabase.auth.signInWithPassword({
+          email: form.account_email.trim(),
+          password: form.account_password,
+        });
+        if (!signInData?.session) {
+          throw new Error("Conta criada! Confirme seu e-mail para finalizar o cadastro.");
+        }
+        await refreshRoles();
+      }
+
+      // 2) start application
+      const { data: appId, error: startErr } = await supabase.rpc("start_institution_application");
+      if (startErr) throw new Error(startErr.message);
+
+      // 3) save payload
+      const { error: saveErr } = await supabase.rpc("save_institution_application", {
+        p_id: appId as string, p_payload: buildPayload(form),
+      });
+      if (saveErr) throw new Error(saveErr.message);
+
+      // 4) submit
+      const { error: submitErr } = await supabase.rpc("submit_institution_application", { p_id: appId as string });
+      if (submitErr) throw new Error(submitErr.message);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["my-application"] });
+      try { localStorage.removeItem(STORAGE_KEY); } catch {/* */}
       toast.success("Cadastro enviado para análise!");
       navigate({ to: "/instituicao/credenciamento" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (starting || !appId) {
-    return <div className="h-64 rounded-2xl bg-muted animate-pulse" />;
-  }
+  const accountStepIndex = user ? -1 : steps.length - 2;
 
   return (
-    <div className="max-w-3xl space-y-6">
-      <Link to="/instituicao" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="h-4 w-4" /> Voltar
-      </Link>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 bg-secondary/30 py-10">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-6">
+          <Link to="/para-instituicoes" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4" /> Voltar
+          </Link>
 
-      <header>
-        <h1 className="font-display text-3xl font-extrabold tracking-tight flex items-center gap-2">
-          <Building2 className="h-7 w-7 text-primary" /> Credenciamento de instituição
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Etapa {step + 1} de {STEPS.length} — {STEPS[step]}
-        </p>
-      </header>
+          <header>
+            <h1 className="font-display text-3xl font-extrabold tracking-tight flex items-center gap-2">
+              <Building2 className="h-7 w-7 text-primary" /> Credenciamento de instituição
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Etapa {step + 1} de {steps.length} — {steps[step]}
+            </p>
+          </header>
 
-      <ProgressBar step={step} />
+          <ProgressBar steps={steps} step={step} />
 
-      <div className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6">
-        {step === 0 && <StepIdentificacao form={form} update={update} />}
-        {step === 1 && <StepResponsavel form={form} update={update} />}
-        {step === 2 && <StepEndereco form={form} update={update} fillCep={fillCep} />}
-        {step === 3 && <StepOferta form={form} update={update} />}
-        {step === 4 && <StepAceites form={form} update={update} />}
-      </div>
+          <div className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6">
+            {step === 0 && <StepIdentificacao form={form} update={update} />}
+            {step === 1 && <StepResponsavel form={form} update={update} />}
+            {step === 2 && <StepEndereco form={form} update={update} fillCep={fillCep} />}
+            {step === 3 && <StepOferta form={form} update={update} />}
+            {step === 4 && <StepAceites form={form} update={update} />}
+            {step === accountStepIndex && <StepConta form={form} update={update} />}
+            {isLastStep && <StepEnvio form={form} hasUser={!!user} />}
+          </div>
 
-      <div className="flex flex-wrap justify-between gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setStep((s) => Math.max(0, s - 1))}
-          disabled={step === 0}
-        >
-          <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
-        </Button>
-        {step < STEPS.length - 1 ? (
-          <Button onClick={() => stepValid ? setStep((s) => s + 1) : toast.error(stepValid === false ? "Preencha os campos obrigatórios." : "")}
-            disabled={!stepValid}>
-            Próxima etapa <ArrowRight className="h-4 w-4 ml-1" />
-          </Button>
-        ) : (
-          <Button onClick={() => submitMut.mutate()} disabled={!stepValid || submitMut.isPending} className="gap-2">
-            {submitMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-            Enviar para análise
-          </Button>
-        )}
-      </div>
+          <div className="flex flex-wrap justify-between gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setStep((s) => Math.max(0, s - 1))}
+              disabled={step === 0 || submitMut.isPending}
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" /> Voltar
+            </Button>
+            {!isLastStep ? (
+              <Button
+                onClick={() => stepValid ? setStep((s) => s + 1) : toast.error("Preencha os campos obrigatórios.")}
+                disabled={!stepValid}
+              >
+                Próxima etapa <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            ) : (
+              <Button onClick={() => submitMut.mutate()} disabled={submitMut.isPending} className="gap-2">
+                {submitMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                Enviar para análise
+              </Button>
+            )}
+          </div>
+
+          {!user && (
+            <p className="text-xs text-center text-muted-foreground">
+              Já tem conta? <Link to="/auth" className="underline">Entrar</Link> para continuar um cadastro existente.
+            </p>
+          )}
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
 
-function ProgressBar({ step }: { step: number }) {
+function ProgressBar({ steps, step }: { steps: string[]; step: number }) {
   return (
-    <ol className="grid grid-cols-5 gap-2">
-      {STEPS.map((label, i) => {
+    <ol className="grid gap-2" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
+      {steps.map((label, i) => {
         const done = i < step;
         const active = i === step;
         return (
@@ -387,6 +397,45 @@ function StepAceites({ form, update }: { form: FormState; update: <K extends key
           <span className="text-sm leading-snug">{label}</span>
         </label>
       ))}
+    </div>
+  );
+}
+
+function StepConta({ form, update }: { form: FormState; update: <K extends keyof FormState>(k: K, v: FormState[K]) => void }) {
+  const pwMatch = !form.account_password2 || form.account_password === form.account_password2;
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-muted-foreground">
+        Crie sua conta para acompanhar a análise, conversar com o time e gerenciar sua instituição depois de aprovado.
+      </p>
+      <Grid>
+        <Field label="Seu nome *" full><Input value={form.account_name} onChange={(e) => update("account_name", e.target.value)} /></Field>
+        <Field label="E-mail de acesso *" full>
+          <Input type="email" value={form.account_email} onChange={(e) => update("account_email", e.target.value)} />
+        </Field>
+        <Field label="Senha *">
+          <Input type="password" value={form.account_password} onChange={(e) => update("account_password", e.target.value)} placeholder="Mínimo 6 caracteres" />
+        </Field>
+        <Field label="Confirmar senha *">
+          <Input type="password" value={form.account_password2} onChange={(e) => update("account_password2", e.target.value)} />
+          {!pwMatch && <p className="text-xs text-destructive mt-1">As senhas não coincidem.</p>}
+        </Field>
+      </Grid>
+    </div>
+  );
+}
+
+function StepEnvio({ form, hasUser }: { form: FormState; hasUser: boolean }) {
+  return (
+    <div className="space-y-4">
+      <h2 className="font-bold text-lg">Tudo pronto para enviar</h2>
+      <ul className="text-sm text-muted-foreground space-y-1">
+        <li>• Instituição: <span className="text-foreground font-medium">{form.trade_name || "—"}</span></li>
+        <li>• CNPJ: <span className="text-foreground font-medium">{form.cnpj || "—"}</span></li>
+        <li>• Responsável: <span className="text-foreground font-medium">{form.responsible_name || "—"}</span></li>
+        <li>• Cidade/UF: <span className="text-foreground font-medium">{form.city ? `${form.city}/${form.state}` : "—"}</span></li>
+        {!hasUser && <li>• Conta: <span className="text-foreground font-medium">{form.account_email}</span></li>}
+      </ul>
       <p className="text-xs text-muted-foreground">
         Ao enviar, sua instituição entra na fila de análise. Você receberá um aviso assim que o time concluir a revisão.
       </p>
@@ -444,7 +493,7 @@ function buildPayload(f: FormState) {
   };
 }
 
-function validateStep(step: number, f: FormState): boolean {
+function validateStep(step: number, f: FormState, hasUser: boolean): boolean {
   switch (step) {
     case 0:
       return !!f.trade_name && !!f.institution_type && !!f.cnpj && isValidCNPJ(f.cnpj);
@@ -459,6 +508,12 @@ function validateStep(step: number, f: FormState): boolean {
         && f.has_idle_vacancies !== null;
     case 4:
       return f.accepted_terms && f.accepted_privacy && f.accepted_truthfulness && f.accepted_representation;
+    case 5:
+      if (hasUser) return true; // envio
+      return !!f.account_name.trim() && /\S+@\S+\.\S+/.test(f.account_email)
+        && f.account_password.length >= 6 && f.account_password === f.account_password2;
+    case 6:
+      return true; // envio (sem usuário previamente)
     default:
       return false;
   }
