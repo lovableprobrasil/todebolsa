@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Calendar, ArrowRight } from "lucide-react";
+import { BookOpen, Calendar, ArrowRight, TrendingUp, Rss } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
-const SITE = "https://todebolsa.lovable.app";
+const SITE = "https://todebolsa.com.br";
 
 export const Route = createFileRoute("/guia/")({
   head: () => {
