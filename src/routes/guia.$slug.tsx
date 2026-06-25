@@ -210,7 +210,20 @@ function PostPage() {
                 })}
               </span>
             )}
+            {post.reading_time_minutes ? (
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="h-4 w-4" /> {post.reading_time_minutes} min de leitura
+              </span>
+            ) : null}
+            {typeof post.view_count === "number" && post.view_count > 0 ? (
+              <span className="inline-flex items-center gap-1.5">
+                <Eye className="h-4 w-4" /> {post.view_count.toLocaleString("pt-BR")} visualizações
+              </span>
+            ) : null}
           </div>
+
+          <ShareButtons url={url} title={post.title} slug={slug} />
+
 
           {post.excerpt && (
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed border-l-4 border-primary/40 pl-4">
