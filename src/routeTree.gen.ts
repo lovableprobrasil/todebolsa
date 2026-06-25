@@ -58,6 +58,7 @@ import { Route as AuthenticatedAdminAvaliacoesRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
+import { Route as AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport } from './routes/_authenticated/admin.credenciamento-instituicoes.index'
 import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
 import { Route as AuthenticatedAdminFinanceiroReceitasRouteImport } from './routes/_authenticated/admin.financeiro.receitas'
 import { Route as AuthenticatedAdminFinanceiroInstituicoesRouteImport } from './routes/_authenticated/admin.financeiro.instituicoes'
@@ -329,6 +330,12 @@ const AuthenticatedAdminCrmIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminCrmRoute,
   } as any)
+const AuthenticatedAdminCredenciamentoInstituicoesIndexRoute =
+  AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminCredenciamentoInstituicoesRoute,
+  } as any)
 const AuthenticatedAdminFinanceiroReembolsosRoute =
   AuthenticatedAdminFinanceiroReembolsosRouteImport.update({
     id: '/reembolsos',
@@ -438,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
+  '/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
   '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
@@ -474,7 +482,6 @@ export interface FileRoutesByTo {
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
-  '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren
   '/admin/indicacoes': typeof AuthenticatedAdminIndicacoesRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
@@ -494,6 +501,7 @@ export interface FileRoutesByTo {
   '/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
+  '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroIndexRoute
   '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
@@ -555,6 +563,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/financeiro/instituicoes': typeof AuthenticatedAdminFinanceiroInstituicoesRoute
   '/_authenticated/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/_authenticated/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
+  '/_authenticated/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/_authenticated/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
   '/api/public/uge/validar/$codigo': typeof ApiPublicUgeValidarCodigoRoute
@@ -616,6 +625,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/instituicoes'
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
+    | '/admin/credenciamento-instituicoes/'
     | '/admin/crm/'
     | '/admin/financeiro/'
     | '/api/public/uge/validar/$codigo'
@@ -652,7 +662,6 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/bolsas'
     | '/admin/bootstrap'
-    | '/admin/credenciamento-instituicoes'
     | '/admin/indicacoes'
     | '/admin/instituicoes'
     | '/admin/matriculas'
@@ -672,6 +681,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/instituicoes'
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
+    | '/admin/credenciamento-instituicoes'
     | '/admin/crm'
     | '/admin/financeiro'
     | '/api/public/uge/validar/$codigo'
@@ -732,6 +742,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/financeiro/instituicoes'
     | '/_authenticated/admin/financeiro/receitas'
     | '/_authenticated/admin/financeiro/reembolsos'
+    | '/_authenticated/admin/credenciamento-instituicoes/'
     | '/_authenticated/admin/crm/'
     | '/_authenticated/admin/financeiro/'
     | '/api/public/uge/validar/$codigo'
@@ -1108,6 +1119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCrmIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCrmRoute
     }
+    '/_authenticated/admin/credenciamento-instituicoes/': {
+      id: '/_authenticated/admin/credenciamento-instituicoes/'
+      path: '/'
+      fullPath: '/admin/credenciamento-instituicoes/'
+      preLoaderRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesRoute
+    }
     '/_authenticated/admin/financeiro/reembolsos': {
       id: '/_authenticated/admin/financeiro/reembolsos'
       path: '/reembolsos'
@@ -1176,12 +1194,15 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminCredenciamentoInstituicoesRouteChildren {
   AuthenticatedAdminCredenciamentoInstituicoesIdRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesIdRoute
+  AuthenticatedAdminCredenciamentoInstituicoesIndexRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
 }
 
 const AuthenticatedAdminCredenciamentoInstituicoesRouteChildren: AuthenticatedAdminCredenciamentoInstituicoesRouteChildren =
   {
     AuthenticatedAdminCredenciamentoInstituicoesIdRoute:
       AuthenticatedAdminCredenciamentoInstituicoesIdRoute,
+    AuthenticatedAdminCredenciamentoInstituicoesIndexRoute:
+      AuthenticatedAdminCredenciamentoInstituicoesIndexRoute,
   }
 
 const AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren =
