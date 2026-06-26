@@ -30,6 +30,7 @@ type BolsasSearch = {
   modality?: string;
   institutionId?: string;
   minDiscount?: number;
+  minPrice?: number;
   maxPrice?: number;
   minRating?: number;
   sort?: SortMode;
@@ -45,12 +46,6 @@ const SORT_LABEL: Record<SortMode, string> = {
   recent: "Mais recentes",
 };
 
-const PRICE_QUICK = [
-  { label: "Até R$ 50", value: 50 },
-  { label: "Até R$ 100", value: 100 },
-  { label: "Até R$ 200", value: 200 },
-  { label: "Até R$ 500", value: 500 },
-];
 
 const DISCOUNT_QUICK = [
   { label: "50%+ off", value: 50 },
@@ -79,6 +74,7 @@ export const Route = createFileRoute("/bolsas/")({
     modality: str(raw.modality),
     institutionId: str(raw.institutionId),
     minDiscount: num(raw.minDiscount),
+    minPrice: num(raw.minPrice),
     maxPrice: num(raw.maxPrice),
     minRating: num(raw.minRating),
     sort: (
@@ -139,6 +135,7 @@ function BolsasPage() {
       modality: search.modality,
       institutionId: search.institutionId,
       minDiscount: search.minDiscount && search.minDiscount > 0 ? search.minDiscount : undefined,
+      minPrice: search.minPrice && search.minPrice > 0 ? search.minPrice : undefined,
       maxPrice: search.maxPrice && search.maxPrice > 0 ? search.maxPrice : undefined,
       minRating: search.minRating && search.minRating > 0 ? search.minRating : undefined,
       sort,
@@ -185,9 +182,15 @@ function BolsasPage() {
       label: `${search.minDiscount}%+ desconto`,
       onRemove: () => update({ minDiscount: undefined }),
     });
+  if (search.minPrice)
+    activeChips.push({
+      key: "minPrice",
+      label: `A partir de R$ ${search.minPrice}`,
+      onRemove: () => update({ minPrice: undefined }),
+    });
   if (search.maxPrice)
     activeChips.push({
-      key: "price",
+      key: "maxPrice",
       label: `Até R$ ${search.maxPrice}`,
       onRemove: () => update({ maxPrice: undefined }),
     });
@@ -264,22 +267,41 @@ function BolsasPage() {
         </Select>
       </section>
 
-      {/* Mensalidade */}
+      {/* Mensalidade — faixa de valor */}
       <section>
-        <h3 className="text-sm font-bold mb-2">Mensalidade</h3>
-        <Select
-          value={search.maxPrice != null ? String(search.maxPrice) : "ALL"}
-          onValueChange={(v) => update({ maxPrice: v === "ALL" ? undefined : Number(v) })}
-        >
-          <SelectTrigger className="w-full"><SelectValue placeholder="Qualquer valor" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">Qualquer valor</SelectItem>
-            {PRICE_QUICK.map((p) => (
-              <SelectItem key={p.value} value={String(p.value)}>{p.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <h3 className="text-sm font-bold mb-2">Mensalidade (R$)</h3>
+        <div className="flex items-center gap-2">
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder="Mín."
+            aria-label="Mensalidade mínima"
+            value={search.minPrice ?? ""}
+            onChange={(e) => {
+              const v = e.target.value.trim();
+              update({ minPrice: v === "" ? undefined : Math.max(0, Number(v)) });
+            }}
+          />
+          <span className="text-xs text-muted-foreground">até</span>
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder="Máx."
+            aria-label="Mensalidade máxima"
+            value={search.maxPrice ?? ""}
+            onChange={(e) => {
+              const v = e.target.value.trim();
+              update({ maxPrice: v === "" ? undefined : Math.max(0, Number(v)) });
+            }}
+          />
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-1">
+          Sem valor preenchido = sem limite.
+        </p>
       </section>
+
 
       {/* Desconto */}
       <section>

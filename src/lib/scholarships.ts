@@ -70,6 +70,7 @@ export type SearchFilters = {
   state?: string;
   modality?: string;
   minDiscount?: number;
+  minPrice?: number;
   maxPrice?: number;
   minRating?: number;
   featuredOnly?: boolean;
@@ -89,6 +90,7 @@ export async function listScholarships(filters: SearchFilters = {}): Promise<Sch
   if (filters.featuredOnly) q = q.eq("is_featured", true);
   if (filters.minDiscount) q = q.gte("discount_value", filters.minDiscount);
   if (filters.maxPrice) q = q.lte("price_with_scholarship", filters.maxPrice);
+  if (filters.minPrice) q = q.gte("price_with_scholarship", filters.minPrice);
   if (filters.level) q = q.eq("course_offering.course.level", filters.level);
   if (filters.modality) q = q.eq("course_offering.course.modality", filters.modality);
   if (filters.city) q = q.ilike("course_offering.institution_unit.city", `%${filters.city}%`);
