@@ -2079,8 +2079,10 @@ export type Database = {
           processed_at: string
           processed_by: string | null
           reason: string | null
+          requested_by: string | null
           reservation_id: string
           status: Database["public"]["Enums"]["refund_status"]
+          stripe_refund_id: string | null
           updated_at: string
         }
         Insert: {
@@ -2091,8 +2093,10 @@ export type Database = {
           processed_at?: string
           processed_by?: string | null
           reason?: string | null
+          requested_by?: string | null
           reservation_id: string
           status?: Database["public"]["Enums"]["refund_status"]
+          stripe_refund_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -2103,8 +2107,10 @@ export type Database = {
           processed_at?: string
           processed_by?: string | null
           reason?: string | null
+          requested_by?: string | null
           reservation_id?: string
           status?: Database["public"]["Enums"]["refund_status"]
+          stripe_refund_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -2646,6 +2652,33 @@ export type Database = {
         }
         Returns: string
       }
+      complete_refund: {
+        Args: {
+          p_reason: string
+          p_reservation_id: string
+          p_stripe_refund_id?: string
+        }
+        Returns: {
+          amount: number
+          created_at: string
+          id: string
+          payment_attempt_id: string | null
+          processed_at: string
+          processed_by: string | null
+          reason: string | null
+          requested_by: string | null
+          reservation_id: string
+          status: Database["public"]["Enums"]["refund_status"]
+          stripe_refund_id: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "refunds"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       confirm_enrollment: {
         Args: { p_approve: boolean; p_notes?: string; p_reservation_id: string }
         Returns: {
@@ -2999,8 +3032,10 @@ export type Database = {
           processed_at: string
           processed_by: string | null
           reason: string | null
+          requested_by: string | null
           reservation_id: string
           status: Database["public"]["Enums"]["refund_status"]
+          stripe_refund_id: string | null
           updated_at: string
         }
         SetofOptions: {
@@ -3205,6 +3240,29 @@ export type Database = {
       }
       set_referrer: { Args: { p_code: string }; Returns: undefined }
       start_institution_application: { Args: never; Returns: string }
+      student_request_refund: {
+        Args: { p_reason: string; p_reservation_id: string }
+        Returns: {
+          amount: number
+          created_at: string
+          id: string
+          payment_attempt_id: string | null
+          processed_at: string
+          processed_by: string | null
+          reason: string | null
+          requested_by: string | null
+          reservation_id: string
+          status: Database["public"]["Enums"]["refund_status"]
+          stripe_refund_id: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "refunds"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       submit_enrollment_document: {
         Args: {
           p_doc_type: Database["public"]["Enums"]["enrollment_doc_type"]
