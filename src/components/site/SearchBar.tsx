@@ -1,33 +1,29 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Search, MapPin, BookOpen } from "lucide-react";
+import { Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { CATEGORIES } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 export function SearchBar({
   initialLevel,
   initialQuery,
   initialCity,
+  showLevelChips = true,
 }: {
   initialLevel?: string;
   initialQuery?: string;
   initialCity?: string;
+  showLevelChips?: boolean;
 }) {
   const navigate = useNavigate();
-  const [level, setLevel] = useState<string>(initialLevel ?? "GRADUACAO");
+  const [level, setLevel] = useState<string | undefined>(initialLevel ?? "GRADUACAO");
   const [query, setQuery] = useState(initialQuery ?? "");
   const [city, setCity] = useState(initialCity ?? "");
 
   const placeholder =
-    CATEGORIES.find((c) => c.slug === level)?.placeholder ?? "Digite o curso desejado";
+    CATEGORIES.find((c) => c.slug === level)?.placeholder ?? "Curso, instituição, cidade ou área";
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -42,49 +38,61 @@ export function SearchBar({
   }
 
   return (
-    <form
-      onSubmit={submit}
-      className="rounded-2xl bg-card border border-border shadow-[var(--shadow-card)] p-3 md:p-4 grid gap-3 md:grid-cols-[1.1fr_1.4fr_1fr_auto] md:items-center"
-    >
-      <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-secondary md:bg-transparent md:py-0">
-        <BookOpen className="h-4 w-4 text-muted-foreground md:hidden" />
-        <Select value={level} onValueChange={setLevel}>
-          <SelectTrigger className="border-0 bg-transparent md:border md:bg-background h-12">
-            <SelectValue placeholder="Tipo de curso" />
-          </SelectTrigger>
-          <SelectContent>
-            {CATEGORIES.map((c) => (
-              <SelectItem key={c.slug} value={c.slug}>
+    <div className="rounded-2xl bg-card border border-border shadow-[var(--shadow-card)] p-3 md:p-4 space-y-3">
+      {showLevelChips ? (
+        <div className="flex flex-wrap gap-1.5">
+          {CATEGORIES.map((c) => {
+            const active = level === c.slug;
+            return (
+              <button
+                key={c.slug}
+                type="button"
+                onClick={() => setLevel(active ? undefined : c.slug)}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium border transition-colors",
+                  active
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-foreground/80 border-border hover:border-primary/40 hover:text-foreground",
+                )}
+                aria-pressed={active}
+              >
                 {c.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={placeholder}
-          className="h-12 pl-9"
-        />
-      </div>
+      <form
+        onSubmit={submit}
+        className="grid gap-2 md:grid-cols-[1.6fr_1fr_auto] md:items-center"
+      >
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={placeholder}
+            className="h-12 pl-9"
+            aria-label="Buscar"
+          />
+        </div>
 
-      <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          placeholder="Cidade"
-          className="h-12 pl-9"
-        />
-      </div>
+        <div className="relative">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="Cidade ou EAD"
+            className="h-12 pl-9"
+            aria-label="Cidade"
+          />
+        </div>
 
-      <Button type="submit" size="lg" className="h-12 px-6 font-semibold">
-        Buscar bolsas
-      </Button>
-    </form>
+        <Button type="submit" size="lg" className="h-12 px-6 font-semibold">
+          Buscar bolsas
+        </Button>
+      </form>
+    </div>
   );
 }
