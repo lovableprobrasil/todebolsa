@@ -1999,6 +1999,53 @@ export type Database = {
           },
         ]
       }
+      scholarship_imports: {
+        Row: {
+          created_at: string
+          errors: Json
+          failed_count: number
+          file_name: string | null
+          id: string
+          imported_count: number
+          institution_id: string
+          status: string
+          total_rows: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          errors?: Json
+          failed_count?: number
+          file_name?: string | null
+          id?: string
+          imported_count?: number
+          institution_id: string
+          status?: string
+          total_rows?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          errors?: Json
+          failed_count?: number
+          file_name?: string | null
+          id?: string
+          imported_count?: number
+          institution_id?: string
+          status?: string
+          total_rows?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholarship_imports_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scholarship_letters: {
         Row: {
           amount_charged: number
@@ -2266,6 +2313,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: undefined
+      }
+      bulk_import_scholarships: {
+        Args: { p_file_name: string; p_institution_id: string; p_rows: Json }
+        Returns: Json
       }
       calculate_reservation_fee: {
         Args: { p_scholarship_id: string }
