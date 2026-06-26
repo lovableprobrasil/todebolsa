@@ -9,6 +9,7 @@ import { listScholarships, listInstitutionsLite } from "@/lib/scholarships";
 import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { SlidersHorizontal, X, Star, ArrowUpDown, Search as SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -209,132 +210,92 @@ function BolsasPage() {
     });
 
   const FiltersPanel = (
-    <div className="space-y-6">
-      {/* Nível de ensino — sempre visível, sem dropdown, sem rolagem interna */}
+    <div className="space-y-4">
+      {/* Nível de ensino */}
       <section>
         <h3 className="text-sm font-bold mb-2">Nível de ensino</h3>
-        <div className="flex flex-wrap gap-1.5">
-          {CATEGORIES.map((c) => {
-            const active = search.level === c.slug;
-            return (
-              <button
-                key={c.slug}
-                type="button"
-                onClick={() => update({ level: active ? undefined : c.slug })}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-                  active
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-foreground/80 border-border hover:border-primary/40",
-                )}
-                aria-pressed={active}
-              >
-                {c.label}
-              </button>
-            );
-          })}
-        </div>
+        <Select
+          value={search.level ?? "ALL"}
+          onValueChange={(v) => update({ level: v === "ALL" ? undefined : (v as typeof search.level) })}
+        >
+          <SelectTrigger className="w-full"><SelectValue placeholder="Todos os níveis" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Todos os níveis</SelectItem>
+            {CATEGORIES.map((c) => (
+              <SelectItem key={c.slug} value={c.slug}>{c.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </section>
 
       {/* Modalidade */}
       <section>
         <h3 className="text-sm font-bold mb-2">Modalidade</h3>
-        <div className="flex flex-wrap gap-1.5">
-          {(["PRESENCIAL", "SEMIPRESENCIAL", "EAD"] as const).map((m) => {
-            const active = search.modality === m;
-            return (
-              <button
-                key={m}
-                type="button"
-                onClick={() => update({ modality: active ? undefined : m })}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-                  active
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-foreground/80 border-border hover:border-primary/40",
-                )}
-              >
-                {MODALITY_LABEL[m]}
-              </button>
-            );
-          })}
-        </div>
+        <Select
+          value={search.modality ?? "ALL"}
+          onValueChange={(v) => update({ modality: v === "ALL" ? undefined : (v as typeof search.modality) })}
+        >
+          <SelectTrigger className="w-full"><SelectValue placeholder="Todas as modalidades" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Todas as modalidades</SelectItem>
+            {(["PRESENCIAL", "SEMIPRESENCIAL", "EAD"] as const).map((m) => (
+              <SelectItem key={m} value={m}>{MODALITY_LABEL[m]}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </section>
 
       {/* Avaliação dos alunos */}
       <section>
         <h3 className="text-sm font-bold mb-2">Avaliação dos alunos</h3>
-        <div className="flex flex-wrap gap-1.5">
-          {RATING_OPTIONS.map((r) => {
-            const active = search.minRating === r.value;
-            return (
-              <button
-                key={r.value}
-                type="button"
-                onClick={() => update({ minRating: active ? undefined : r.value })}
-                className={cn(
-                  "inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-                  active
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-foreground/80 border-border hover:border-primary/40",
-                )}
-              >
-                <Star className={cn("h-3 w-3", active ? "fill-current" : "fill-amber-400 text-amber-400")} />
-                {r.label}
-              </button>
-            );
-          })}
-        </div>
+        <Select
+          value={search.minRating != null ? String(search.minRating) : "ALL"}
+          onValueChange={(v) => update({ minRating: v === "ALL" ? undefined : Number(v) })}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Qualquer avaliação" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Qualquer avaliação</SelectItem>
+            {RATING_OPTIONS.map((r) => (
+              <SelectItem key={r.value} value={String(r.value)}>{r.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </section>
 
-      {/* Mensalidade rápida */}
+      {/* Mensalidade */}
       <section>
         <h3 className="text-sm font-bold mb-2">Mensalidade</h3>
-        <div className="flex flex-wrap gap-1.5">
-          {PRICE_QUICK.map((p) => {
-            const active = search.maxPrice === p.value;
-            return (
-              <button
-                key={p.value}
-                type="button"
-                onClick={() => update({ maxPrice: active ? undefined : p.value })}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-                  active
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-foreground/80 border-border hover:border-primary/40",
-                )}
-              >
-                {p.label}
-              </button>
-            );
-          })}
-        </div>
+        <Select
+          value={search.maxPrice != null ? String(search.maxPrice) : "ALL"}
+          onValueChange={(v) => update({ maxPrice: v === "ALL" ? undefined : Number(v) })}
+        >
+          <SelectTrigger className="w-full"><SelectValue placeholder="Qualquer valor" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Qualquer valor</SelectItem>
+            {PRICE_QUICK.map((p) => (
+              <SelectItem key={p.value} value={String(p.value)}>{p.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </section>
 
-      {/* Desconto rápido */}
+      {/* Desconto */}
       <section>
         <h3 className="text-sm font-bold mb-2">Desconto</h3>
-        <div className="flex flex-wrap gap-1.5">
-          {DISCOUNT_QUICK.map((d) => {
-            const active = search.minDiscount === d.value;
-            return (
-              <button
-                key={d.value}
-                type="button"
-                onClick={() => update({ minDiscount: active ? undefined : d.value })}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
-                  active
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-foreground/80 border-border hover:border-primary/40",
-                )}
-              >
-                {d.label}
-              </button>
-            );
-          })}
-        </div>
+        <Select
+          value={search.minDiscount != null ? String(search.minDiscount) : "ALL"}
+          onValueChange={(v) => update({ minDiscount: v === "ALL" ? undefined : Number(v) })}
+        >
+          <SelectTrigger className="w-full"><SelectValue placeholder="Qualquer desconto" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Qualquer desconto</SelectItem>
+            {DISCOUNT_QUICK.map((d) => (
+              <SelectItem key={d.value} value={String(d.value)}>{d.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </section>
 
       {/* Instituição com autocomplete */}
@@ -352,6 +313,7 @@ function BolsasPage() {
       </Button>
     </div>
   );
+
 
   return (
     <div className="min-h-screen flex flex-col">
