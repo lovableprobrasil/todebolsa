@@ -23,6 +23,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { StripeScholarshipCheckout } from "@/components/StripeEmbeddedCheckout";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -159,6 +161,7 @@ function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
+      <PaymentTestModeBanner />
       <header className="bg-card border-b">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2">
@@ -229,56 +232,21 @@ function CheckoutPage() {
                 onContinue={async () => { await saveStep(4); setStep(4); }}
               />
             )}
-            {step === 4 && (
-              <StepPayment
-                paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod}
-                installments={installments} setInstallments={setInstallments}
+            {step === 4 && sessionToken && (
+              <StepStripePayment
+                sessionToken={sessionToken}
+                account={{
+                  name: personal.name.trim(),
+                  email: personal.email.trim().toLowerCase(),
+                  password: user ? undefined : personal.password,
+                  cpf: personal.cpf,
+                  phone: personal.whatsapp || personal.phone,
+                }}
                 checkoutFee={checkoutFee}
                 onBack={() => setStep(3)}
-                onFinalize={async () => {
-                  if (!sessionToken) return;
-                  trackEvent("checkout_payment_init", { metadata: { method: paymentMethod } });
-                  // Save method first
-                  await saveStep(4);
-                  try {
-                    const res = await fetch("/api/public/checkout-finalize", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        session_token: sessionToken,
-                        account: {
-                          name: personal.name.trim(),
-                          email: personal.email.trim().toLowerCase(),
-                          password: user ? undefined : personal.password,
-                          cpf: personal.cpf,
-                          phone: personal.whatsapp || personal.phone,
-                        },
-                      }),
-                    });
-                    const json = await res.json();
-                    if (!res.ok) throw new Error(json.error || "Falha ao finalizar");
-                    // Pay (simulated)
-                    await supabase.rpc("pay_reservation", {
-                      p_reservation_id: json.reservation_id, p_method: paymentMethod,
-                    } as any);
-                    // Clear local token
-                    if (typeof window !== "undefined") localStorage.removeItem(TOKEN_KEY_PREFIX + scholarshipId);
-                    // If we created the account, sign in
-                    if (json.created_account && personal.password) {
-                      await supabase.auth.signInWithPassword({
-                        email: personal.email.trim().toLowerCase(),
-                        password: personal.password,
-                      });
-                    }
-                    trackEvent("checkout_payment_confirmed", { metadata: { method: paymentMethod } });
-                    toast.success("Pagamento confirmado!");
-                    navigate({ to: "/reservas/$id", params: { id: json.reservation_id } });
-                  } catch (e: any) {
-                    toast.error(e.message || "Erro no checkout");
-                  }
-                }}
               />
             )}
+
           </div>
 
           <aside className="space-y-4">
@@ -543,65 +511,50 @@ function StepReview(props: {
   );
 }
 
-function StepPayment(props: {
-  paymentMethod: "PIX" | "BOLETO" | "CARD"; setPaymentMethod: (m: any) => void;
-  installments: number; setInstallments: (n: number) => void; checkoutFee: number;
-  onBack: () => void; onFinalize: () => Promise<void>;
+function StepStripePayment(props: {
+  sessionToken: string;
+  account: { name: string; email: string; password?: string; cpf?: string; phone?: string };
+  checkoutFee: number;
+  onBack: () => void;
 }) {
-  const { paymentMethod, setPaymentMethod, installments, setInstallments, checkoutFee, onBack, onFinalize } = props;
-  const [loading, setLoading] = useState(false);
-  const maxInstallments = 3;
+  const { sessionToken, account, checkoutFee, onBack } = props;
+  const returnUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/checkout/retorno?session_token=${encodeURIComponent(sessionToken)}&session_id={CHECKOUT_SESSION_ID}`
+    : "";
 
   return (
     <Card><CardContent className="p-6 space-y-6">
-      <h2 className="text-xl font-bold">Como você quer pagar?</h2>
-
-      <Tabs value={paymentMethod} onValueChange={(v) => setPaymentMethod(v as any)}>
-        <TabsList className="grid grid-cols-3 w-full">
-          <TabsTrigger value="PIX"><QrCode className="h-4 w-4 mr-1" />Pix</TabsTrigger>
-          <TabsTrigger value="BOLETO"><FileText className="h-4 w-4 mr-1" />Boleto</TabsTrigger>
-          <TabsTrigger value="CARD"><CreditCard className="h-4 w-4 mr-1" />Cartão</TabsTrigger>
-        </TabsList>
-        <TabsContent value="PIX" className="space-y-3 pt-4">
-          <p className="text-sm text-muted-foreground">Pagamento à vista, aprovação instantânea. QR Code gerado após confirmação.</p>
-          <div className="text-2xl font-extrabold">{formatBRL(checkoutFee)}</div>
-        </TabsContent>
-        <TabsContent value="BOLETO" className="space-y-3 pt-4">
-          <p className="text-sm text-muted-foreground">Pagamento à vista. Boleto com vencimento em 3 dias.</p>
-          <div className="text-2xl font-extrabold">{formatBRL(checkoutFee)}</div>
-        </TabsContent>
-        <TabsContent value="CARD" className="space-y-3 pt-4">
-          <div>
-            <Label className="text-xs uppercase text-muted-foreground">Parcelas</Label>
-            <select className="mt-1 w-full h-10 rounded-md border bg-background px-3"
-              value={installments} onChange={(e) => setInstallments(Number(e.target.value))}>
-              {Array.from({ length: maxInstallments }, (_, i) => i + 1).map((n) => (
-                <option key={n} value={n}>{n}x de {formatBRL(checkoutFee / n)} sem juros</option>
-              ))}
-            </select>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Número do cartão"><Input placeholder="0000 0000 0000 0000" /></Field>
-            <Field label="Nome impresso"><Input /></Field>
-            <Field label="Validade"><Input placeholder="MM/AA" /></Field>
-            <Field label="CVV"><Input placeholder="000" /></Field>
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      <div className="rounded-md bg-muted/50 p-3 text-xs text-muted-foreground inline-flex items-center gap-2">
-        <ShieldCheck className="h-4 w-4 text-success" /> Pagamento processado em ambiente seguro.
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <h2 className="text-xl font-bold">Pagamento seguro</h2>
+        <div className="text-sm text-muted-foreground inline-flex items-center gap-1">
+          <ShieldCheck className="h-4 w-4 text-success" /> Processado pela Stripe
+        </div>
       </div>
 
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={onBack} disabled={loading}><ArrowLeft className="h-4 w-4 mr-1" />Voltar</Button>
-        <Button size="lg" disabled={loading} onClick={async () => { setLoading(true); await onFinalize(); setLoading(false); }}>
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : `Finalizar pagamento · ${formatBRL(checkoutFee)}`}
+      <div className="rounded-lg border bg-muted/30 p-4 flex items-center justify-between">
+        <div>
+          <p className="text-xs text-muted-foreground">Total a pagar agora</p>
+          <p className="text-2xl font-extrabold">{formatBRL(checkoutFee)}</p>
+        </div>
+        <CreditCard className="h-6 w-6 text-muted-foreground" />
+      </div>
+
+      <StripeScholarshipCheckout
+        sessionToken={sessionToken}
+        account={account}
+        returnUrl={returnUrl}
+        onError={(msg) => toast.error(msg)}
+      />
+
+      <div className="flex justify-start">
+        <Button variant="outline" onClick={onBack}>
+          <ArrowLeft className="h-4 w-4 mr-1" />Voltar
         </Button>
       </div>
     </CardContent></Card>
   );
 }
+
 
 function SummaryCard(props: { institution: any; course: any; originalPrice: number; scholarshipPrice: number; discountPct: number; checkoutFee: number }) {
   const { institution, course, originalPrice, scholarshipPrice, discountPct, checkoutFee } = props;

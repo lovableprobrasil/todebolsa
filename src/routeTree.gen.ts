@@ -34,6 +34,7 @@ import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slu
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as CheckoutRetornoRouteImport } from './routes/checkout.retorno'
 import { Route as CheckoutScholarshipIdRouteImport } from './routes/checkout.$scholarshipId'
 import { Route as CadastroSucessoRouteImport } from './routes/cadastro.sucesso'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
@@ -81,6 +82,7 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicNewsPublishScheduledRouteImport } from './routes/api/public/news.publish-scheduled'
 import { Route as AuthenticatedAdminFinanceiroReembolsosRouteImport } from './routes/_authenticated/admin.financeiro.reembolsos'
 import { Route as AuthenticatedAdminFinanceiroReceitasRouteImport } from './routes/_authenticated/admin.financeiro.receitas'
@@ -214,6 +216,11 @@ const GuiaSlugRoute = GuiaSlugRouteImport.update({
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
   path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRetornoRoute = CheckoutRetornoRouteImport.update({
+  id: '/checkout/retorno',
+  path: '/checkout/retorno',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutScholarshipIdRoute = CheckoutScholarshipIdRouteImport.update({
@@ -476,6 +483,12 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicNewsPublishScheduledRoute =
   ApiPublicNewsPublishScheduledRouteImport.update({
     id: '/api/public/news/publish-scheduled',
@@ -565,6 +578,7 @@ export interface FileRoutesByFullPath {
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
   '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
+  '/checkout/retorno': typeof CheckoutRetornoRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -609,6 +623,7 @@ export interface FileRoutesByFullPath {
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -647,6 +662,7 @@ export interface FileRoutesByTo {
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
   '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
+  '/checkout/retorno': typeof CheckoutRetornoRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -688,6 +704,7 @@ export interface FileRoutesByTo {
   '/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -729,6 +746,7 @@ export interface FileRoutesById {
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
   '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
+  '/checkout/retorno': typeof CheckoutRetornoRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -773,6 +791,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/financeiro/receitas': typeof AuthenticatedAdminFinanceiroReceitasRoute
   '/_authenticated/admin/financeiro/reembolsos': typeof AuthenticatedAdminFinanceiroReembolsosRoute
   '/api/public/news/publish-scheduled': typeof ApiPublicNewsPublishScheduledRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -814,6 +833,7 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/cadastro/sucesso'
     | '/checkout/$scholarshipId'
+    | '/checkout/retorno'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -858,6 +878,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -896,6 +917,7 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/cadastro/sucesso'
     | '/checkout/$scholarshipId'
+    | '/checkout/retorno'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -937,6 +959,7 @@ export interface FileRouteTypes {
     | '/admin/financeiro/receitas'
     | '/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -977,6 +1000,7 @@ export interface FileRouteTypes {
     | '/bolsas/$id'
     | '/cadastro/sucesso'
     | '/checkout/$scholarshipId'
+    | '/checkout/retorno'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -1021,6 +1045,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/financeiro/receitas'
     | '/_authenticated/admin/financeiro/reembolsos'
     | '/api/public/news/publish-scheduled'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -1053,6 +1078,7 @@ export interface RootRouteChildren {
   BolsasIdRoute: typeof BolsasIdRoute
   CadastroSucessoRoute: typeof CadastroSucessoRoute
   CheckoutScholarshipIdRoute: typeof CheckoutScholarshipIdRoute
+  CheckoutRetornoRoute: typeof CheckoutRetornoRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
@@ -1070,6 +1096,7 @@ export interface RootRouteChildren {
   GuiaCategoriaSlugRoute: typeof GuiaCategoriaSlugRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicNewsPublishScheduledRoute: typeof ApiPublicNewsPublishScheduledRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -1254,6 +1281,13 @@ declare module '@tanstack/react-router' {
       path: '/email/unsubscribe'
       fullPath: '/email/unsubscribe'
       preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/retorno': {
+      id: '/checkout/retorno'
+      path: '/checkout/retorno'
+      fullPath: '/checkout/retorno'
+      preLoaderRoute: typeof CheckoutRetornoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout/$scholarshipId': {
@@ -1585,6 +1619,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news/publish-scheduled': {
       id: '/api/public/news/publish-scheduled'
       path: '/api/public/news/publish-scheduled'
@@ -1833,6 +1874,7 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasIdRoute: BolsasIdRoute,
   CadastroSucessoRoute: CadastroSucessoRoute,
   CheckoutScholarshipIdRoute: CheckoutScholarshipIdRoute,
+  CheckoutRetornoRoute: CheckoutRetornoRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   GuiaSlugRoute: GuiaSlugRoute,
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
@@ -1850,6 +1892,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuiaCategoriaSlugRoute: GuiaCategoriaSlugRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicNewsPublishScheduledRoute: ApiPublicNewsPublishScheduledRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
