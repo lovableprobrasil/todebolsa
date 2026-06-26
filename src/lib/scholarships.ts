@@ -70,6 +70,7 @@ export type SearchFilters = {
   state?: string;
   modality?: string;
   minDiscount?: number;
+  minPrice?: number;
   maxPrice?: number;
   minRating?: number;
   featuredOnly?: boolean;
