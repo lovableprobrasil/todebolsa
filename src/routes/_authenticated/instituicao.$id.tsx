@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Building2, Plus, BookOpen, Tag, MapPin, Loader2, Pencil, Trash2, Save, Clock, CheckCircle2, AlertCircle, Ban, GraduationCap, XCircle, Upload } from "lucide-react";
+import { ArrowLeft, Building2, Plus, BookOpen, Tag, MapPin, Loader2, Pencil, Trash2, Save, Clock, CheckCircle2, AlertCircle, Ban, GraduationCap, XCircle, Upload, DollarSign } from "lucide-react";
+import { FinanceTab } from "@/components/institution/FinanceTab";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,6 +93,7 @@ function ManageInstitutionPage() {
           <TabsTrigger value="unidades"><MapPin className="h-4 w-4 mr-1" /> Unidades</TabsTrigger>
           <TabsTrigger value="cursos"><BookOpen className="h-4 w-4 mr-1" /> Cursos & Turmas</TabsTrigger>
           <TabsTrigger value="bolsas"><Tag className="h-4 w-4 mr-1" /> Bolsas</TabsTrigger>
+          <TabsTrigger value="financeiro"><DollarSign className="h-4 w-4 mr-1" /> Financeiro</TabsTrigger>
         </TabsList>
 
         <TabsContent value="matriculas"><EnrollmentsTab institutionId={id} /></TabsContent>
@@ -99,6 +101,7 @@ function ManageInstitutionPage() {
         <TabsContent value="unidades"><UnitsTab institutionId={id} /></TabsContent>
         <TabsContent value="cursos"><CoursesTab institutionId={id} /></TabsContent>
         <TabsContent value="bolsas"><ScholarshipsTab institutionId={id} /></TabsContent>
+        <TabsContent value="financeiro"><FinanceTab institutionId={id} /></TabsContent>
       </Tabs>
     </div>
   );
