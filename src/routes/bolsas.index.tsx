@@ -375,11 +375,13 @@ function BolsasPage() {
 
       <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 grid gap-8 lg:grid-cols-[280px_1fr]">
         <aside className="hidden lg:block">
-          <div className="rounded-2xl border border-border bg-card p-5 sticky top-20">
-            <div className="flex items-center gap-2 mb-4 font-bold">
+          <div className="rounded-2xl border border-border bg-card sticky top-20 max-h-[calc(100vh-6rem)] flex flex-col">
+            <div className="flex items-center gap-2 px-5 pt-5 pb-3 font-bold border-b border-border">
               <SlidersHorizontal className="h-4 w-4" /> Filtros
             </div>
-            {FiltersPanel}
+            <div className="overflow-y-auto px-5 py-4 flex-1">
+              {FiltersPanel}
+            </div>
           </div>
         </aside>
 
