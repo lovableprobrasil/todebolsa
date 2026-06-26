@@ -165,7 +165,7 @@ export const Route = createFileRoute('/api/public/institution-application')({
 
         const { error: updErr } = await supabaseAdmin
           .from('institution_applications')
-          .update(updatePayload)
+          .update(updatePayload as any)
           .eq('id', appId)
         if (updErr) {
           console.error('update application failed', updErr)
