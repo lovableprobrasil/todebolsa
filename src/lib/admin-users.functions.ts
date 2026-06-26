@@ -48,21 +48,60 @@ export const adminListUsers = createServerFn({ method: "POST" })
     const slice = matches.slice(skip, skip + wanted);
     const ids = slice.map((u) => u.id);
     let roles: Record<string, AppRole[]> = {};
+    let profiles: Record<string, any> = {};
     if (ids.length) {
-      const { data: rows, error } = await supabaseAdmin
-        .from("user_roles")
-        .select("user_id, role")
-        .in("user_id", ids);
+      const [{ data: rows, error }, { data: profs, error: pErr }] = await Promise.all([
+        supabaseAdmin.from("user_roles").select("user_id, role").in("user_id", ids),
+        supabaseAdmin.from("profiles").select("id, name, email, phone, cpf, avatar_url").in("id", ids),
+      ]);
       if (error) throw new Error(error.message);
-      for (const r of rows ?? []) {
-        (roles[r.user_id] ??= []).push(r.role as AppRole);
-      }
+      if (pErr) throw new Error(pErr.message);
+      for (const r of rows ?? []) (roles[r.user_id] ??= []).push(r.role as AppRole);
+      for (const p of profs ?? []) profiles[(p as any).id] = p;
     }
     return slice.map((u) => ({
       ...u,
+      profile: profiles[u.id] ?? null,
       roles: roles[u.id] ?? [],
       suspended: !!u.banned_until && new Date(u.banned_until).getTime() > Date.now(),
     }));
+  });
+
+export const adminUpdateUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { userId: string; name?: string; email?: string; phone?: string | null; cpf?: string | null }) => input)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const updates: Record<string, any> = {};
+    const profileUpdates: Record<string, any> = {};
+    if (data.name !== undefined) {
+      const n = data.name.trim();
+      if (n.length < 2) throw new Error("Nome inválido");
+      updates.user_metadata = { full_name: n };
+      profileUpdates.name = n;
+    }
+    if (data.email !== undefined) {
+      const e = data.email.trim().toLowerCase();
+      if (!e.includes("@")) throw new Error("E-mail inválido");
+      updates.email = e;
+      updates.email_confirm = true;
+      profileUpdates.email = e;
+    }
+    if (data.phone !== undefined) profileUpdates.phone = data.phone?.trim() || null;
+    if (data.cpf !== undefined) profileUpdates.cpf = data.cpf?.trim() || null;
+
+    if (Object.keys(updates).length > 0) {
+      const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, updates as any);
+      if (error) throw new Error(error.message);
+    }
+    if (Object.keys(profileUpdates).length > 0) {
+      const { error } = await supabaseAdmin
+        .from("profiles")
+        .upsert({ id: data.userId, ...profileUpdates } as any, { onConflict: "id" });
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
   });
 
 export const adminCreateUser = createServerFn({ method: "POST" })
