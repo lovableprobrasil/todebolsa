@@ -121,7 +121,8 @@ function BolsasPage() {
   const sort: SortMode = search.sort ?? "relevance";
 
   const update = (patch: Partial<BolsasSearch>) =>
-    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+    navigate({ search: (prev: BolsasSearch) => ({ ...prev, ...patch }) });
+
 
   const { data: institutionOpts = [] } = useQuery({
     queryKey: ["institutions", "lite"],
