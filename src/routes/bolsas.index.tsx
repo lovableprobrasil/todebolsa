@@ -273,22 +273,41 @@ function BolsasPage() {
         </Select>
       </section>
 
-      {/* Mensalidade */}
+      {/* Mensalidade — faixa de valor */}
       <section>
-        <h3 className="text-sm font-bold mb-2">Mensalidade</h3>
-        <Select
-          value={search.maxPrice != null ? String(search.maxPrice) : "ALL"}
-          onValueChange={(v) => update({ maxPrice: v === "ALL" ? undefined : Number(v) })}
-        >
-          <SelectTrigger className="w-full"><SelectValue placeholder="Qualquer valor" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">Qualquer valor</SelectItem>
-            {PRICE_QUICK.map((p) => (
-              <SelectItem key={p.value} value={String(p.value)}>{p.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <h3 className="text-sm font-bold mb-2">Mensalidade (R$)</h3>
+        <div className="flex items-center gap-2">
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder="Mín."
+            aria-label="Mensalidade mínima"
+            value={search.minPrice ?? ""}
+            onChange={(e) => {
+              const v = e.target.value.trim();
+              update({ minPrice: v === "" ? undefined : Math.max(0, Number(v)) });
+            }}
+          />
+          <span className="text-xs text-muted-foreground">até</span>
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder="Máx."
+            aria-label="Mensalidade máxima"
+            value={search.maxPrice ?? ""}
+            onChange={(e) => {
+              const v = e.target.value.trim();
+              update({ maxPrice: v === "" ? undefined : Math.max(0, Number(v)) });
+            }}
+          />
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-1">
+          Sem valor preenchido = sem limite.
+        </p>
       </section>
+
 
       {/* Desconto */}
       <section>
