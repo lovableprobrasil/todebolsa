@@ -93,6 +93,7 @@ function ManageInstitutionPage() {
           <TabsTrigger value="unidades"><MapPin className="h-4 w-4 mr-1" /> Unidades</TabsTrigger>
           <TabsTrigger value="cursos"><BookOpen className="h-4 w-4 mr-1" /> Cursos & Turmas</TabsTrigger>
           <TabsTrigger value="bolsas"><Tag className="h-4 w-4 mr-1" /> Bolsas</TabsTrigger>
+          <TabsTrigger value="financeiro"><DollarSign className="h-4 w-4 mr-1" /> Financeiro</TabsTrigger>
         </TabsList>
 
         <TabsContent value="matriculas"><EnrollmentsTab institutionId={id} /></TabsContent>
@@ -100,6 +101,7 @@ function ManageInstitutionPage() {
         <TabsContent value="unidades"><UnitsTab institutionId={id} /></TabsContent>
         <TabsContent value="cursos"><CoursesTab institutionId={id} /></TabsContent>
         <TabsContent value="bolsas"><ScholarshipsTab institutionId={id} /></TabsContent>
+        <TabsContent value="financeiro"><FinanceTab institutionId={id} /></TabsContent>
       </Tabs>
     </div>
   );
