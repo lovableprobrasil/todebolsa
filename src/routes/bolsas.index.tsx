@@ -141,6 +141,7 @@ function BolsasPage() {
       modality: search.modality,
       institutionId: search.institutionId,
       minDiscount: search.minDiscount && search.minDiscount > 0 ? search.minDiscount : undefined,
+      minPrice: search.minPrice && search.minPrice > 0 ? search.minPrice : undefined,
       maxPrice: search.maxPrice && search.maxPrice > 0 ? search.maxPrice : undefined,
       minRating: search.minRating && search.minRating > 0 ? search.minRating : undefined,
       sort,
