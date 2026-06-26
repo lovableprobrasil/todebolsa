@@ -33,6 +33,7 @@ import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slu
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as CadastroSucessoRouteImport } from './routes/cadastro.sucesso'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticated/reservas'
@@ -204,6 +205,11 @@ const GuiaSlugRoute = GuiaSlugRouteImport.update({
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
   path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadastroSucessoRoute = CadastroSucessoRouteImport.update({
+  id: '/cadastro/sucesso',
+  path: '/cadastro/sucesso',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BolsasIdRoute = BolsasIdRouteImport.update({
@@ -530,6 +536,7 @@ export interface FileRoutesByFullPath {
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
+  '/cadastro/sucesso': typeof CadastroSucessoRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -607,6 +614,7 @@ export interface FileRoutesByTo {
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
+  '/cadastro/sucesso': typeof CadastroSucessoRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -684,6 +692,7 @@ export interface FileRoutesById {
   '/_authenticated/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
+  '/cadastro/sucesso': typeof CadastroSucessoRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -764,6 +773,7 @@ export interface FileRouteTypes {
     | '/reservas'
     | '/blog/$slug'
     | '/bolsas/$id'
+    | '/cadastro/sucesso'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -841,6 +851,7 @@ export interface FileRouteTypes {
     | '/reservas'
     | '/blog/$slug'
     | '/bolsas/$id'
+    | '/cadastro/sucesso'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -917,6 +928,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reservas'
     | '/blog/$slug'
     | '/bolsas/$id'
+    | '/cadastro/sucesso'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -988,6 +1000,7 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BolsasIdRoute: typeof BolsasIdRoute
+  CadastroSucessoRoute: typeof CadastroSucessoRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
@@ -1180,6 +1193,13 @@ declare module '@tanstack/react-router' {
       path: '/email/unsubscribe'
       fullPath: '/email/unsubscribe'
       preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadastro/sucesso': {
+      id: '/cadastro/sucesso'
+      path: '/cadastro/sucesso'
+      fullPath: '/cadastro/sucesso'
+      preLoaderRoute: typeof CadastroSucessoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bolsas/$id': {
@@ -1728,6 +1748,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   BlogSlugRoute: BlogSlugRoute,
   BolsasIdRoute: BolsasIdRoute,
+  CadastroSucessoRoute: CadastroSucessoRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   GuiaSlugRoute: GuiaSlugRoute,
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
