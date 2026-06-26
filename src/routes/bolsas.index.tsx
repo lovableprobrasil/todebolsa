@@ -188,9 +188,15 @@ function BolsasPage() {
       label: `${search.minDiscount}%+ desconto`,
       onRemove: () => update({ minDiscount: undefined }),
     });
+  if (search.minPrice)
+    activeChips.push({
+      key: "minPrice",
+      label: `A partir de R$ ${search.minPrice}`,
+      onRemove: () => update({ minPrice: undefined }),
+    });
   if (search.maxPrice)
     activeChips.push({
-      key: "price",
+      key: "maxPrice",
       label: `Até R$ ${search.maxPrice}`,
       onRemove: () => update({ maxPrice: undefined }),
     });
