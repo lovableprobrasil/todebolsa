@@ -90,27 +90,13 @@ function AuthPage() {
             </TabsContent>
           </Tabs>
 
-          <Divider />
-
-          <GoogleButton />
-
           <p className="text-center text-xs text-muted-foreground mt-6">
             Ao continuar você concorda com nossos{" "}
-            <Link to="/" className="underline">Termos</Link> e{" "}
-            <Link to="/" className="underline">Privacidade</Link>.
+            <Link to="/termos" className="underline">Termos</Link> e{" "}
+            <Link to="/privacidade" className="underline">Privacidade</Link>.
           </p>
         </div>
       </main>
-    </div>
-  );
-}
-
-function Divider() {
-  return (
-    <div className="my-5 flex items-center gap-3">
-      <div className="h-px flex-1 bg-border" />
-      <span className="text-xs text-muted-foreground">ou</span>
-      <div className="h-px flex-1 bg-border" />
     </div>
   );
 }
@@ -176,22 +162,36 @@ function LoginForm() {
 function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailConfirm, setEmailConfirm] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (name.trim().length < 3) {
+      toast.error("Informe seu nome completo.");
+      return;
+    }
+    if (email.trim().toLowerCase() !== emailConfirm.trim().toLowerCase()) {
+      toast.error("Os e-mails não conferem.");
+      return;
+    }
     if (password.length < 6) {
       toast.error("A senha deve ter pelo menos 6 caracteres.");
       return;
     }
+    if (password !== passwordConfirm) {
+      toast.error("As senhas não conferem.");
+      return;
+    }
     setLoading(true);
     const { error } = await supabase.auth.signUp({
-      email,
+      email: email.trim(),
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/painel`,
-        data: { full_name: name },
+        data: { full_name: name.trim() },
       },
     });
     setLoading(false);
@@ -230,6 +230,19 @@ function SignupForm() {
           className="pl-9"
         />
       </Field>
+      <Field id="signup-email-confirm" label="Confirmar e-mail" icon={Mail}>
+        <Input
+          id="signup-email-confirm"
+          type="email"
+          autoComplete="email"
+          required
+          value={emailConfirm}
+          onChange={(e) => setEmailConfirm(e.target.value)}
+          onPaste={(e) => e.preventDefault()}
+          placeholder="Repita o e-mail"
+          className="pl-9"
+        />
+      </Field>
       <Field id="signup-password" label="Senha" icon={Lock}>
         <PasswordInput
           id="signup-password"
@@ -239,6 +252,18 @@ function SignupForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Mínimo 6 caracteres"
+          className="pl-9"
+        />
+      </Field>
+      <Field id="signup-password-confirm" label="Confirmar senha" icon={Lock}>
+        <PasswordInput
+          id="signup-password-confirm"
+          autoComplete="new-password"
+          required
+          minLength={6}
+          value={passwordConfirm}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
+          placeholder="Repita a senha"
           className="pl-9"
         />
       </Field>
