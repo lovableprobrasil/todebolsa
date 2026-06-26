@@ -114,11 +114,63 @@ function ReservationDetailPage() {
   const course = r.scholarship?.course_offering?.course;
   const inst = course?.institution;
   const unit = r.scholarship?.course_offering?.institution_unit;
-  const monthly = Number(r.amount_paid ?? 0);
+  const monthlyScholarship = Number(r.scholarship?.price_with_scholarship ?? 0);
   const original = Number(course?.original_price ?? 0);
+  const marketplaceFee = Number(r.amount_paid ?? 0);
+  const discountPct = original > 0
+    ? Math.round(((original - monthlyScholarship) / original) * 100)
+    : null;
 
   const needsPayment = r.status === "PAYMENT_PENDING" || r.status === "RESERVED";
   const isFinal = ["EXPIRED", "CANCELLED", "ENROLLMENT_APPROVED", "ENROLLMENT_REJECTED"].includes(r.status);
+  const isPaid = !["RESERVED", "PAYMENT_PENDING", "EXPIRED", "CANCELLED"].includes(r.status);
+
+  // Fetch carta de apresentação após pagamento
+  const { data: letter } = useQuery({
+    enabled: isPaid,
+    queryKey: ["scholarship-letter", id],
+    queryFn: async () => {
+      const { data, error } = await (supabase.from as any)("scholarship_letters")
+        .select("unique_code, status, issued_at, expires_at")
+        .eq("reservation_id", id)
+        .maybeSingle();
+      if (error) throw error;
+      return data as null | { unique_code: string; status: string; issued_at: string; expires_at: string };
+    },
+  });
+
+  async function handleDownloadLetter() {
+    if (!letter || !user) return;
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, cpf")
+        .eq("id", user.id)
+        .maybeSingle();
+      await downloadScholarshipLetterPdf({
+        unique_code: letter.unique_code,
+        issued_at: letter.issued_at,
+        expires_at: letter.expires_at,
+        student_name: `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim() || "Estudante",
+        student_cpf: profile?.cpf ?? null,
+        reservation_code: r.reservation_code,
+        scholarship_title: r.scholarship?.title ?? "",
+        course_name: course?.name ?? "",
+        institution_trade_name: inst?.trade_name ?? "",
+        institution_cnpj: null,
+        unit_name: unit?.name ?? null,
+        unit_city: unit?.city ?? null,
+        unit_state: unit?.state ?? null,
+        discount_percent: discountPct,
+        monthly_original: original,
+        monthly_with_scholarship: monthlyScholarship,
+        required_documents: null,
+        rules: null,
+      });
+    } catch (e) {
+      toast.error((e as Error).message || "Falha ao gerar carta.");
+    }
+  }
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -138,9 +190,9 @@ function ReservationDetailPage() {
         </div>
 
         <div className="mt-5 grid sm:grid-cols-3 gap-3">
-          <Info label="Código" value={r.reservation_code} />
-          <Info label="Mensalidade c/ bolsa" value={formatBRL(monthly)} />
-          <Info label="De" value={original ? formatBRL(original) : "—"} strike />
+          <Info label="Código da reserva" value={r.reservation_code} />
+          <Info label="Mensalidade c/ bolsa" value={formatBRL(monthlyScholarship)} />
+          <Info label="Mensalidade original" value={original ? formatBRL(original) : "—"} strike />
         </div>
 
         {needsPayment && r.expires_at && (
