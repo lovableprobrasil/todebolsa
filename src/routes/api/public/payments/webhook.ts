@@ -74,6 +74,11 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
             case "checkout.session.async_payment_succeeded":
               await handleCheckoutSessionCompleted(event.data.object);
               break;
+            case "charge.refunded":
+            case "refund.created":
+            case "refund.updated":
+              await handleChargeRefunded(event.data.object);
+              break;
             default:
               console.log("Unhandled stripe event:", event.type);
           }
