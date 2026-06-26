@@ -27,10 +27,16 @@ function ValidarCartaPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["validate-letter", codigo],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_letter_by_code" as never, { p_code: codigo });
+      const { data, error } = await (supabase.rpc as any)("get_letter_by_code", { p_code: codigo });
       if (error) throw error;
-      const row = Array.isArray(data) ? data[0] : data;
-      return row ?? null;
+      const row = (Array.isArray(data) ? data[0] : data) as any;
+      return (row ?? null) as null | {
+        unique_code: string; status: string; issued_at: string; expires_at: string;
+        student_first_name: string | null; scholarship_title: string; course_name: string;
+        institution_trade_name: string; unit_name: string | null; unit_city: string | null;
+        unit_state: string | null; discount_percent: number | null;
+        monthly_with_scholarship: number | null; monthly_original: number | null;
+      };
     },
   });
 

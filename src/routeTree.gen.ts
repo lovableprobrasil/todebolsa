@@ -27,6 +27,7 @@ import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as GuiaIndexRouteImport } from './routes/guia.index'
 import { Route as BolsasIndexRouteImport } from './routes/bolsas.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as ValidarCartaCodigoRouteImport } from './routes/validar-carta.$codigo'
 import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
@@ -167,6 +168,11 @@ const BolsasIndexRoute = BolsasIndexRouteImport.update({
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ValidarCartaCodigoRoute = ValidarCartaCodigoRouteImport.update({
+  id: '/validar-carta/$codigo',
+  path: '/validar-carta/$codigo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
@@ -488,6 +494,7 @@ export interface FileRoutesByFullPath {
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/validar-carta/$codigo': typeof ValidarCartaCodigoRoute
   '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
@@ -558,6 +565,7 @@ export interface FileRoutesByTo {
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/validar-carta/$codigo': typeof ValidarCartaCodigoRoute
   '/blog': typeof BlogIndexRoute
   '/bolsas': typeof BolsasIndexRoute
   '/guia': typeof GuiaIndexRoute
@@ -628,6 +636,7 @@ export interface FileRoutesById {
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/validar-carta/$codigo': typeof ValidarCartaCodigoRoute
   '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
@@ -701,6 +710,7 @@ export interface FileRouteTypes {
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
     | '/noticias/$slug'
+    | '/validar-carta/$codigo'
     | '/blog/'
     | '/bolsas/'
     | '/guia/'
@@ -771,6 +781,7 @@ export interface FileRouteTypes {
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
     | '/noticias/$slug'
+    | '/validar-carta/$codigo'
     | '/blog'
     | '/bolsas'
     | '/guia'
@@ -840,6 +851,7 @@ export interface FileRouteTypes {
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
     | '/noticias/$slug'
+    | '/validar-carta/$codigo'
     | '/blog/'
     | '/bolsas/'
     | '/guia/'
@@ -904,6 +916,7 @@ export interface RootRouteChildren {
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
   NoticiasSlugRoute: typeof NoticiasSlugRoute
+  ValidarCartaCodigoRoute: typeof ValidarCartaCodigoRoute
   BlogIndexRoute: typeof BlogIndexRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
   GuiaIndexRoute: typeof GuiaIndexRoute
@@ -1045,6 +1058,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/validar-carta/$codigo': {
+      id: '/validar-carta/$codigo'
+      path: '/validar-carta/$codigo'
+      fullPath: '/validar-carta/$codigo'
+      preLoaderRoute: typeof ValidarCartaCodigoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/noticias/$slug': {
@@ -1584,6 +1604,7 @@ const rootRouteChildren: RootRouteChildren = {
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
   NoticiasSlugRoute: NoticiasSlugRoute,
+  ValidarCartaCodigoRoute: ValidarCartaCodigoRoute,
   BlogIndexRoute: BlogIndexRoute,
   BolsasIndexRoute: BolsasIndexRoute,
   GuiaIndexRoute: GuiaIndexRoute,
