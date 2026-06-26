@@ -384,6 +384,60 @@ function ReservationDetailPage() {
         />
       )}
 
+      {isPaid && !isFinal && (
+        <section className="rounded-3xl border border-border bg-card p-6 md:p-8">
+          <h2 className="font-display text-lg font-extrabold">Precisa cancelar?</h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
+            Você pode solicitar o cancelamento da reserva e o reembolso integral da taxa enquanto a matrícula
+            ainda não foi efetivada. A nossa equipe valida o pedido e processa o estorno via Stripe em até 7 dias úteis.
+          </p>
+
+          {existingRefund?.status === "REQUESTED" && (
+            <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+              <strong>Solicitação em análise.</strong> Recebida em{" "}
+              {new Date(existingRefund.requested_at).toLocaleDateString("pt-BR")}. Você será notificado quando o reembolso for processado.
+            </div>
+          )}
+
+          {existingRefund?.status === "PROCESSED" && (
+            <div className="mt-4 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+              <strong>Reembolso processado.</strong> O valor foi devolvido ao seu meio de pagamento original.
+            </div>
+          )}
+
+          {!existingRefund && (
+            <Dialog open={refundOpen} onOpenChange={setRefundOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="mt-4">
+                  <XCircle className="h-4 w-4 mr-2" /> Solicitar cancelamento e reembolso
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Solicitar cancelamento</DialogTitle>
+                  <DialogDescription>
+                    Conte rapidamente o motivo para agilizarmos a análise. O valor de {formatBRL(marketplaceFee)} será estornado ao meio de pagamento original.
+                  </DialogDescription>
+                </DialogHeader>
+                <Textarea
+                  rows={4}
+                  placeholder="Ex.: mudei de cidade, escolhi outro curso, problemas pessoais…"
+                  value={refundReason}
+                  onChange={(e) => setRefundReason(e.target.value)}
+                />
+                <DialogFooter>
+                  <Button variant="ghost" onClick={() => setRefundOpen(false)}>Voltar</Button>
+                  <Button onClick={() => requestRefund.mutate()} disabled={requestRefund.isPending}>
+                    {requestRefund.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    Enviar pedido
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </section>
+      )}
+
       {isFinal && (
         <section className="rounded-3xl border border-border bg-card p-6 text-center">
           <p className="text-muted-foreground">Esta reserva foi finalizada como <strong>{STATUS_LABEL[r.status]}</strong>.</p>
