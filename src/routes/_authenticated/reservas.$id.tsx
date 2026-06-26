@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowLeft, CheckCircle2, Clock, CreditCard, FileText, Loader2, QrCode, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, CreditCard, Download, FileText, Loader2, QrCode, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
@@ -11,13 +11,13 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
 import { DocumentUpload } from "@/components/enrollment/DocumentUpload";
+import { downloadScholarshipLetterPdf } from "@/lib/letter-pdf";
 
 export const Route = createFileRoute("/_authenticated/reservas/$id")({
   component: ReservationDetailPage,
 });
 
 type Method = "PIX" | "BOLETO" | "CARD";
-const ADHESION_FEE = 49.9;
 
 const STATUS_LABEL: Record<string, string> = {
   RESERVED: "Reservada",
