@@ -52,6 +52,8 @@ function CheckoutPage() {
   const { scholarshipId } = Route.useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isEmbedded = typeof window !== "undefined"
+    && new URLSearchParams(window.location.search).get("embedded") === "1";
 
   const [step, setStep] = useState<Step>(1);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
@@ -71,7 +73,7 @@ function CheckoutPage() {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   // Load scholarship
-  const { data: scholarship, isLoading: loadingSch } = useQuery({
+  const { data: scholarship, isLoading: loadingSch, error: scholarshipLoadError } = useQuery({
     queryKey: ["checkout-scholarship", scholarshipId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -93,7 +95,7 @@ function CheckoutPage() {
 
   // Start checkout session
   useEffect(() => {
-    if (sessionToken) return;
+    if (sessionToken || loadingSch || !scholarship) return;
     const storageKey = TOKEN_KEY_PREFIX + scholarshipId;
     const existing = typeof window !== "undefined" ? localStorage.getItem(storageKey) : null;
     (async () => {
@@ -117,7 +119,27 @@ function CheckoutPage() {
       else if (session.current_step === "PAYMENT") setStep(4);
       trackEvent("checkout_view", { entityType: "scholarship", entityId: scholarshipId });
     })();
-  }, [scholarshipId, sessionToken]);
+  }, [scholarshipId, sessionToken, loadingSch, scholarship]);
+
+  useEffect(() => {
+    if (loadingSch || scholarship) return;
+    if (typeof window !== "undefined" && window.parent !== window) {
+      window.parent.postMessage(
+        { type: "tdb_checkout_error", scholarshipId, reason: scholarshipLoadError ? "load_error" : "not_found" },
+        window.location.origin,
+      );
+    }
+  }, [loadingSch, scholarship, scholarshipId, scholarshipLoadError]);
+
+  useEffect(() => {
+    if (!scholarship) return;
+    if (typeof window !== "undefined" && window.parent !== window) {
+      window.parent.postMessage(
+        { type: "tdb_checkout_ready", scholarshipId },
+        window.location.origin,
+      );
+    }
+  }, [scholarship, scholarshipId]);
 
   // Prefill from logged-in user
   useEffect(() => {
@@ -155,26 +177,28 @@ function CheckoutPage() {
   if (loadingSch) {
     return <div className="min-h-screen grid place-content-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   }
-  if (!scholarship) {
-    return <div className="min-h-screen grid place-content-center"><p>Bolsa não encontrada.</p></div>;
+  if (scholarshipLoadError || !scholarship) {
+    return <CheckoutUnavailable isEmbedded={isEmbedded} />;
   }
 
   return (
     <div className="min-h-screen bg-muted/30">
       <PaymentTestModeBanner />
-      <header className="bg-card border-b">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/" className="inline-flex items-center gap-2">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <GraduationCap className="h-4 w-4" />
-            </span>
-            <span className="font-display font-bold">Tô de <span className="text-primary">Bolsa</span></span>
-          </Link>
-          <div className="text-xs text-muted-foreground inline-flex items-center gap-1">
-            <Lock className="h-3 w-3" /> Compra 100% segura
+      {!isEmbedded && (
+        <header className="bg-card border-b">
+          <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+            <Link to="/" className="inline-flex items-center gap-2">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <GraduationCap className="h-4 w-4" />
+              </span>
+              <span className="font-display font-bold">Tô de <span className="text-primary">Bolsa</span></span>
+            </Link>
+            <div className="text-xs text-muted-foreground inline-flex items-center gap-1">
+              <Lock className="h-3 w-3" /> Compra 100% segura
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         <Stepper step={step} />
@@ -301,6 +325,34 @@ function validateAddress(a: Address): string | null {
   if (!a.number.trim()) return "Número é obrigatório";
   if (!a.city.trim() || !a.state.trim()) return "Cidade e estado são obrigatórios";
   return null;
+}
+
+function CheckoutUnavailable({ isEmbedded }: { isEmbedded: boolean }) {
+  return (
+    <div className={`${isEmbedded ? "min-h-[70vh]" : "min-h-screen"} grid place-content-center bg-muted/30 px-4`}>
+      <Card className="max-w-md">
+        <CardContent className="p-6 text-center space-y-4">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <GraduationCap className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold">Não foi possível carregar esta bolsa</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              A oferta pode ter expirado, ficado indisponível ou passado por atualização. Você pode voltar ao início e escolher outra bolsa.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+            <Button asChild>
+              <Link to="/">Voltar para home</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/bolsas">Ver outras bolsas</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
 
 // -------- components --------

@@ -117,7 +117,7 @@ export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
             </Link>
           </Button>
           <Button size="sm" asChild>
-            <Link to="/bolsas/$id" params={{ id: s.id }}>
+            <Link to="/adquirir/$scholarshipId" params={{ scholarshipId: s.id }}>
               Garantir bolsa
             </Link>
           </Button>
