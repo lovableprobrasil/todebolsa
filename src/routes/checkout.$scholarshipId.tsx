@@ -161,6 +161,7 @@ function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
+      <PaymentTestModeBanner />
       <header className="bg-card border-b">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2">
