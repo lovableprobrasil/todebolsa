@@ -365,7 +365,7 @@ function ReserveButton({
     <Button
       size="lg"
       className="w-full font-semibold"
-      onClick={() => navigate({ to: "/checkout/$scholarshipId", params: { scholarshipId } })}
+      onClick={() => navigate({ to: "/adquirir/$scholarshipId", params: { scholarshipId } })}
     >
       Garantir bolsa agora
     </Button>
