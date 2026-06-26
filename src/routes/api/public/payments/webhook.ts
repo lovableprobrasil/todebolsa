@@ -27,6 +27,36 @@ async function handleCheckoutSessionCompleted(obj: any) {
   }
 }
 
+async function handleChargeRefunded(charge: any) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const reservationId: string | undefined =
+    charge?.metadata?.reservation_id ||
+    charge?.payment_intent_data?.metadata?.reservation_id;
+  // Stripe payload may carry refunds inline
+  const refunds: any[] = charge?.refunds?.data ?? [];
+  const lastRefund = refunds[refunds.length - 1];
+  const stripeRefundId: string | undefined = lastRefund?.id;
+
+  if (!reservationId) {
+    console.log("charge.refunded sem reservation_id em metadata; ignorado");
+    return;
+  }
+  // Idempotente: se já temos esse refund, não reprocessa
+  if (stripeRefundId) {
+    const { data: existing } = await supabaseAdmin
+      .from("refunds")
+      .select("id, status")
+      .eq("stripe_refund_id", stripeRefundId)
+      .maybeSingle();
+    if (existing?.status === "PROCESSED") return;
+  }
+  await supabaseAdmin.rpc("complete_refund", {
+    p_reservation_id: reservationId,
+    p_reason: "Reembolso confirmado via Stripe",
+    p_stripe_refund_id: stripeRefundId ?? null,
+  } as any);
+}
+
 export const Route = createFileRoute("/api/public/payments/webhook")({
   server: {
     handlers: {
