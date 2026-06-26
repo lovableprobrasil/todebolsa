@@ -266,3 +266,64 @@ function DeleteUserButton({ onConfirm, pending, email }: { onConfirm: () => void
     </AlertDialog>
   );
 }
+
+function EditUserDialog({ user, onSaved }: { user: any; onSaved: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState(user.profile?.name ?? user.name ?? "");
+  const [email, setEmail] = useState(user.email ?? "");
+  const [phone, setPhone] = useState(user.profile?.phone ?? "");
+  const [cpf, setCpf] = useState(user.profile?.cpf ?? "");
+  const updateFn = useServerFn(adminUpdateUser);
+  const save = useMutation({
+    mutationFn: () => updateFn({ data: { userId: user.id, name, email, phone, cpf } }),
+    onSuccess: () => { toast.success("Cadastro atualizado."); setOpen(false); onSaved(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  return (
+    <Dialog open={open} onOpenChange={(v) => {
+      setOpen(v);
+      if (v) {
+        setName(user.profile?.name ?? user.name ?? "");
+        setEmail(user.email ?? "");
+        setPhone(user.profile?.phone ?? "");
+        setCpf(user.profile?.cpf ?? "");
+      }
+    }}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline"><Pencil className="h-3.5 w-3.5 mr-1" /> Editar</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Editar cadastro</DialogTitle>
+          <DialogDescription>Atualize nome, e-mail, telefone e CPF do usuário.</DialogDescription>
+        </DialogHeader>
+        <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); save.mutate(); }}>
+          <div className="space-y-1.5">
+            <Label htmlFor="eu-name">Nome completo</Label>
+            <Input id="eu-name" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="eu-email">E-mail</Label>
+            <Input id="eu-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="eu-phone">Telefone</Label>
+              <Input id="eu-phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(00) 00000-0000" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="eu-cpf">CPF</Label>
+              <Input id="eu-cpf" value={cpf} onChange={(e) => setCpf(e.target.value)} placeholder="000.000.000-00" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+            <Button type="submit" disabled={save.isPending}>
+              {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
