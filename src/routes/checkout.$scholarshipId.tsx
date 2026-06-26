@@ -229,56 +229,21 @@ function CheckoutPage() {
                 onContinue={async () => { await saveStep(4); setStep(4); }}
               />
             )}
-            {step === 4 && (
-              <StepPayment
-                paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod}
-                installments={installments} setInstallments={setInstallments}
+            {step === 4 && sessionToken && (
+              <StepStripePayment
+                sessionToken={sessionToken}
+                account={{
+                  name: personal.name.trim(),
+                  email: personal.email.trim().toLowerCase(),
+                  password: user ? undefined : personal.password,
+                  cpf: personal.cpf,
+                  phone: personal.whatsapp || personal.phone,
+                }}
                 checkoutFee={checkoutFee}
                 onBack={() => setStep(3)}
-                onFinalize={async () => {
-                  if (!sessionToken) return;
-                  trackEvent("checkout_payment_init", { metadata: { method: paymentMethod } });
-                  // Save method first
-                  await saveStep(4);
-                  try {
-                    const res = await fetch("/api/public/checkout-finalize", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        session_token: sessionToken,
-                        account: {
-                          name: personal.name.trim(),
-                          email: personal.email.trim().toLowerCase(),
-                          password: user ? undefined : personal.password,
-                          cpf: personal.cpf,
-                          phone: personal.whatsapp || personal.phone,
-                        },
-                      }),
-                    });
-                    const json = await res.json();
-                    if (!res.ok) throw new Error(json.error || "Falha ao finalizar");
-                    // Pay (simulated)
-                    await supabase.rpc("pay_reservation", {
-                      p_reservation_id: json.reservation_id, p_method: paymentMethod,
-                    } as any);
-                    // Clear local token
-                    if (typeof window !== "undefined") localStorage.removeItem(TOKEN_KEY_PREFIX + scholarshipId);
-                    // If we created the account, sign in
-                    if (json.created_account && personal.password) {
-                      await supabase.auth.signInWithPassword({
-                        email: personal.email.trim().toLowerCase(),
-                        password: personal.password,
-                      });
-                    }
-                    trackEvent("checkout_payment_confirmed", { metadata: { method: paymentMethod } });
-                    toast.success("Pagamento confirmado!");
-                    navigate({ to: "/reservas/$id", params: { id: json.reservation_id } });
-                  } catch (e: any) {
-                    toast.error(e.message || "Erro no checkout");
-                  }
-                }}
               />
             )}
+
           </div>
 
           <aside className="space-y-4">
