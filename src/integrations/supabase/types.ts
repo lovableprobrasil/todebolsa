@@ -2604,6 +2604,10 @@ export type Database = {
         Args: { p_cpf?: string; p_email?: string }
         Returns: Json
       }
+      checkout_finalize: {
+        Args: { p_session_token: string; p_user_id: string }
+        Returns: string
+      }
       checkout_record_acceptances: {
         Args: { p_session_token: string; p_terms: string[] }
         Returns: undefined
