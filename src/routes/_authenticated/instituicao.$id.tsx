@@ -78,6 +78,11 @@ function ManageInstitutionPage() {
             </p>
           )}
         </div>
+        <Button asChild variant="outline" className="gap-2">
+          <Link to="/instituicao/importar-bolsas">
+            <Upload className="h-4 w-4" /> Importar bolsas (CSV)
+          </Link>
+        </Button>
       </header>
 
       <Tabs defaultValue="matriculas" className="space-y-4">
