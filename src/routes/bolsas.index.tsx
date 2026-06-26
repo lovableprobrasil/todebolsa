@@ -46,12 +46,6 @@ const SORT_LABEL: Record<SortMode, string> = {
   recent: "Mais recentes",
 };
 
-const PRICE_QUICK = [
-  { label: "Até R$ 50", value: 50 },
-  { label: "Até R$ 100", value: 100 },
-  { label: "Até R$ 200", value: 200 },
-  { label: "Até R$ 500", value: 500 },
-];
 
 const DISCOUNT_QUICK = [
   { label: "50%+ off", value: 50 },
