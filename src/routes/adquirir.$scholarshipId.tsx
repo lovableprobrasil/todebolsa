@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, GraduationCap, Home, Loader2, RefreshCw } from "lucide-react";
+import { ArrowLeft, GraduationCap, Home, RefreshCw } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -100,15 +100,6 @@ function AcquisitionFramePage() {
           </div>
 
           <div className="relative min-h-[78vh] overflow-hidden rounded-lg border border-border bg-card shadow-[var(--shadow-card)]">
-            {frameState === "loading" && (
-              <div className="absolute inset-0 z-10 grid place-content-center bg-card/90">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                  Carregando aquisição da bolsa...
-                </div>
-              </div>
-            )}
-
             {frameState === "error" ? (
               <div className="grid min-h-[78vh] place-content-center px-4">
                 <Card className="max-w-md">
