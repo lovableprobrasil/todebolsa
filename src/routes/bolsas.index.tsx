@@ -80,6 +80,7 @@ export const Route = createFileRoute("/bolsas/")({
     modality: str(raw.modality),
     institutionId: str(raw.institutionId),
     minDiscount: num(raw.minDiscount),
+    minPrice: num(raw.minPrice),
     maxPrice: num(raw.maxPrice),
     minRating: num(raw.minRating),
     sort: (
