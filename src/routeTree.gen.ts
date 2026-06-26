@@ -39,6 +39,7 @@ import { Route as CheckoutScholarshipIdRouteImport } from './routes/checkout.$sc
 import { Route as CadastroSucessoRouteImport } from './routes/cadastro.sucesso'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdquirirScholarshipIdRouteImport } from './routes/adquirir.$scholarshipId'
 import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticated/reservas'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
@@ -241,6 +242,11 @@ const BolsasIdRoute = BolsasIdRouteImport.update({
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdquirirScholarshipIdRoute = AdquirirScholarshipIdRouteImport.update({
+  id: '/adquirir/$scholarshipId',
+  path: '/adquirir/$scholarshipId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedReservasRoute = AuthenticatedReservasRouteImport.update({
@@ -574,6 +580,7 @@ export interface FileRoutesByFullPath {
   '/painel': typeof AuthenticatedPainelRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
+  '/adquirir/$scholarshipId': typeof AdquirirScholarshipIdRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
@@ -658,6 +665,7 @@ export interface FileRoutesByTo {
   '/painel': typeof AuthenticatedPainelRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
+  '/adquirir/$scholarshipId': typeof AdquirirScholarshipIdRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
@@ -742,6 +750,7 @@ export interface FileRoutesById {
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/reservas': typeof AuthenticatedReservasRouteWithChildren
+  '/adquirir/$scholarshipId': typeof AdquirirScholarshipIdRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
@@ -829,6 +838,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/perfil'
     | '/reservas'
+    | '/adquirir/$scholarshipId'
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
@@ -913,6 +923,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/perfil'
     | '/reservas'
+    | '/adquirir/$scholarshipId'
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
@@ -996,6 +1007,7 @@ export interface FileRouteTypes {
     | '/_authenticated/painel'
     | '/_authenticated/perfil'
     | '/_authenticated/reservas'
+    | '/adquirir/$scholarshipId'
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
@@ -1074,6 +1086,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermosRoute: typeof TermosRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  AdquirirScholarshipIdRoute: typeof AdquirirScholarshipIdRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BolsasIdRoute: typeof BolsasIdRoute
   CadastroSucessoRoute: typeof CadastroSucessoRoute
@@ -1316,6 +1329,13 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/adquirir/$scholarshipId': {
+      id: '/adquirir/$scholarshipId'
+      path: '/adquirir/$scholarshipId'
+      fullPath: '/adquirir/$scholarshipId'
+      preLoaderRoute: typeof AdquirirScholarshipIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/reservas': {
@@ -1870,6 +1890,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermosRoute: TermosRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  AdquirirScholarshipIdRoute: AdquirirScholarshipIdRoute,
   BlogSlugRoute: BlogSlugRoute,
   BolsasIdRoute: BolsasIdRoute,
   CadastroSucessoRoute: CadastroSucessoRoute,
