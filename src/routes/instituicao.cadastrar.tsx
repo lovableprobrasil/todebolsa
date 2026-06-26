@@ -14,6 +14,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { isValidCNPJ, isValidCPF, maskCNPJ, maskCPF, maskPhone, maskCEP, onlyDigits } from "@/lib/validators/cnpj";
 import { lookupCep } from "@/lib/validators/cep";
+import { sendTransactionalEmail } from "@/lib/email/send";
+
 
 export const Route = createFileRoute("/instituicao/cadastrar")({
   head: () => ({

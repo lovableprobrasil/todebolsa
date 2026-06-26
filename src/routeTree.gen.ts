@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
@@ -88,6 +89,11 @@ import { Route as AuthenticatedAdminCredenciamentoInstituicoesIdRouteImport } fr
 import { Route as BolsasCursoCourseCidadeCityRouteImport } from './routes/bolsas.curso.$course.cidade.$city'
 import { Route as ApiPublicUgeValidarCodigoRouteImport } from './routes/api/public/uge.validar.$codigo'
 
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
   path: '/termos',
@@ -525,6 +531,7 @@ export interface FileRoutesByFullPath {
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos': typeof TermosRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
@@ -604,6 +611,7 @@ export interface FileRoutesByTo {
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos': typeof TermosRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/carteira': typeof AuthenticatedCarteiraRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/indicacoes': typeof AuthenticatedIndicacoesRoute
@@ -681,6 +689,7 @@ export interface FileRoutesById {
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termos': typeof TermosRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/carteira': typeof AuthenticatedCarteiraRoute
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
@@ -762,6 +771,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/sitemap.xml'
     | '/termos'
+    | '/unsubscribe'
     | '/admin'
     | '/carteira'
     | '/favoritos'
@@ -841,6 +851,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/sitemap.xml'
     | '/termos'
+    | '/unsubscribe'
     | '/carteira'
     | '/favoritos'
     | '/indicacoes'
@@ -917,6 +928,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/sitemap.xml'
     | '/termos'
+    | '/unsubscribe'
     | '/_authenticated/admin'
     | '/_authenticated/carteira'
     | '/_authenticated/favoritos'
@@ -998,6 +1010,7 @@ export interface RootRouteChildren {
   RssDotxmlRoute: typeof RssDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermosRoute: typeof TermosRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BolsasIdRoute: typeof BolsasIdRoute
   CadastroSucessoRoute: typeof CadastroSucessoRoute
@@ -1027,6 +1040,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/termos': {
       id: '/termos'
       path: '/termos'
@@ -1746,6 +1766,7 @@ const rootRouteChildren: RootRouteChildren = {
   RssDotxmlRoute: RssDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermosRoute: TermosRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   BlogSlugRoute: BlogSlugRoute,
   BolsasIdRoute: BolsasIdRoute,
   CadastroSucessoRoute: CadastroSucessoRoute,
