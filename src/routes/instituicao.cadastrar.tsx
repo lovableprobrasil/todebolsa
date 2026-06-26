@@ -147,29 +147,42 @@ function ApplicationWizardPage() {
 
   const submitMut = useMutation({
     mutationFn: async () => {
-      // 1) sign up if needed
+      // For NEW users (not signed in): use the public server route that
+      // creates the account (pre-confirmed), submits the application, and
+      // enqueues the confirmation email — all server-side with admin
+      // privileges, so email-confirmation requirements don't block the flow.
       if (!user) {
-        const { error: signUpErr } = await supabase.auth.signUp({
-          email: form.account_email.trim(),
-          password: form.account_password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/instituicao/credenciamento`,
-            data: { name: form.account_name.trim() },
-          },
+        const res = await fetch("/api/public/institution-application", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            account: {
+              name: form.account_name.trim(),
+              email: form.account_email.trim(),
+              password: form.account_password,
+            },
+            application: buildPayload(form),
+          }),
         });
-        if (signUpErr) throw new Error(signUpErr.message);
-        // Try to ensure a session (if auto-confirm disabled, signIn will fail and we ask user to confirm e-mail)
-        const { data: signInData } = await supabase.auth.signInWithPassword({
-          email: form.account_email.trim(),
-          password: form.account_password,
-        });
-        if (!signInData?.session) {
-          throw new Error("Conta criada! Confirme seu e-mail para finalizar o cadastro.");
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(json?.error || "Falha ao enviar o cadastro. Tente novamente.");
         }
-        await refreshRoles();
+        // Sign the user in so the next page already shows their session
+        try {
+          await supabase.auth.signInWithPassword({
+            email: form.account_email.trim(),
+            password: form.account_password,
+          });
+          await refreshRoles();
+        } catch (e) {
+          console.warn("Auto sign-in falhou, usuário precisará entrar manualmente.", e);
+        }
+        return;
       }
 
-      // 1b) Sync profile (name/phone/cpf) so /perfil shows the data filled here
+      // For users ALREADY signed in: keep the RPC-based flow (RLS protects).
+      // 1) Sync profile (best-effort)
       {
         const { data: au } = await supabase.auth.getUser();
         const uid = au.user?.id;
@@ -184,21 +197,17 @@ function ApplicationWizardPage() {
         }
       }
 
-      // 2) start application
       const { data: appId, error: startErr } = await supabase.rpc("start_institution_application");
       if (startErr) throw new Error(startErr.message);
 
-      // 3) save payload
       const { error: saveErr } = await supabase.rpc("save_institution_application", {
         p_id: appId as string, p_payload: buildPayload(form),
       });
       if (saveErr) throw new Error(saveErr.message);
 
-      // 4) submit
       const { error: submitErr } = await supabase.rpc("submit_institution_application", { p_id: appId as string });
       if (submitErr) throw new Error(submitErr.message);
 
-      // 5) fire confirmation email (non-blocking on UX, but awaited so errors surface in logs)
       const recipient = (form.responsible_email || form.account_email || form.email).trim();
       if (recipient) {
         try {
