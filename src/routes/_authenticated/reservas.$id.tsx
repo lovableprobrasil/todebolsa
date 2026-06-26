@@ -13,6 +13,11 @@ import { ReviewForm } from "@/components/reviews/ReviewForm";
 import { DocumentUpload } from "@/components/enrollment/DocumentUpload";
 import { downloadScholarshipLetterPdf } from "@/lib/letter-pdf";
 import { sendTransactionalEmail } from "@/lib/email/send";
+import { studentRequestRefund } from "@/lib/refunds.functions";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogDescription,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/_authenticated/reservas/$id")({
   component: ReservationDetailPage,
@@ -138,6 +143,39 @@ function ReservationDetailPage() {
       if (error) throw error;
       return data as null | { id: string; unique_code: string; status: string; issued_at: string; expires_at: string; email_sent_at: string | null };
     },
+  });
+
+  // Refund status (para alunos em reservas pagas)
+  const { data: existingRefund } = useQuery({
+    enabled: isPaid && !!user,
+    queryKey: ["reservation-refund", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("refunds")
+        .select("id, status, requested_at, processed_at, reason")
+        .eq("reservation_id", id)
+        .order("requested_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data as null | { id: string; status: string; requested_at: string; processed_at: string | null; reason: string | null };
+    },
+  });
+
+  const [refundOpen, setRefundOpen] = useState(false);
+  const [refundReason, setRefundReason] = useState("");
+  const requestRefund = useMutation({
+    mutationFn: async () => {
+      const res = await studentRequestRefund({ data: { reservation_id: id, reason: refundReason } });
+      if ("error" in res) throw new Error(res.error);
+    },
+    onSuccess: () => {
+      toast.success("Pedido de cancelamento enviado. Nossa equipe vai processar o reembolso em até 7 dias úteis.");
+      setRefundOpen(false);
+      setRefundReason("");
+      qc.invalidateQueries({ queryKey: ["reservation-refund", id] });
+    },
+    onError: (e: Error) => toast.error(e.message || "Não foi possível enviar o pedido."),
   });
 
   // Envia automaticamente o e-mail da carta uma única vez
@@ -344,6 +382,60 @@ function ReservationDetailPage() {
           institutionId={r.institution_id}
           userId={user.id}
         />
+      )}
+
+      {isPaid && !isFinal && (
+        <section className="rounded-3xl border border-border bg-card p-6 md:p-8">
+          <h2 className="font-display text-lg font-extrabold">Precisa cancelar?</h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
+            Você pode solicitar o cancelamento da reserva e o reembolso integral da taxa enquanto a matrícula
+            ainda não foi efetivada. A nossa equipe valida o pedido e processa o estorno via Stripe em até 7 dias úteis.
+          </p>
+
+          {existingRefund?.status === "REQUESTED" && (
+            <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+              <strong>Solicitação em análise.</strong> Recebida em{" "}
+              {new Date(existingRefund.requested_at).toLocaleDateString("pt-BR")}. Você será notificado quando o reembolso for processado.
+            </div>
+          )}
+
+          {existingRefund?.status === "PROCESSED" && (
+            <div className="mt-4 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+              <strong>Reembolso processado.</strong> O valor foi devolvido ao seu meio de pagamento original.
+            </div>
+          )}
+
+          {!existingRefund && (
+            <Dialog open={refundOpen} onOpenChange={setRefundOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="mt-4">
+                  <XCircle className="h-4 w-4 mr-2" /> Solicitar cancelamento e reembolso
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Solicitar cancelamento</DialogTitle>
+                  <DialogDescription>
+                    Conte rapidamente o motivo para agilizarmos a análise. O valor de {formatBRL(marketplaceFee)} será estornado ao meio de pagamento original.
+                  </DialogDescription>
+                </DialogHeader>
+                <Textarea
+                  rows={4}
+                  placeholder="Ex.: mudei de cidade, escolhi outro curso, problemas pessoais…"
+                  value={refundReason}
+                  onChange={(e) => setRefundReason(e.target.value)}
+                />
+                <DialogFooter>
+                  <Button variant="ghost" onClick={() => setRefundOpen(false)}>Voltar</Button>
+                  <Button onClick={() => requestRefund.mutate()} disabled={requestRefund.isPending}>
+                    {requestRefund.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    Enviar pedido
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </section>
       )}
 
       {isFinal && (
