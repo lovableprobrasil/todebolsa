@@ -124,6 +124,12 @@ export const Route = createFileRoute('/api/public/institution-application')({
           cpf: application.responsible_cpf ? application.responsible_cpf.replace(/\D/g, '') : null,
         } as any, { onConflict: 'id' })
 
+        // 2b) Grant INSTITUTION_APPLICANT role so portal shows pending state
+        await supabaseAdmin.from('user_roles').upsert(
+          { user_id: userId, role: 'INSTITUTION_APPLICANT' } as any,
+          { onConflict: 'user_id,role,institution_id', ignoreDuplicates: true },
+        )
+
         // 3) Create or reuse a DRAFT application for this user, then submit
         const { data: existingDraft } = await supabaseAdmin
           .from('institution_applications')
