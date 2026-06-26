@@ -32,6 +32,7 @@ const TABS = [
   { to: "/admin/indicacoes", label: "Indicações", icon: Gift, exact: false },
   { to: "/admin/usuarios", label: "Usuários", icon: Users, exact: false },
   { to: "/admin/blog", label: "Notícias", icon: Newspaper, exact: false },
+  { to: "/admin/configuracoes-comerciais", label: "Parâmetros comerciais", icon: Settings2, exact: false },
 ] as const;
 
 function AdminLayout() {
