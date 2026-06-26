@@ -10,7 +10,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { lookupCep } from "@/lib/validators/cep";
-import { isValidCPF, formatCPF } from "@/lib/validators/cnpj";
+import { isValidCPF, maskCPF } from "@/lib/validators/cnpj";
+const formatCPF = maskCPF;
 import { trackEvent } from "@/lib/analytics";
 
 import { Button } from "@/components/ui/button";
