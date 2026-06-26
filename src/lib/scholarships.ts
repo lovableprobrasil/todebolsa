@@ -34,24 +34,34 @@ export type ScholarshipListItem = {
         trade_name: string;
         logo_url: string | null;
         rating: number | null;
+        rating_avg: number | null;
+        rating_count: number | null;
       };
     };
   };
 };
 
 const SCHOLARSHIP_SELECT = `
-  id, title, discount_type, discount_value, price_with_scholarship, is_featured, rules,
+  id, title, discount_type, discount_value, price_with_scholarship, is_featured, rules, created_at,
   course_offering:course_offerings!inner (
     id, vacancies_available, status,
     institution_unit:institution_units!inner ( id, name, city, state ),
     course:courses!inner (
       id, slug, name, level, modality, shift, duration_months, original_price, description,
-      institution:institutions!inner ( id, slug, trade_name, logo_url, rating )
+      institution:institutions!inner ( id, slug, trade_name, logo_url, rating, rating_avg, rating_count )
     )
   )
 `;
 
-export type SortMode = "relevance" | "discount-desc" | "price-asc" | "price-desc" | "recent";
+
+export type SortMode =
+  | "relevance"
+  | "discount-desc"
+  | "price-asc"
+  | "price-desc"
+  | "recent"
+  | "best-rated"
+  | "most-rated";
 
 export type SearchFilters = {
   level?: string;
@@ -61,6 +71,7 @@ export type SearchFilters = {
   modality?: string;
   minDiscount?: number;
   maxPrice?: number;
+  minRating?: number;
   featuredOnly?: boolean;
   institutionId?: string;
   sort?: SortMode;
@@ -82,10 +93,20 @@ export async function listScholarships(filters: SearchFilters = {}): Promise<Sch
   if (filters.modality) q = q.eq("course_offering.course.modality", filters.modality);
   if (filters.city) q = q.ilike("course_offering.institution_unit.city", `%${filters.city}%`);
   if (filters.state) q = q.eq("course_offering.institution_unit.state", filters.state);
-  if (filters.query) q = q.ilike("course_offering.course.name", `%${filters.query}%`);
   if (filters.institutionId) q = q.eq("course_offering.course.institution.id", filters.institutionId);
 
+  // Busca textual ampliada: curso, instituição, cidade
+  if (filters.query) {
+    const term = filters.query.trim();
+    if (term) {
+      q = q.or(
+        `name.ilike.%${term}%,description.ilike.%${term}%`,
+        { foreignTable: "course_offerings.course" },
+      );
+    }
+  }
 
+  // Ordenação server-side para os modos diretos.
   switch (filters.sort) {
     case "price-asc":
       q = q.order("price_with_scholarship", { ascending: true });
@@ -99,6 +120,9 @@ export async function listScholarships(filters: SearchFilters = {}): Promise<Sch
     case "recent":
       q = q.order("created_at", { ascending: false });
       break;
+    case "best-rated":
+    case "most-rated":
+    case "relevance":
     default:
       q = q.order("is_featured", { ascending: false }).order("discount_value", { ascending: false });
   }
@@ -106,8 +130,55 @@ export async function listScholarships(filters: SearchFilters = {}): Promise<Sch
 
   const { data, error } = await q;
   if (error) throw error;
-  return (data ?? []) as unknown as ScholarshipListItem[];
+  let rows = (data ?? []) as unknown as ScholarshipListItem[];
+
+  // Filtro de avaliação e ordenações compostas aplicadas em memória
+  if (filters.minRating && filters.minRating > 0) {
+    rows = rows.filter(
+      (r) => Number(r.course_offering.course.institution.rating_avg ?? 0) >= filters.minRating!,
+    );
+  }
+
+  if (filters.sort === "best-rated") {
+    rows = [...rows].sort((a, b) => {
+      const ra = Number(a.course_offering.course.institution.rating_avg ?? 0);
+      const rb = Number(b.course_offering.course.institution.rating_avg ?? 0);
+      if (rb !== ra) return rb - ra;
+      return Number(b.discount_value) - Number(a.discount_value);
+    });
+  } else if (filters.sort === "most-rated") {
+    rows = [...rows].sort((a, b) => {
+      const ca = Number(a.course_offering.course.institution.rating_count ?? 0);
+      const cb = Number(b.course_offering.course.institution.rating_count ?? 0);
+      if (cb !== ca) return cb - ca;
+      return Number(b.discount_value) - Number(a.discount_value);
+    });
+  } else if (filters.sort === "relevance" || !filters.sort) {
+    // Ranqueamento composto: avaliação + popularidade + desconto + destaque
+    const maxCount = Math.max(
+      1,
+      ...rows.map((r) => Number(r.course_offering.course.institution.rating_count ?? 0)),
+    );
+    rows = [...rows]
+      .map((r) => {
+        const rating = Number(r.course_offering.course.institution.rating_avg ?? 0);
+        const count = Number(r.course_offering.course.institution.rating_count ?? 0);
+        const discount = Number(r.discount_value) || 0;
+        const featured = r.is_featured ? 1 : 0;
+        const score =
+          (rating / 5) * 0.35 +
+          (count / maxCount) * 0.2 +
+          (Math.min(discount, 90) / 90) * 0.3 +
+          featured * 0.15;
+        return { r, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .map((x) => x.r);
+  }
+
+  return rows;
 }
+
 
 // Personalized recommendations: similar level/city to user favorites
 export async function recommendScholarships(userId: string, limit = 6): Promise<ScholarshipListItem[]> {
