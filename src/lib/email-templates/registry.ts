@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import { template as institutionApplicationSubmitted } from './institution-application-submitted'
+import { template as scholarshipLetterIssued } from './scholarship-letter-issued'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -15,4 +16,5 @@ export interface TemplateEntry {
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'institution-application-submitted': institutionApplicationSubmitted,
+  'scholarship-letter-issued': scholarshipLetterIssued,
 }

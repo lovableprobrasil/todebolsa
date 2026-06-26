@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
 import { DocumentUpload } from "@/components/enrollment/DocumentUpload";
 import { downloadScholarshipLetterPdf } from "@/lib/letter-pdf";
+import { sendTransactionalEmail } from "@/lib/email/send";
 
 export const Route = createFileRoute("/_authenticated/reservas/$id")({
   component: ReservationDetailPage,
@@ -131,13 +132,57 @@ function ReservationDetailPage() {
     queryKey: ["scholarship-letter", id],
     queryFn: async () => {
       const { data, error } = await (supabase.from as any)("scholarship_letters")
-        .select("unique_code, status, issued_at, expires_at")
+        .select("id, unique_code, status, issued_at, expires_at, email_sent_at")
         .eq("reservation_id", id)
         .maybeSingle();
       if (error) throw error;
-      return data as null | { unique_code: string; status: string; issued_at: string; expires_at: string };
+      return data as null | { id: string; unique_code: string; status: string; issued_at: string; expires_at: string; email_sent_at: string | null };
     },
   });
+
+  // Envia automaticamente o e-mail da carta uma única vez
+  useEffect(() => {
+    if (!letter || !user || !r || letter.email_sent_at) return;
+    const email = user.email;
+    if (!email) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const origin = typeof window !== "undefined" ? window.location.origin : "https://todebolsa.com.br";
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("name")
+          .eq("id", user.id)
+          .maybeSingle();
+        await sendTransactionalEmail({
+          templateName: "scholarship-letter-issued",
+          recipientEmail: email,
+          idempotencyKey: `letter-issued-${letter.unique_code}`,
+          templateData: {
+            studentName: profile?.name?.trim() || "estudante",
+            institutionName: inst?.trade_name ?? "sua instituição",
+            courseName: course?.name ?? "seu curso",
+            scholarshipTitle: r.scholarship?.title ?? "sua bolsa",
+            uniqueCode: letter.unique_code,
+            reservationCode: r.reservation_code,
+            expiresAt: letter.expires_at,
+            reservationUrl: `${origin}/reservas/${r.id}`,
+            validateUrl: `${origin}/validar-carta/${letter.unique_code}`,
+            siteUrl: origin,
+            supportEmail: "contato@todebolsa.com.br",
+          },
+        });
+        if (cancelled) return;
+        await (supabase.from as any)("scholarship_letters")
+          .update({ email_sent_at: new Date().toISOString() })
+          .eq("id", letter.id);
+        qc.invalidateQueries({ queryKey: ["scholarship-letter", id] });
+      } catch (e) {
+        console.error("Falha ao enviar e-mail da carta:", e);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [letter, user, r, inst, course, id, qc]);
 
   async function handleDownloadLetter() {
     if (!letter || !user || !r) return;

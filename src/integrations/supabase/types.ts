@@ -2289,6 +2289,7 @@ export type Database = {
         Row: {
           amount_charged: number
           created_at: string
+          email_sent_at: string | null
           expires_at: string
           id: string
           institution_id: string
@@ -2307,6 +2308,7 @@ export type Database = {
         Insert: {
           amount_charged: number
           created_at?: string
+          email_sent_at?: string | null
           expires_at: string
           id?: string
           institution_id: string
@@ -2325,6 +2327,7 @@ export type Database = {
         Update: {
           amount_charged?: number
           created_at?: string
+          email_sent_at?: string | null
           expires_at?: string
           id?: string
           institution_id?: string
@@ -2804,6 +2807,7 @@ export type Database = {
         Returns: {
           amount_charged: number
           created_at: string
+          email_sent_at: string | null
           expires_at: string
           id: string
           institution_id: string
