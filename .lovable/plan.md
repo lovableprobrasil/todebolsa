@@ -1,47 +1,87 @@
-# Modelo Comercial — Taxa Única + Carta de Apresentação
+# Fluxo de Compra de Bolsas — Checkout Marketplace
 
-Reestruturação do modelo de cobrança: o aluno paga uma **taxa única ao Tô de Bolsa** para reservar a bolsa e receber uma **Carta de Apresentação** que apresenta na instituição. Não há mensalidade nem repasse.
+Reformulação do fluxo atual (`/reservas/$id`) em um **checkout de 4 etapas** inspirado em marketplaces educacionais, sem quebrar reservas, cartas de apresentação, pricing rules e painel admin já existentes.
 
-Hoje o projeto já tem `reservations` + fluxo de pagamento simulado de R$ 49,90 fixo (`reservas.$id.tsx`). Vou estender, não reescrever — para não quebrar fluxo existente, painel admin, notificações, documentos e reviews.
+## Estado atual (o que já existe)
+- `reservations` + `pay_reservation` (pagamento simulado R$ 59,90).
+- `scholarship_letters` + `issue_scholarship_letter` (emitida após pagamento).
+- `marketplace_pricing_rules` com hierarquia global/instituição/curso/bolsa.
+- Auth Supabase (email/senha), `profiles`, `user_roles`.
+- Validação de CEP (`lookupCep`), CPF, `PasswordInput`.
+- E-mails transacionais (fila pgmq, templates React Email).
+- Stripe **não habilitado** (decisão anterior pendente). Vou manter pagamento simulado nesta entrega e deixar arquitetura pronta para Stripe/Pix/Boleto reais depois.
 
-## Entregas (sequencial, 1 entrega por turno)
+## Escopo desta entrega (Entrega 1 — Checkout Core)
 
-### Entrega 1 — Núcleo Comercial (essa rodada)
-1. **DB**: nova tabela `marketplace_pricing_rules` (escopo GLOBAL/INSTITUTION/COURSE/SCHOLARSHIP + 3 tipos: FIXED_AMOUNT / PERCENTAGE_OF_COURSE_VALUE / FIRST_MONTHLY_PAYMENT). Seed da regra global R$ 59,90.
-2. **DB**: nova tabela `scholarship_letters` (código único, QR, status ISSUED/USED/EXPIRED/CANCELLED, validade) + `letter_validation_events`.
-3. **DB**: extensão de `reservations` com `pricing_rule_id`, `amount_charged` (snapshot histórico), `letter_id`.
-4. **RPC** `calculate_reservation_fee(scholarship_id)` aplicando a hierarquia: bolsa → curso → instituição → global.
-5. **RPC** `issue_scholarship_letter(reservation_id)` chamada quando pagamento vira `CONFIRMED`/`PAID` — gera código único + define validade.
-6. **Hook em `pay_reservation`**: após pagar, chama `issue_scholarship_letter`.
-7. **Frontend — Checkout (`reservas.$id.tsx`)**: substitui o `ADHESION_FEE` hardcoded por leitura do `amount_charged` da reserva. Atualiza copy (Carta de Apresentação, pagamento único ao Tô de Bolsa, mensalidades direto com instituição). Botão: "Pagar e emitir minha Carta de Apresentação".
-8. **Frontend — Painel aluno**: na tela de reserva confirmada, botão **"Baixar Carta de Apresentação"** (PDF gerado client-side com jsPDF, contendo dados da bolsa + QR Code apontando para `/validar-carta/{codigo}`).
-9. **Frontend — `/validar-carta/$codigo`**: rota pública mostrando validade da carta + dados da bolsa.
-10. **Frontend — Admin `/admin/configuracoes-comerciais`**: CRUD da regra global + lista de regras por escopo. Toggle ativo, valor mínimo/máximo, nome público, descrição.
-11. **Copy**: substituir "taxa de adesão" / "garantir vaga" por "reservar bolsa" / "emitir Carta de Apresentação" nas telas afetadas (checkout, card de reserva, e-mail templates relevantes).
+### Backend (1 migração)
+1. **`checkout_sessions`** — guarda progresso do checkout (logado ou anônimo via token), bolsa escolhida, dados pessoais, endereço, etapa atual, UTMs, expira em 7 dias. RLS: dono (auth.uid) OU `session_token` (acesso anônimo via RPC).
+2. **`checkout_acceptances`** — registro legal de cada aceite (termos, privacidade, condições da bolsa, contrato). Campos: user_id/lead_email, term_version, ip, user_agent, accepted_at, checkout_session_id.
+3. **`checkout_events`** — eventos de funil (view, start, fill_data, accept_terms, review, payment_init, payment_confirmed, abandoned). Para analytics.
+4. **Extensão `reservations`**: adicionar `checkout_session_id`, `payment_method` (PIX/BOLETO/CARD), `installments`, `utm_*`.
+5. **Extensão `marketplace_pricing_rules`**: campos `allow_pix`, `allow_boleto`, `allow_card`, `max_installments`, `min_installment_amount`, `interest_rate_pct`, `pix_expiration_minutes`, `boleto_due_days`, `reserve_before_payment`, `reservation_ttl_minutes`.
+6. **RPCs**:
+   - `checkout_start(scholarship_id, session_token)` — cria/retoma sessão.
+   - `checkout_save_step(session_id, step, payload)` — persiste progresso por etapa.
+   - `checkout_check_existing_account(email, cpf, phone)` — retorna `{exists, suggest_login}` sem vazar dados.
+   - `checkout_finalize(session_id, payment_method)` — cria user (se necessário via server fn admin), cria reservation, registra aceites, emite carta na confirmação.
 
-### Entrega 2 — Painéis & Validação (próximo turno)
-- Painel instituição: aba **"Alunos encaminhados"** com listagem de cartas + ações (matriculado / não compareceu / em atendimento) escrevendo em `letter_validation_events`.
-- Painel admin: `/admin/reservas-bolsas` com filtros (pagamento, carta, instituição, período).
-- Painel admin: regras de pricing por instituição/curso/bolsa (UI hierárquica).
-- Painel instituição: ao criar bolsa, opção controlada de pricing (usar global / solicitar valor especial → fica `pending_approval` para admin).
+### Server functions (`src/lib/checkout.functions.ts`)
+- `startCheckout`, `saveCheckoutStep`, `checkExistingAccount`, `finalizeCheckout`, `getCheckoutSession`.
+- Função admin (server-side) para criar conta confirmada pós-pagamento, reaproveitando padrão de `institution-application.ts`.
 
-### Entrega 3 — Pagamento real (depende da decisão Stripe anterior)
-- Substituir o `pay_reservation` simulado por checkout Stripe embedded, com webhook chamando `issue_scholarship_letter` na confirmação.
-- Status PENDING_PAYMENT / PAID / FAILED / REFUNDED espelhados de Stripe.
+### Frontend
+Nova rota `src/routes/checkout.$scholarshipId.tsx` com 4 etapas internas (state machine, sem mudar URL para preservar dados):
 
-## Pontos técnicos
+```text
+┌──────────────────────────────────────────────────────┐
+│ [1 Dados] → [2 Bolsa+Termos] → [3 Revisão] → [4 Pag] │
+└──────────────────────────────────────────────────────┘
+```
 
-- **Snapshot histórico**: `reservations.amount_charged` é gravado no momento da criação; mudanças posteriores em `marketplace_pricing_rules` não afetam reservas antigas (regra 13.5).
-- **Tabela `reservations` existente** já tem `amount_paid` — vou reutilizar, adicionando `pricing_rule_id` e `letter_id`. Não crio `scholarship_reservations` duplicada (evita reescrever painel admin, documents, reviews).
-- **Carta**: status `ISSUED` na emissão; `USED` quando instituição marca matriculado; `EXPIRED` por cron diário.
-- **Validade da carta**: padrão 30 dias, configurável na regra de pricing.
-- **PDF da Carta**: gerado client-side (jsPDF + qrcode) sob demanda — sem storage necessário na fase 1.
-- **RLS**: cartas legíveis pelo aluno dono, pela instituição da bolsa, por admin. Página `/validar-carta` usa endpoint público read-only com apenas campos não-PII.
+**Etapa 1 — Dados**: nome, CPF, telefone, WhatsApp, email + confirmação, senha + confirmação (oculta se já logado), CEP com auto-preenchimento, endereço. Verificação on-blur de conta existente → modal "Entrar e continuar".
+
+**Etapa 2 — Bolsa + Aceites**: card visual da bolsa (instituição, curso, valor original, desconto, valor com bolsa, taxa de adesão Tô de Bolsa, validade, vagas, regras). 4 checkboxes obrigatórios (termos, privacidade, condições, contrato) com links em modal/nova aba.
+
+**Etapa 3 — Revisão**: resumo de dados pessoais + endereço + bolsa + aceites com botões "Editar" por seção. Sidebar fixa com total (desktop) / collapse (mobile).
+
+**Etapa 4 — Pagamento**: tabs Pix / Boleto / Cartão (filtradas pelas regras da bolsa). Pix mostra QR placeholder + copia-cola. Boleto mostra linha digitável + botão baixar. Cartão tem form com parcelas dinâmicas baseadas em `max_installments` e `min_installment_amount`. **Nesta entrega o pagamento continua simulado** (`pay_reservation`), mas o seletor de método e parcelas é real.
+
+**Tela de sucesso**: já existe (`/reservas/$id` em estado PAID com botão "Baixar Carta de Apresentação"); vou ajustar para incluir mensagem "Parabéns!", próximos passos, número do pedido.
+
+### Painel admin
+Adicionar aba "Regras de pagamento" em `/admin/configuracoes-comerciais` (já existe a rota): editar campos novos de `marketplace_pricing_rules` por escopo (global/instituição/curso/bolsa).
+
+### Componentes novos
+- `CheckoutStepper` (barra de progresso).
+- `CheckoutSummary` (sidebar com bolsa).
+- `ScholarshipDetailsCard` (etapa 2).
+- `AcceptanceCheckbox` (etapa 2).
+- `PaymentMethodTabs` + `PixPanel`, `BoletoPanel`, `CardPanel`.
+- `ExistingAccountModal`.
+
+### Analytics
+`trackEvent` já existe (`src/lib/analytics.ts`). Disparar em cada transição do stepper.
+
+### Recuperação de checkout abandonado
+- `checkout_sessions.updated_at` + `status='ABANDONED'` via cron diário (já temos pg_cron para emails).
+- Link de retomada: `/checkout/retomar?token={session_token}` carrega sessão e pula para `current_step`.
+- Email de recuperação após 24h (template novo `checkout-abandoned`).
+
+## Fora desta entrega (próximas)
+- **Stripe real** (Pix/cartão via Stripe Brasil) — depende decisão pendente.
+- **Boleto real** — depende provedor (Stripe Brasil ainda não suporta boleto bem; alternativa: Asaas/PagarMe).
+- **Tracking GA4/Meta Pixel** — só estrutura de eventos nesta entrega.
+- **CRM/WhatsApp** — depende connector.
+
+## Compatibilidade
+- Fluxo antigo `/reservas/$id` continua funcionando (rota mantida).
+- Botão "Quero esta bolsa" passa a apontar para `/checkout/$scholarshipId` em vez de criar reservation direto.
+- `reservations`, `scholarship_letters`, painel admin, notificações, documentos: **intactos**.
 
 ## Confirmar antes de seguir
+1. **Pagamento real (Stripe/Pix)**: mantenho simulado nesta entrega (PR já gigante), Stripe entra em entrega seguinte — OK?
+2. **Boleto**: só UI nesta entrega (gera placeholder), integração real fica para quando definirmos provedor — OK?
+3. **Criar conta**: na confirmação do pagamento (não antes), conforme item 8 do prompt — OK?
+4. **Recuperação por email**: 24h após abandono — OK?
 
-1. **Validade padrão da carta**: 30 dias a partir da emissão — OK?
-2. **Cobrança ativa agora**: mantenho o pagamento simulado (R$ 59,90, sem Stripe) para destravar Entregas 1 e 2, e o Stripe real entra só na Entrega 3 — OK?
-3. **Reservas existentes no banco** (se houver): mantenho como estão (`amount_paid = 49,90`) sem migrar — OK?
-
-Se sim a tudo, implemento a **Entrega 1** no próximo turno.
+Se sim, implemento a **Entrega 1** no próximo turno.
