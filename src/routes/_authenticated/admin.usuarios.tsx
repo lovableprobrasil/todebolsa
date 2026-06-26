@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Users, Search, Shield, ShieldOff, UserPlus, Ban, CheckCircle2, Trash2, Loader2 } from "lucide-react";
+import { Users, Search, Shield, ShieldOff, UserPlus, Ban, CheckCircle2, Trash2, Loader2, Pencil, Mail, Phone, IdCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import {
-  adminListUsers, adminCreateUser, adminSetUserSuspended, adminDeleteUser,
+  adminListUsers, adminCreateUser, adminSetUserSuspended, adminDeleteUser, adminUpdateUser,
 } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/usuarios")({
