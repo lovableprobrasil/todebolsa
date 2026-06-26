@@ -34,22 +34,25 @@ export type ScholarshipListItem = {
         trade_name: string;
         logo_url: string | null;
         rating: number | null;
+        rating_avg: number | null;
+        rating_count: number | null;
       };
     };
   };
 };
 
 const SCHOLARSHIP_SELECT = `
-  id, title, discount_type, discount_value, price_with_scholarship, is_featured, rules,
+  id, title, discount_type, discount_value, price_with_scholarship, is_featured, rules, created_at,
   course_offering:course_offerings!inner (
     id, vacancies_available, status,
     institution_unit:institution_units!inner ( id, name, city, state ),
     course:courses!inner (
       id, slug, name, level, modality, shift, duration_months, original_price, description,
-      institution:institutions!inner ( id, slug, trade_name, logo_url, rating )
+      institution:institutions!inner ( id, slug, trade_name, logo_url, rating, rating_avg, rating_count )
     )
   )
 `;
+
 
 export type SortMode = "relevance" | "discount-desc" | "price-asc" | "price-desc" | "recent";
 
