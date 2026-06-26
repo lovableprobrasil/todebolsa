@@ -66,11 +66,18 @@ function InstitutionPortalIndex() {
           </p>
         </div>
         {institutionAdminOf.length > 0 && (
-          <Button asChild className="gap-2">
-            <Link to="/instituicao/cadastrar">
-              <Plus className="h-4 w-4" /> Cadastrar nova instituição
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" className="gap-2">
+              <Link to="/instituicao/importar-bolsas">
+                <Plus className="h-4 w-4" /> Importar bolsas (CSV)
+              </Link>
+            </Button>
+            <Button asChild className="gap-2">
+              <Link to="/instituicao/cadastrar">
+                <Plus className="h-4 w-4" /> Cadastrar nova instituição
+              </Link>
+            </Button>
+          </div>
         )}
       </header>
 
