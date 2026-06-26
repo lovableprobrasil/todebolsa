@@ -49,6 +49,7 @@ import { Route as GuiaCategoriaSlugRouteImport } from './routes/guia.categoria.$
 import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$city'
 import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
+import { Route as AuthenticatedInstituicaoImportarBolsasRouteImport } from './routes/_authenticated/instituicao.importar-bolsas'
 import { Route as AuthenticatedInstituicaoCredenciamentoRouteImport } from './routes/_authenticated/instituicao.credenciamento'
 import { Route as AuthenticatedInstituicaoIdRouteImport } from './routes/_authenticated/instituicao.$id'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
@@ -283,6 +284,12 @@ const AuthenticatedReservasIdRoute = AuthenticatedReservasIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedReservasRoute,
 } as any)
+const AuthenticatedInstituicaoImportarBolsasRoute =
+  AuthenticatedInstituicaoImportarBolsasRouteImport.update({
+    id: '/instituicao/importar-bolsas',
+    path: '/instituicao/importar-bolsas',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedInstituicaoCredenciamentoRoute =
   AuthenticatedInstituicaoCredenciamentoRouteImport.update({
     id: '/instituicao/credenciamento',
@@ -522,6 +529,7 @@ export interface FileRoutesByFullPath {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
+  '/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -591,6 +599,7 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
+  '/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -666,6 +675,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/instituicao/$id': typeof AuthenticatedInstituicaoIdRoute
   '/_authenticated/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
+  '/_authenticated/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -741,6 +751,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/instituicao/$id'
     | '/instituicao/credenciamento'
+    | '/instituicao/importar-bolsas'
     | '/reservas/$id'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -810,6 +821,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/instituicao/$id'
     | '/instituicao/credenciamento'
+    | '/instituicao/importar-bolsas'
     | '/reservas/$id'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -884,6 +896,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/instituicao/$id'
     | '/_authenticated/instituicao/credenciamento'
+    | '/_authenticated/instituicao/importar-bolsas'
     | '/_authenticated/reservas/$id'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -1226,6 +1239,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reservas/$id'
       preLoaderRoute: typeof AuthenticatedReservasIdRouteImport
       parentRoute: typeof AuthenticatedReservasRoute
+    }
+    '/_authenticated/instituicao/importar-bolsas': {
+      id: '/_authenticated/instituicao/importar-bolsas'
+      path: '/instituicao/importar-bolsas'
+      fullPath: '/instituicao/importar-bolsas'
+      preLoaderRoute: typeof AuthenticatedInstituicaoImportarBolsasRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/instituicao/credenciamento': {
       id: '/_authenticated/instituicao/credenciamento'
@@ -1583,6 +1603,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedReservasRoute: typeof AuthenticatedReservasRouteWithChildren
   AuthenticatedInstituicaoIdRoute: typeof AuthenticatedInstituicaoIdRoute
   AuthenticatedInstituicaoCredenciamentoRoute: typeof AuthenticatedInstituicaoCredenciamentoRoute
+  AuthenticatedInstituicaoImportarBolsasRoute: typeof AuthenticatedInstituicaoImportarBolsasRoute
   AuthenticatedInstituicaoIndexRoute: typeof AuthenticatedInstituicaoIndexRoute
 }
 
@@ -1599,6 +1620,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedInstituicaoIdRoute: AuthenticatedInstituicaoIdRoute,
   AuthenticatedInstituicaoCredenciamentoRoute:
     AuthenticatedInstituicaoCredenciamentoRoute,
+  AuthenticatedInstituicaoImportarBolsasRoute:
+    AuthenticatedInstituicaoImportarBolsasRoute,
   AuthenticatedInstituicaoIndexRoute: AuthenticatedInstituicaoIndexRoute,
 }
 
