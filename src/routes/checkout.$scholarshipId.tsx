@@ -131,6 +131,16 @@ function CheckoutPage() {
     }
   }, [loadingSch, scholarship, scholarshipId, scholarshipLoadError]);
 
+  useEffect(() => {
+    if (!scholarship) return;
+    if (typeof window !== "undefined" && window.parent !== window) {
+      window.parent.postMessage(
+        { type: "tdb_checkout_ready", scholarshipId },
+        window.location.origin,
+      );
+    }
+  }, [scholarship, scholarshipId]);
+
   // Prefill from logged-in user
   useEffect(() => {
     if (!user) return;

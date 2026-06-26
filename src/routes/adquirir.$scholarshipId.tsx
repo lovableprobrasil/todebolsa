@@ -34,6 +34,7 @@ function AcquisitionFramePage() {
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
+      if (event.data?.type === "tdb_checkout_ready") setFrameState("ready");
       if (event.data?.type === "tdb_checkout_error") setFrameState("error");
     };
     window.addEventListener("message", onMessage);
@@ -46,7 +47,14 @@ function AcquisitionFramePage() {
       setFrameState("error");
       return;
     }
-    setFrameState("ready");
+    window.setTimeout(() => {
+      const latestText = iframeRef.current?.contentDocument?.body?.innerText ?? "";
+      if (/Bolsa não encontrada|Não foi possível carregar|Página não encontrada/i.test(latestText)) {
+        setFrameState("error");
+      } else {
+        setFrameState("ready");
+      }
+    }, 600);
   };
 
   const retry = () => {
