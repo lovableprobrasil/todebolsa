@@ -32,6 +32,7 @@ import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedReservasRouteImport } from './routes/_authenticated/reservas'
@@ -45,6 +46,7 @@ import { Route as AuthenticatedCarteiraRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedInstituicaoIndexRouteImport } from './routes/_authenticated/instituicao.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as GuiaCategoriaSlugRouteImport } from './routes/guia.categoria.$slug'
 import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$city'
 import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
@@ -69,6 +71,8 @@ import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminFinanceiroIndexRouteImport } from './routes/_authenticated/admin.financeiro.index'
 import { Route as AuthenticatedAdminCrmIndexRouteImport } from './routes/_authenticated/admin.crm.index'
 import { Route as AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport } from './routes/_authenticated/admin.credenciamento-instituicoes.index'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -197,6 +201,11 @@ const GuiaSlugRoute = GuiaSlugRouteImport.update({
   path: '/guia/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BolsasIdRoute = BolsasIdRouteImport.update({
   id: '/bolsas/$id',
   path: '/bolsas/$id',
@@ -263,6 +272,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const GuiaCategoriaSlugRoute = GuiaCategoriaSlugRouteImport.update({
   id: '/guia/categoria/$slug',
@@ -402,6 +416,18 @@ const AuthenticatedAdminCredenciamentoInstituicoesIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminCredenciamentoInstituicoesRoute,
   } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -504,6 +530,7 @@ export interface FileRoutesByFullPath {
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
@@ -534,6 +561,7 @@ export interface FileRoutesByFullPath {
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/guia/categoria/$slug': typeof GuiaCategoriaSlugRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
   '/admin/credenciamento-instituicoes/$id': typeof AuthenticatedAdminCredenciamentoInstituicoesIdRoute
@@ -547,6 +575,8 @@ export interface FileRoutesByFullPath {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -577,6 +607,7 @@ export interface FileRoutesByTo {
   '/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
@@ -604,6 +635,7 @@ export interface FileRoutesByTo {
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/guia/categoria/$slug': typeof GuiaCategoriaSlugRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/instituicao': typeof AuthenticatedInstituicaoIndexRoute
   '/admin/credenciamento-instituicoes/$id': typeof AuthenticatedAdminCredenciamentoInstituicoesIdRoute
@@ -617,6 +649,8 @@ export interface FileRoutesByTo {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/admin/crm': typeof AuthenticatedAdminCrmIndexRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -650,6 +684,7 @@ export interface FileRoutesById {
   '/_authenticated/reservas': typeof AuthenticatedReservasRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
@@ -680,6 +715,7 @@ export interface FileRoutesById {
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
   '/guia/categoria/$slug': typeof GuiaCategoriaSlugRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/instituicao/': typeof AuthenticatedInstituicaoIndexRoute
   '/_authenticated/admin/credenciamento-instituicoes/$id': typeof AuthenticatedAdminCredenciamentoInstituicoesIdRoute
@@ -693,6 +729,8 @@ export interface FileRoutesById {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/_authenticated/admin/credenciamento-instituicoes/': typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRoute
   '/_authenticated/admin/crm/': typeof AuthenticatedAdminCrmIndexRoute
   '/_authenticated/admin/financeiro/': typeof AuthenticatedAdminFinanceiroIndexRoute
@@ -726,6 +764,7 @@ export interface FileRouteTypes {
     | '/reservas'
     | '/blog/$slug'
     | '/bolsas/$id'
+    | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
@@ -756,6 +795,7 @@ export interface FileRouteTypes {
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
     | '/guia/categoria/$slug'
+    | '/lovable/email/suppression'
     | '/admin/'
     | '/instituicao/'
     | '/admin/credenciamento-instituicoes/$id'
@@ -769,6 +809,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/admin/credenciamento-instituicoes/'
     | '/admin/crm/'
     | '/admin/financeiro/'
@@ -799,6 +841,7 @@ export interface FileRouteTypes {
     | '/reservas'
     | '/blog/$slug'
     | '/bolsas/$id'
+    | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
@@ -826,6 +869,7 @@ export interface FileRouteTypes {
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
     | '/guia/categoria/$slug'
+    | '/lovable/email/suppression'
     | '/admin'
     | '/instituicao'
     | '/admin/credenciamento-instituicoes/$id'
@@ -839,6 +883,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/admin/credenciamento-instituicoes'
     | '/admin/crm'
     | '/admin/financeiro'
@@ -871,6 +917,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reservas'
     | '/blog/$slug'
     | '/bolsas/$id'
+    | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
@@ -901,6 +948,7 @@ export interface FileRouteTypes {
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
     | '/guia/categoria/$slug'
+    | '/lovable/email/suppression'
     | '/_authenticated/admin/'
     | '/_authenticated/instituicao/'
     | '/_authenticated/admin/credenciamento-instituicoes/$id'
@@ -914,6 +962,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/_authenticated/admin/credenciamento-instituicoes/'
     | '/_authenticated/admin/crm/'
     | '/_authenticated/admin/financeiro/'
@@ -938,6 +988,7 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BolsasIdRoute: typeof BolsasIdRoute
+  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
@@ -950,10 +1001,13 @@ export interface RootRouteChildren {
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
   GuiaCategoriaSlugRoute: typeof GuiaCategoriaSlugRoute
+  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicNewsPublishScheduledRoute: typeof ApiPublicNewsPublishScheduledRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
+  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
   ApiPublicUgeValidarCodigoRoute: typeof ApiPublicUgeValidarCodigoRoute
   BolsasCursoCourseCidadeCityRoute: typeof BolsasCursoCourseCidadeCityRoute
 }
@@ -1121,6 +1175,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuiaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bolsas/$id': {
       id: '/bolsas/$id'
       path: '/bolsas/$id'
@@ -1211,6 +1272,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/guia/categoria/$slug': {
       id: '/guia/categoria/$slug'
@@ -1379,6 +1447,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/credenciamento-instituicoes/'
       preLoaderRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesRoute
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
@@ -1646,6 +1728,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   BlogSlugRoute: BlogSlugRoute,
   BolsasIdRoute: BolsasIdRoute,
+  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   GuiaSlugRoute: GuiaSlugRoute,
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
@@ -1658,23 +1741,16 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
   GuiaCategoriaSlugRoute: GuiaCategoriaSlugRoute,
+  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicNewsPublishScheduledRoute: ApiPublicNewsPublishScheduledRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
+  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
   ApiPublicUgeValidarCodigoRoute: ApiPublicUgeValidarCodigoRoute,
   BolsasCursoCourseCidadeCityRoute: BolsasCursoCourseCidadeCityRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
