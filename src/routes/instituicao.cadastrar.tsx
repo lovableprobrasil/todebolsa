@@ -197,14 +197,34 @@ function ApplicationWizardPage() {
       // 4) submit
       const { error: submitErr } = await supabase.rpc("submit_institution_application", { p_id: appId as string });
       if (submitErr) throw new Error(submitErr.message);
+
+      // 5) fire confirmation email (non-blocking on UX, but awaited so errors surface in logs)
+      const recipient = (form.responsible_email || form.account_email || form.email).trim();
+      if (recipient) {
+        try {
+          await sendTransactionalEmail({
+            templateName: "institution-application-submitted",
+            recipientEmail: recipient,
+            idempotencyKey: `institution-app-submitted-${appId as string}`,
+            templateData: {
+              responsibleName: form.responsible_name || form.account_name || "responsável",
+              institutionName: form.trade_name || form.legal_name || "sua instituição",
+              siteUrl: window.location.origin,
+              supportEmail: "contato@todebolsa.com.br",
+            },
+          });
+        } catch (mailErr) {
+          console.error("Falha ao enfileirar e-mail de confirmação:", mailErr);
+        }
+      }
     },
     onSuccess: () => {
       try { localStorage.removeItem(STORAGE_KEY); } catch {/* */}
-      toast.success("Cadastro enviado para análise!");
-      navigate({ to: "/instituicao/credenciamento" });
+      navigate({ to: "/cadastro/sucesso" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const accountStepIndex = user ? -1 : steps.length - 2;
 
