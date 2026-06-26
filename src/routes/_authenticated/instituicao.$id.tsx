@@ -492,7 +492,12 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button asChild variant="outline" className="gap-2">
+          <Link to="/instituicao/importar-bolsas">
+            <Upload className="h-4 w-4" /> Importar bolsas (CSV)
+          </Link>
+        </Button>
         <NewScholarshipDialog
           offerings={offerings ?? []}
           open={open}
