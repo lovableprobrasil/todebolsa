@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Users, Search, Shield, ShieldOff, UserPlus, Ban, CheckCircle2, Trash2, Loader2 } from "lucide-react";
+import { Users, Search, Shield, ShieldOff, UserPlus, Ban, CheckCircle2, Trash2, Loader2, Pencil, Mail, Phone, IdCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import {
-  adminListUsers, adminCreateUser, adminSetUserSuspended, adminDeleteUser,
+  adminListUsers, adminCreateUser, adminSetUserSuspended, adminDeleteUser, adminUpdateUser,
 } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/usuarios")({
@@ -106,10 +106,14 @@ function AdminUsers() {
                   </div>
                   <div className="min-w-0">
                     <div className="font-bold truncate flex items-center gap-2">
-                      {u.name ?? "Sem nome"}
+                      {u.profile?.name ?? u.name ?? "Sem nome"}
                       {u.suspended && <Badge className="bg-destructive/10 text-destructive border-0">Suspenso</Badge>}
                     </div>
-                    <div className="text-xs text-muted-foreground truncate">{u.email}</div>
+                    <div className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                      <span className="inline-flex items-center gap-1"><Mail className="h-3 w-3" />{u.email}</span>
+                      {u.profile?.phone && <span className="inline-flex items-center gap-1"><Phone className="h-3 w-3" />{u.profile.phone}</span>}
+                      {u.profile?.cpf && <span className="inline-flex items-center gap-1"><IdCard className="h-3 w-3" />{u.profile.cpf}</span>}
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-1">
@@ -120,8 +124,9 @@ function AdminUsers() {
               </div>
 
               <div className="mt-3 flex flex-wrap gap-2">
+                <EditUserDialog user={u} onSaved={invalidate} />
                 <RoleSelector currentRoles={u.roles ?? []} onGrant={(role) => grant.mutate({ uid: u.id, role: role as Role })} />
-                {(u.roles ?? []).filter((r: string) => r !== "STUDENT").map((r: string) => (
+                {(u.roles ?? []).map((r: string) => (
                   <Button key={r} size="sm" variant="ghost" onClick={() => revoke.mutate({ uid: u.id, role: r as Role })}>
                     <ShieldOff className="h-3.5 w-3.5 mr-1" /> Remover {roleLabel(r)}
                   </Button>
@@ -259,5 +264,66 @@ function DeleteUserButton({ onConfirm, pending, email }: { onConfirm: () => void
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+function EditUserDialog({ user, onSaved }: { user: any; onSaved: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState(user.profile?.name ?? user.name ?? "");
+  const [email, setEmail] = useState(user.email ?? "");
+  const [phone, setPhone] = useState(user.profile?.phone ?? "");
+  const [cpf, setCpf] = useState(user.profile?.cpf ?? "");
+  const updateFn = useServerFn(adminUpdateUser);
+  const save = useMutation({
+    mutationFn: () => updateFn({ data: { userId: user.id, name, email, phone, cpf } }),
+    onSuccess: () => { toast.success("Cadastro atualizado."); setOpen(false); onSaved(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  return (
+    <Dialog open={open} onOpenChange={(v) => {
+      setOpen(v);
+      if (v) {
+        setName(user.profile?.name ?? user.name ?? "");
+        setEmail(user.email ?? "");
+        setPhone(user.profile?.phone ?? "");
+        setCpf(user.profile?.cpf ?? "");
+      }
+    }}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline"><Pencil className="h-3.5 w-3.5 mr-1" /> Editar</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Editar cadastro</DialogTitle>
+          <DialogDescription>Atualize nome, e-mail, telefone e CPF do usuário.</DialogDescription>
+        </DialogHeader>
+        <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); save.mutate(); }}>
+          <div className="space-y-1.5">
+            <Label htmlFor="eu-name">Nome completo</Label>
+            <Input id="eu-name" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="eu-email">E-mail</Label>
+            <Input id="eu-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="eu-phone">Telefone</Label>
+              <Input id="eu-phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(00) 00000-0000" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="eu-cpf">CPF</Label>
+              <Input id="eu-cpf" value={cpf} onChange={(e) => setCpf(e.target.value)} placeholder="000.000.000-00" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+            <Button type="submit" disabled={save.isPending}>
+              {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
