@@ -2792,6 +2792,10 @@ export type Database = {
       }
       increment_news_share: { Args: { _slug: string }; Returns: undefined }
       increment_news_view: { Args: { _slug: string }; Returns: undefined }
+      institution_finance_overview: {
+        Args: { p_institution_id: string }
+        Returns: Json
+      }
       institution_paid_leads_report: {
         Args: { p_institution_id: string }
         Returns: Json
