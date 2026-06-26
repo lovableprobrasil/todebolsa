@@ -140,18 +140,18 @@ function ReservationDetailPage() {
   });
 
   async function handleDownloadLetter() {
-    if (!letter || !user) return;
+    if (!letter || !user || !r) return;
     try {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("first_name, last_name, cpf")
+        .select("name, cpf")
         .eq("id", user.id)
         .maybeSingle();
       await downloadScholarshipLetterPdf({
         unique_code: letter.unique_code,
         issued_at: letter.issued_at,
         expires_at: letter.expires_at,
-        student_name: `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim() || "Estudante",
+        student_name: profile?.name?.trim() || "Estudante",
         student_cpf: profile?.cpf ?? null,
         reservation_code: r.reservation_code,
         scholarship_title: r.scholarship?.title ?? "",
