@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowLeft, CheckCircle2, Clock, CreditCard, FileText, Loader2, QrCode, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, CreditCard, Download, FileText, Loader2, QrCode, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
@@ -11,13 +11,13 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
 import { DocumentUpload } from "@/components/enrollment/DocumentUpload";
+import { downloadScholarshipLetterPdf } from "@/lib/letter-pdf";
 
 export const Route = createFileRoute("/_authenticated/reservas/$id")({
   component: ReservationDetailPage,
 });
 
 type Method = "PIX" | "BOLETO" | "CARD";
-const ADHESION_FEE = 49.9;
 
 const STATUS_LABEL: Record<string, string> = {
   RESERVED: "Reservada",
@@ -114,11 +114,63 @@ function ReservationDetailPage() {
   const course = r.scholarship?.course_offering?.course;
   const inst = course?.institution;
   const unit = r.scholarship?.course_offering?.institution_unit;
-  const monthly = Number(r.amount_paid ?? 0);
+  const monthlyScholarship = Number(r.scholarship?.price_with_scholarship ?? 0);
   const original = Number(course?.original_price ?? 0);
+  const marketplaceFee = Number(r.amount_paid ?? 0);
+  const discountPct = original > 0
+    ? Math.round(((original - monthlyScholarship) / original) * 100)
+    : null;
 
   const needsPayment = r.status === "PAYMENT_PENDING" || r.status === "RESERVED";
   const isFinal = ["EXPIRED", "CANCELLED", "ENROLLMENT_APPROVED", "ENROLLMENT_REJECTED"].includes(r.status);
+  const isPaid = !["RESERVED", "PAYMENT_PENDING", "EXPIRED", "CANCELLED"].includes(r.status);
+
+  // Fetch carta de apresentação após pagamento
+  const { data: letter } = useQuery({
+    enabled: isPaid,
+    queryKey: ["scholarship-letter", id],
+    queryFn: async () => {
+      const { data, error } = await (supabase.from as any)("scholarship_letters")
+        .select("unique_code, status, issued_at, expires_at")
+        .eq("reservation_id", id)
+        .maybeSingle();
+      if (error) throw error;
+      return data as null | { unique_code: string; status: string; issued_at: string; expires_at: string };
+    },
+  });
+
+  async function handleDownloadLetter() {
+    if (!letter || !user || !r) return;
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("name, cpf")
+        .eq("id", user.id)
+        .maybeSingle();
+      await downloadScholarshipLetterPdf({
+        unique_code: letter.unique_code,
+        issued_at: letter.issued_at,
+        expires_at: letter.expires_at,
+        student_name: profile?.name?.trim() || "Estudante",
+        student_cpf: profile?.cpf ?? null,
+        reservation_code: r.reservation_code,
+        scholarship_title: r.scholarship?.title ?? "",
+        course_name: course?.name ?? "",
+        institution_trade_name: inst?.trade_name ?? "",
+        institution_cnpj: null,
+        unit_name: unit?.name ?? null,
+        unit_city: unit?.city ?? null,
+        unit_state: unit?.state ?? null,
+        discount_percent: discountPct,
+        monthly_original: original,
+        monthly_with_scholarship: monthlyScholarship,
+        required_documents: null,
+        rules: null,
+      });
+    } catch (e) {
+      toast.error((e as Error).message || "Falha ao gerar carta.");
+    }
+  }
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -138,9 +190,9 @@ function ReservationDetailPage() {
         </div>
 
         <div className="mt-5 grid sm:grid-cols-3 gap-3">
-          <Info label="Código" value={r.reservation_code} />
-          <Info label="Mensalidade c/ bolsa" value={formatBRL(monthly)} />
-          <Info label="De" value={original ? formatBRL(original) : "—"} strike />
+          <Info label="Código da reserva" value={r.reservation_code} />
+          <Info label="Mensalidade c/ bolsa" value={formatBRL(monthlyScholarship)} />
+          <Info label="Mensalidade original" value={original ? formatBRL(original) : "—"} strike />
         </div>
 
         {needsPayment && r.expires_at && (
@@ -157,11 +209,13 @@ function ReservationDetailPage() {
       {needsPayment && countdown !== "Expirada" && (
         <section className="rounded-3xl border border-border bg-card p-6 md:p-8">
           <h2 className="font-display text-xl font-extrabold flex items-center gap-2">
-            <CreditCard className="h-5 w-5 text-primary" /> Pagar taxa de adesão
+            <CreditCard className="h-5 w-5 text-primary" /> Reserva da bolsa
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Confirme sua vaga pagando a taxa única de adesão de <strong>{formatBRL(ADHESION_FEE)}</strong>. A mensalidade
-            com bolsa é cobrada apenas pela instituição após a matrícula.
+            Você está realizando um pagamento <strong>único</strong> ao Tô de Bolsa de{" "}
+            <strong>{formatBRL(marketplaceFee)}</strong> para reservar esta bolsa e emitir sua{" "}
+            <strong>Carta de Apresentação</strong>. As mensalidades futuras, quando houver, serão tratadas
+            diretamente com a instituição de ensino, conforme as condições desta oferta.
           </p>
 
           <div className="mt-5 grid sm:grid-cols-3 gap-2">
@@ -198,7 +252,7 @@ function ReservationDetailPage() {
             </Button>
             <Button size="lg" onClick={() => pay.mutate()} disabled={pay.isPending} className="font-semibold">
               {pay.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Pagar {formatBRL(ADHESION_FEE)}
+              Pagar {formatBRL(marketplaceFee)} e emitir minha Carta
             </Button>
           </div>
           <p className="text-[11px] text-muted-foreground mt-3 text-center">
@@ -207,12 +261,30 @@ function ReservationDetailPage() {
         </section>
       )}
 
+      {isPaid && letter && (
+        <section className="rounded-3xl border border-primary/30 bg-primary-soft/50 p-6 md:p-8">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <CheckCircle2 className="h-10 w-10 text-primary" />
+              <h2 className="font-display text-xl font-extrabold mt-2">Sua Carta de Apresentação está pronta</h2>
+              <p className="text-sm text-muted-foreground mt-1 max-w-md">
+                Código <strong className="font-mono">{letter.unique_code}</strong> · Válida até{" "}
+                {new Date(letter.expires_at).toLocaleDateString("pt-BR")}. Apresente esta carta à instituição
+                para concluir sua matrícula.
+              </p>
+            </div>
+            <Button size="lg" onClick={handleDownloadLetter}>
+              <Download className="h-4 w-4 mr-2" /> Baixar carta (PDF)
+            </Button>
+          </div>
+        </section>
+      )}
+
       {r.status === "CONFIRMED" && (
-        <section className="rounded-3xl border border-primary/30 bg-primary-soft/50 p-6 md:p-8 text-center">
-          <CheckCircle2 className="h-12 w-12 text-primary mx-auto" />
-          <h2 className="font-display text-xl font-extrabold mt-3">Bolsa confirmada!</h2>
+        <section className="rounded-3xl border border-border bg-card p-6 md:p-8 text-center">
+          <h2 className="font-display text-lg font-extrabold">Próximos passos</h2>
           <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-            Agora envie seus documentos abaixo para a instituição finalizar sua matrícula.
+            Envie seus documentos abaixo para a instituição finalizar sua matrícula conforme as condições da bolsa.
           </p>
         </section>
       )}

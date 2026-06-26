@@ -27,6 +27,7 @@ import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as GuiaIndexRouteImport } from './routes/guia.index'
 import { Route as BolsasIndexRouteImport } from './routes/bolsas.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as ValidarCartaCodigoRouteImport } from './routes/validar-carta.$codigo'
 import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slug'
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
@@ -58,6 +59,7 @@ import { Route as AuthenticatedAdminIndicacoesRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminCredenciamentoInstituicoesRouteImport } from './routes/_authenticated/admin.credenciamento-instituicoes'
+import { Route as AuthenticatedAdminConfiguracoesComerciaisRouteImport } from './routes/_authenticated/admin.configuracoes-comerciais'
 import { Route as AuthenticatedAdminBootstrapRouteImport } from './routes/_authenticated/admin.bootstrap'
 import { Route as AuthenticatedAdminBolsasRouteImport } from './routes/_authenticated/admin.bolsas'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
@@ -167,6 +169,11 @@ const BolsasIndexRoute = BolsasIndexRouteImport.update({
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ValidarCartaCodigoRoute = ValidarCartaCodigoRouteImport.update({
+  id: '/validar-carta/$codigo',
+  path: '/validar-carta/$codigo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
@@ -335,6 +342,12 @@ const AuthenticatedAdminCredenciamentoInstituicoesRoute =
     path: '/credenciamento-instituicoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminConfiguracoesComerciaisRoute =
+  AuthenticatedAdminConfiguracoesComerciaisRouteImport.update({
+    id: '/configuracoes-comerciais',
+    path: '/configuracoes-comerciais',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminBootstrapRoute =
   AuthenticatedAdminBootstrapRouteImport.update({
     id: '/bootstrap',
@@ -488,6 +501,7 @@ export interface FileRoutesByFullPath {
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/validar-carta/$codigo': typeof ValidarCartaCodigoRoute
   '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
@@ -497,6 +511,7 @@ export interface FileRoutesByFullPath {
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/admin/configuracoes-comerciais': typeof AuthenticatedAdminConfiguracoesComerciaisRoute
   '/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren
   '/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
@@ -558,6 +573,7 @@ export interface FileRoutesByTo {
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/validar-carta/$codigo': typeof ValidarCartaCodigoRoute
   '/blog': typeof BlogIndexRoute
   '/bolsas': typeof BolsasIndexRoute
   '/guia': typeof GuiaIndexRoute
@@ -567,6 +583,7 @@ export interface FileRoutesByTo {
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/admin/configuracoes-comerciais': typeof AuthenticatedAdminConfiguracoesComerciaisRoute
   '/admin/indicacoes': typeof AuthenticatedAdminIndicacoesRoute
   '/admin/instituicoes': typeof AuthenticatedAdminInstituicoesRoute
   '/admin/matriculas': typeof AuthenticatedAdminMatriculasRoute
@@ -628,6 +645,7 @@ export interface FileRoutesById {
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
   '/instituicoes/$slug': typeof InstituicoesSlugRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/validar-carta/$codigo': typeof ValidarCartaCodigoRoute
   '/blog/': typeof BlogIndexRoute
   '/bolsas/': typeof BolsasIndexRoute
   '/guia/': typeof GuiaIndexRoute
@@ -637,6 +655,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/_authenticated/admin/bolsas': typeof AuthenticatedAdminBolsasRoute
   '/_authenticated/admin/bootstrap': typeof AuthenticatedAdminBootstrapRoute
+  '/_authenticated/admin/configuracoes-comerciais': typeof AuthenticatedAdminConfiguracoesComerciaisRoute
   '/_authenticated/admin/credenciamento-instituicoes': typeof AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRouteWithChildren
   '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRouteWithChildren
@@ -701,6 +720,7 @@ export interface FileRouteTypes {
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
     | '/noticias/$slug'
+    | '/validar-carta/$codigo'
     | '/blog/'
     | '/bolsas/'
     | '/guia/'
@@ -710,6 +730,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/bolsas'
     | '/admin/bootstrap'
+    | '/admin/configuracoes-comerciais'
     | '/admin/credenciamento-instituicoes'
     | '/admin/crm'
     | '/admin/financeiro'
@@ -771,6 +792,7 @@ export interface FileRouteTypes {
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
     | '/noticias/$slug'
+    | '/validar-carta/$codigo'
     | '/blog'
     | '/bolsas'
     | '/guia'
@@ -780,6 +802,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/bolsas'
     | '/admin/bootstrap'
+    | '/admin/configuracoes-comerciais'
     | '/admin/indicacoes'
     | '/admin/instituicoes'
     | '/admin/matriculas'
@@ -840,6 +863,7 @@ export interface FileRouteTypes {
     | '/instituicao/cadastrar'
     | '/instituicoes/$slug'
     | '/noticias/$slug'
+    | '/validar-carta/$codigo'
     | '/blog/'
     | '/bolsas/'
     | '/guia/'
@@ -849,6 +873,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/blog'
     | '/_authenticated/admin/bolsas'
     | '/_authenticated/admin/bootstrap'
+    | '/_authenticated/admin/configuracoes-comerciais'
     | '/_authenticated/admin/credenciamento-instituicoes'
     | '/_authenticated/admin/crm'
     | '/_authenticated/admin/financeiro'
@@ -904,6 +929,7 @@ export interface RootRouteChildren {
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
   InstituicoesSlugRoute: typeof InstituicoesSlugRoute
   NoticiasSlugRoute: typeof NoticiasSlugRoute
+  ValidarCartaCodigoRoute: typeof ValidarCartaCodigoRoute
   BlogIndexRoute: typeof BlogIndexRoute
   BolsasIndexRoute: typeof BolsasIndexRoute
   GuiaIndexRoute: typeof GuiaIndexRoute
@@ -1045,6 +1071,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/validar-carta/$codigo': {
+      id: '/validar-carta/$codigo'
+      path: '/validar-carta/$codigo'
+      fullPath: '/validar-carta/$codigo'
+      preLoaderRoute: typeof ValidarCartaCodigoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/noticias/$slug': {
@@ -1262,6 +1295,13 @@ declare module '@tanstack/react-router' {
       path: '/credenciamento-instituicoes'
       fullPath: '/admin/credenciamento-instituicoes'
       preLoaderRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/configuracoes-comerciais': {
+      id: '/_authenticated/admin/configuracoes-comerciais'
+      path: '/configuracoes-comerciais'
+      fullPath: '/admin/configuracoes-comerciais'
+      preLoaderRoute: typeof AuthenticatedAdminConfiguracoesComerciaisRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/bootstrap': {
@@ -1482,6 +1522,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBlogRoute: typeof AuthenticatedAdminBlogRoute
   AuthenticatedAdminBolsasRoute: typeof AuthenticatedAdminBolsasRoute
   AuthenticatedAdminBootstrapRoute: typeof AuthenticatedAdminBootstrapRoute
+  AuthenticatedAdminConfiguracoesComerciaisRoute: typeof AuthenticatedAdminConfiguracoesComerciaisRoute
   AuthenticatedAdminCredenciamentoInstituicoesRoute: typeof AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRouteWithChildren
   AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRouteWithChildren
@@ -1499,6 +1540,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminBlogRoute: AuthenticatedAdminBlogRoute,
   AuthenticatedAdminBolsasRoute: AuthenticatedAdminBolsasRoute,
   AuthenticatedAdminBootstrapRoute: AuthenticatedAdminBootstrapRoute,
+  AuthenticatedAdminConfiguracoesComerciaisRoute:
+    AuthenticatedAdminConfiguracoesComerciaisRoute,
   AuthenticatedAdminCredenciamentoInstituicoesRoute:
     AuthenticatedAdminCredenciamentoInstituicoesRouteWithChildren,
   AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRouteWithChildren,
@@ -1584,6 +1627,7 @@ const rootRouteChildren: RootRouteChildren = {
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
   InstituicoesSlugRoute: InstituicoesSlugRoute,
   NoticiasSlugRoute: NoticiasSlugRoute,
+  ValidarCartaCodigoRoute: ValidarCartaCodigoRoute,
   BlogIndexRoute: BlogIndexRoute,
   BolsasIndexRoute: BolsasIndexRoute,
   GuiaIndexRoute: GuiaIndexRoute,
@@ -1601,13 +1645,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

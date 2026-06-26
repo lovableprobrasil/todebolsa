@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, redirect, useRouterState } from "@tanstack/react-router";
-import { Shield, LayoutDashboard, Building2, GraduationCap, Users, Bookmark, Briefcase, Wallet, Star, FileCheck2, Activity, Gift, Newspaper } from "lucide-react";
+import { Shield, LayoutDashboard, Building2, GraduationCap, Users, Bookmark, Briefcase, Wallet, Star, FileCheck2, Activity, Gift, Newspaper, Settings2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +32,7 @@ const TABS = [
   { to: "/admin/indicacoes", label: "Indicações", icon: Gift, exact: false },
   { to: "/admin/usuarios", label: "Usuários", icon: Users, exact: false },
   { to: "/admin/blog", label: "Notícias", icon: Newspaper, exact: false },
+  { to: "/admin/configuracoes-comerciais", label: "Parâmetros comerciais", icon: Settings2, exact: false },
 ] as const;
 
 function AdminLayout() {

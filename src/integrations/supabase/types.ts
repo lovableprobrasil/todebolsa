@@ -1340,6 +1340,95 @@ export type Database = {
         }
         Relationships: []
       }
+      letter_validation_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          institution_user_id: string | null
+          letter_id: string
+          notes: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          institution_user_id?: string | null
+          letter_id: string
+          notes?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          institution_user_id?: string | null
+          letter_id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "letter_validation_events_letter_id_fkey"
+            columns: ["letter_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_letters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_pricing_rules: {
+        Row: {
+          created_at: string
+          currency: string
+          fee_description: string | null
+          fee_display_name: string
+          fixed_amount: number | null
+          id: string
+          is_active: boolean
+          letter_validity_days: number
+          maximum_amount: number | null
+          minimum_amount: number | null
+          percentage_rate: number | null
+          pricing_type: Database["public"]["Enums"]["pricing_type"]
+          scope_id: string | null
+          scope_type: Database["public"]["Enums"]["pricing_scope_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          fee_description?: string | null
+          fee_display_name?: string
+          fixed_amount?: number | null
+          id?: string
+          is_active?: boolean
+          letter_validity_days?: number
+          maximum_amount?: number | null
+          minimum_amount?: number | null
+          percentage_rate?: number | null
+          pricing_type: Database["public"]["Enums"]["pricing_type"]
+          scope_id?: string | null
+          scope_type: Database["public"]["Enums"]["pricing_scope_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          fee_description?: string | null
+          fee_display_name?: string
+          fixed_amount?: number | null
+          id?: string
+          is_active?: boolean
+          letter_validity_days?: number
+          maximum_amount?: number | null
+          minimum_amount?: number | null
+          percentage_rate?: number | null
+          pricing_type?: Database["public"]["Enums"]["pricing_type"]
+          scope_id?: string | null
+          scope_type?: Database["public"]["Enums"]["pricing_scope_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       news_ai_generations: {
         Row: {
           article_id: string | null
@@ -1828,7 +1917,9 @@ export type Database = {
           expires_at: string | null
           id: string
           institution_id: string
+          letter_id: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          pricing_rule_id: string | null
           reservation_code: string
           reserved_at: string
           scholarship_id: string
@@ -1843,7 +1934,9 @@ export type Database = {
           expires_at?: string | null
           id?: string
           institution_id: string
+          letter_id?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          pricing_rule_id?: string | null
           reservation_code: string
           reserved_at?: string
           scholarship_id: string
@@ -1858,7 +1951,9 @@ export type Database = {
           expires_at?: string | null
           id?: string
           institution_id?: string
+          letter_id?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          pricing_rule_id?: string | null
           reservation_code?: string
           reserved_at?: string
           scholarship_id?: string
@@ -1882,7 +1977,100 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reservations_letter_id_fkey"
+            columns: ["letter_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_letters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservations_pricing_rule_id_fkey"
+            columns: ["pricing_rule_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_pricing_rules"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reservations_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholarship_letters: {
+        Row: {
+          amount_charged: number
+          created_at: string
+          expires_at: string
+          id: string
+          institution_id: string
+          issued_at: string
+          pricing_snapshot: Json | null
+          reservation_id: string
+          scholarship_id: string
+          status: Database["public"]["Enums"]["scholarship_letter_status"]
+          unique_code: string
+          updated_at: string
+          used_at: string | null
+          user_id: string
+          validated_by: string | null
+          validation_notes: string | null
+        }
+        Insert: {
+          amount_charged: number
+          created_at?: string
+          expires_at: string
+          id?: string
+          institution_id: string
+          issued_at?: string
+          pricing_snapshot?: Json | null
+          reservation_id: string
+          scholarship_id: string
+          status?: Database["public"]["Enums"]["scholarship_letter_status"]
+          unique_code: string
+          updated_at?: string
+          used_at?: string | null
+          user_id: string
+          validated_by?: string | null
+          validation_notes?: string | null
+        }
+        Update: {
+          amount_charged?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          institution_id?: string
+          issued_at?: string
+          pricing_snapshot?: Json | null
+          reservation_id?: string
+          scholarship_id?: string
+          status?: Database["public"]["Enums"]["scholarship_letter_status"]
+          unique_code?: string
+          updated_at?: string
+          used_at?: string | null
+          user_id?: string
+          validated_by?: string | null
+          validation_notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholarship_letters_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scholarship_letters_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: true
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scholarship_letters_scholarship_id_fkey"
             columns: ["scholarship_id"]
             isOneToOne: false
             referencedRelation: "scholarships"
@@ -2079,6 +2267,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      calculate_reservation_fee: {
+        Args: { p_scholarship_id: string }
+        Returns: {
+          amount: number
+          rule_id: string
+          validity_days: number
+        }[]
+      }
       cancel_account_deletion: { Args: never; Returns: undefined }
       cancel_reservation: {
         Args: { p_reservation_id: string }
@@ -2089,7 +2285,9 @@ export type Database = {
           expires_at: string | null
           id: string
           institution_id: string
+          letter_id: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          pricing_rule_id: string | null
           reservation_code: string
           reserved_at: string
           scholarship_id: string
@@ -2129,7 +2327,9 @@ export type Database = {
           expires_at: string | null
           id: string
           institution_id: string
+          letter_id: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          pricing_rule_id: string | null
           reservation_code: string
           reserved_at: string
           scholarship_id: string
@@ -2153,7 +2353,9 @@ export type Database = {
           expires_at: string | null
           id: string
           institution_id: string
+          letter_id: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          pricing_rule_id: string | null
           reservation_code: string
           reserved_at: string
           scholarship_id: string
@@ -2178,6 +2380,7 @@ export type Database = {
         Returns: number
       }
       expire_reservations: { Args: never; Returns: number }
+      expire_scholarship_letters: { Args: never; Returns: number }
       export_my_data: { Args: never; Returns: Json }
       finalize_enrollment: {
         Args: { p_approved: boolean; p_notes: string; p_reservation_id: string }
@@ -2213,8 +2416,29 @@ export type Database = {
         }[]
       }
       funnel_overview: { Args: { p_days?: number }; Returns: Json }
+      gen_letter_code: { Args: never; Returns: string }
       gen_reservation_code: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
+      get_letter_by_code: {
+        Args: { p_code: string }
+        Returns: {
+          course_name: string
+          discount_percent: number
+          expires_at: string
+          institution_trade_name: string
+          issued_at: string
+          monthly_original: number
+          monthly_with_scholarship: number
+          scholarship_title: string
+          status: Database["public"]["Enums"]["scholarship_letter_status"]
+          student_first_name: string
+          unique_code: string
+          unit_city: string
+          unit_name: string
+          unit_state: string
+          used_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2234,6 +2458,33 @@ export type Database = {
       }
       is_platform_admin: { Args: { _uid?: string }; Returns: boolean }
       is_platform_sales: { Args: never; Returns: boolean }
+      issue_scholarship_letter: {
+        Args: { p_reservation_id: string }
+        Returns: {
+          amount_charged: number
+          created_at: string
+          expires_at: string
+          id: string
+          institution_id: string
+          issued_at: string
+          pricing_snapshot: Json | null
+          reservation_id: string
+          scholarship_id: string
+          status: Database["public"]["Enums"]["scholarship_letter_status"]
+          unique_code: string
+          updated_at: string
+          used_at: string | null
+          user_id: string
+          validated_by: string | null
+          validation_notes: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "scholarship_letters"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       moderate_review: {
         Args: { p_approve: boolean; p_notes?: string; p_review_id: string }
         Returns: {
@@ -2287,7 +2538,9 @@ export type Database = {
           expires_at: string | null
           id: string
           institution_id: string
+          letter_id: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          pricing_rule_id: string | null
           reservation_code: string
           reserved_at: string
           scholarship_id: string
@@ -2794,6 +3047,11 @@ export type Database = {
         | "REFUNDED"
         | "CHARGEBACK"
         | "CANCELLED"
+      pricing_scope_type: "GLOBAL" | "INSTITUTION" | "COURSE" | "SCHOLARSHIP"
+      pricing_type:
+        | "FIXED_AMOUNT"
+        | "PERCENTAGE_OF_COURSE_VALUE"
+        | "FIRST_MONTHLY_PAYMENT"
       prospect_status:
         | "NEW"
         | "CONTACTED"
@@ -2814,6 +3072,7 @@ export type Database = {
         | "EXPIRED"
         | "CANCELLED"
       review_status: "PENDING" | "APPROVED" | "REJECTED"
+      scholarship_letter_status: "ISSUED" | "USED" | "EXPIRED" | "CANCELLED"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3011,6 +3270,12 @@ export const Constants = {
         "CHARGEBACK",
         "CANCELLED",
       ],
+      pricing_scope_type: ["GLOBAL", "INSTITUTION", "COURSE", "SCHOLARSHIP"],
+      pricing_type: [
+        "FIXED_AMOUNT",
+        "PERCENTAGE_OF_COURSE_VALUE",
+        "FIRST_MONTHLY_PAYMENT",
+      ],
       prospect_status: [
         "NEW",
         "CONTACTED",
@@ -3033,6 +3298,7 @@ export const Constants = {
         "CANCELLED",
       ],
       review_status: ["PENDING", "APPROVED", "REJECTED"],
+      scholarship_letter_status: ["ISSUED", "USED", "EXPIRED", "CANCELLED"],
     },
   },
 } as const
