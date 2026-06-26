@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Building2, Plus, BookOpen, Tag, MapPin, Loader2, Pencil, Trash2, Save, Clock, CheckCircle2, AlertCircle, Ban, GraduationCap, XCircle } from "lucide-react";
+import { ArrowLeft, Building2, Plus, BookOpen, Tag, MapPin, Loader2, Pencil, Trash2, Save, Clock, CheckCircle2, AlertCircle, Ban, GraduationCap, XCircle, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -78,6 +78,11 @@ function ManageInstitutionPage() {
             </p>
           )}
         </div>
+        <Button asChild variant="outline" className="gap-2">
+          <Link to="/instituicao/importar-bolsas">
+            <Upload className="h-4 w-4" /> Importar bolsas (CSV)
+          </Link>
+        </Button>
       </header>
 
       <Tabs defaultValue="matriculas" className="space-y-4">
