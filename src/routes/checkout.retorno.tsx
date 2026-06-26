@@ -32,7 +32,7 @@ function ReturnPage() {
         .eq("session_token", session_token)
         .maybeSingle();
       if (cancelled) return;
-      if (data?.status === "COMPLETED" && data.reservation_id) {
+      if (data?.status === "CONVERTED" && data.reservation_id) {
         setReservationId(data.reservation_id);
         setStatus("ok");
         // Clear local token

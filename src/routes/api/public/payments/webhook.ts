@@ -22,7 +22,7 @@ async function handleCheckoutSessionCompleted(obj: any) {
   if (sessionToken) {
     await supabaseAdmin
       .from("checkout_sessions")
-      .update({ status: "COMPLETED", updated_at: new Date().toISOString() })
+      .update({ status: "CONVERTED", updated_at: new Date().toISOString() })
       .eq("session_token", sessionToken);
   }
 }

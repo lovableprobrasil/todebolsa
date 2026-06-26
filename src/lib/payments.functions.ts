@@ -92,7 +92,7 @@ export const createScholarshipCheckoutSession = createServerFn({ method: "POST" 
         .eq("session_token", data.session_token)
         .maybeSingle();
       if (sessionErr || !session) return { error: "Sessão de checkout não encontrada" };
-      if (session.status === "COMPLETED" && session.reservation_id) {
+      if (session.status === "CONVERTED" && session.reservation_id) {
         return { error: "Esta sessão já foi finalizada" };
       }
 
