@@ -209,11 +209,13 @@ function ReservationDetailPage() {
       {needsPayment && countdown !== "Expirada" && (
         <section className="rounded-3xl border border-border bg-card p-6 md:p-8">
           <h2 className="font-display text-xl font-extrabold flex items-center gap-2">
-            <CreditCard className="h-5 w-5 text-primary" /> Pagar taxa de adesão
+            <CreditCard className="h-5 w-5 text-primary" /> Reserva da bolsa
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Confirme sua vaga pagando a taxa única de adesão de <strong>{formatBRL(ADHESION_FEE)}</strong>. A mensalidade
-            com bolsa é cobrada apenas pela instituição após a matrícula.
+            Você está realizando um pagamento <strong>único</strong> ao Tô de Bolsa de{" "}
+            <strong>{formatBRL(marketplaceFee)}</strong> para reservar esta bolsa e emitir sua{" "}
+            <strong>Carta de Apresentação</strong>. As mensalidades futuras, quando houver, serão tratadas
+            diretamente com a instituição de ensino, conforme as condições desta oferta.
           </p>
 
           <div className="mt-5 grid sm:grid-cols-3 gap-2">
@@ -250,7 +252,7 @@ function ReservationDetailPage() {
             </Button>
             <Button size="lg" onClick={() => pay.mutate()} disabled={pay.isPending} className="font-semibold">
               {pay.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Pagar {formatBRL(ADHESION_FEE)}
+              Pagar {formatBRL(marketplaceFee)} e emitir minha Carta
             </Button>
           </div>
           <p className="text-[11px] text-muted-foreground mt-3 text-center">
@@ -259,12 +261,30 @@ function ReservationDetailPage() {
         </section>
       )}
 
+      {isPaid && letter && (
+        <section className="rounded-3xl border border-primary/30 bg-primary-soft/50 p-6 md:p-8">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <CheckCircle2 className="h-10 w-10 text-primary" />
+              <h2 className="font-display text-xl font-extrabold mt-2">Sua Carta de Apresentação está pronta</h2>
+              <p className="text-sm text-muted-foreground mt-1 max-w-md">
+                Código <strong className="font-mono">{letter.unique_code}</strong> · Válida até{" "}
+                {new Date(letter.expires_at).toLocaleDateString("pt-BR")}. Apresente esta carta à instituição
+                para concluir sua matrícula.
+              </p>
+            </div>
+            <Button size="lg" onClick={handleDownloadLetter}>
+              <Download className="h-4 w-4 mr-2" /> Baixar carta (PDF)
+            </Button>
+          </div>
+        </section>
+      )}
+
       {r.status === "CONFIRMED" && (
-        <section className="rounded-3xl border border-primary/30 bg-primary-soft/50 p-6 md:p-8 text-center">
-          <CheckCircle2 className="h-12 w-12 text-primary mx-auto" />
-          <h2 className="font-display text-xl font-extrabold mt-3">Bolsa confirmada!</h2>
+        <section className="rounded-3xl border border-border bg-card p-6 md:p-8 text-center">
+          <h2 className="font-display text-lg font-extrabold">Próximos passos</h2>
           <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-            Agora envie seus documentos abaixo para a instituição finalizar sua matrícula.
+            Envie seus documentos abaixo para a instituição finalizar sua matrícula conforme as condições da bolsa.
           </p>
         </section>
       )}
