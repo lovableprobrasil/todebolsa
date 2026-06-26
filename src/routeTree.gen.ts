@@ -34,6 +34,7 @@ import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slu
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as CheckoutScholarshipIdRouteImport } from './routes/checkout.$scholarshipId'
 import { Route as CadastroSucessoRouteImport } from './routes/cadastro.sucesso'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -53,6 +54,7 @@ import { Route as GuiaCategoriaSlugRouteImport } from './routes/guia.categoria.$
 import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$city'
 import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
 import { Route as ApiPublicInstitutionApplicationRouteImport } from './routes/api/public/institution-application'
+import { Route as ApiPublicCheckoutFinalizeRouteImport } from './routes/api/public/checkout-finalize'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
 import { Route as AuthenticatedInstituicaoImportarBolsasRouteImport } from './routes/_authenticated/instituicao.importar-bolsas'
 import { Route as AuthenticatedInstituicaoCredenciamentoRouteImport } from './routes/_authenticated/instituicao.credenciamento'
@@ -214,6 +216,11 @@ const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   path: '/email/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutScholarshipIdRoute = CheckoutScholarshipIdRouteImport.update({
+  id: '/checkout/$scholarshipId',
+  path: '/checkout/$scholarshipId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CadastroSucessoRoute = CadastroSucessoRouteImport.update({
   id: '/cadastro/sucesso',
   path: '/cadastro/sucesso',
@@ -310,6 +317,12 @@ const ApiPublicInstitutionApplicationRoute =
   ApiPublicInstitutionApplicationRouteImport.update({
     id: '/api/public/institution-application',
     path: '/api/public/institution-application',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCheckoutFinalizeRoute =
+  ApiPublicCheckoutFinalizeRouteImport.update({
+    id: '/api/public/checkout-finalize',
+    path: '/api/public/checkout-finalize',
     getParentRoute: () => rootRouteImport,
   } as any)
 const AuthenticatedReservasIdRoute = AuthenticatedReservasIdRouteImport.update({
@@ -551,6 +564,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
+  '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -579,6 +593,7 @@ export interface FileRoutesByFullPath {
   '/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
   '/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/checkout-finalize': typeof ApiPublicCheckoutFinalizeRoute
   '/api/public/institution-application': typeof ApiPublicInstitutionApplicationRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -631,6 +646,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
+  '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -656,6 +672,7 @@ export interface FileRoutesByTo {
   '/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
   '/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/checkout-finalize': typeof ApiPublicCheckoutFinalizeRoute
   '/api/public/institution-application': typeof ApiPublicInstitutionApplicationRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -711,6 +728,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
+  '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -739,6 +757,7 @@ export interface FileRoutesById {
   '/_authenticated/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
   '/_authenticated/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/checkout-finalize': typeof ApiPublicCheckoutFinalizeRoute
   '/api/public/institution-application': typeof ApiPublicInstitutionApplicationRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -794,6 +813,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
+    | '/checkout/$scholarshipId'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -822,6 +842,7 @@ export interface FileRouteTypes {
     | '/instituicao/credenciamento'
     | '/instituicao/importar-bolsas'
     | '/reservas/$id'
+    | '/api/public/checkout-finalize'
     | '/api/public/institution-application'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -874,6 +895,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
+    | '/checkout/$scholarshipId'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -899,6 +921,7 @@ export interface FileRouteTypes {
     | '/instituicao/credenciamento'
     | '/instituicao/importar-bolsas'
     | '/reservas/$id'
+    | '/api/public/checkout-finalize'
     | '/api/public/institution-application'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -953,6 +976,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
+    | '/checkout/$scholarshipId'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -981,6 +1005,7 @@ export interface FileRouteTypes {
     | '/_authenticated/instituicao/credenciamento'
     | '/_authenticated/instituicao/importar-bolsas'
     | '/_authenticated/reservas/$id'
+    | '/api/public/checkout-finalize'
     | '/api/public/institution-application'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -1027,6 +1052,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   BolsasIdRoute: typeof BolsasIdRoute
   CadastroSucessoRoute: typeof CadastroSucessoRoute
+  CheckoutScholarshipIdRoute: typeof CheckoutScholarshipIdRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
@@ -1037,6 +1063,7 @@ export interface RootRouteChildren {
   BolsasIndexRoute: typeof BolsasIndexRoute
   GuiaIndexRoute: typeof GuiaIndexRoute
   NoticiasIndexRoute: typeof NoticiasIndexRoute
+  ApiPublicCheckoutFinalizeRoute: typeof ApiPublicCheckoutFinalizeRoute
   ApiPublicInstitutionApplicationRoute: typeof ApiPublicInstitutionApplicationRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
@@ -1229,6 +1256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmailUnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/$scholarshipId': {
+      id: '/checkout/$scholarshipId'
+      path: '/checkout/$scholarshipId'
+      fullPath: '/checkout/$scholarshipId'
+      preLoaderRoute: typeof CheckoutScholarshipIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cadastro/sucesso': {
       id: '/cadastro/sucesso'
       path: '/cadastro/sucesso'
@@ -1360,6 +1394,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/institution-application'
       fullPath: '/api/public/institution-application'
       preLoaderRoute: typeof ApiPublicInstitutionApplicationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/checkout-finalize': {
+      id: '/api/public/checkout-finalize'
+      path: '/api/public/checkout-finalize'
+      fullPath: '/api/public/checkout-finalize'
+      preLoaderRoute: typeof ApiPublicCheckoutFinalizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/reservas/$id': {
@@ -1791,6 +1832,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   BolsasIdRoute: BolsasIdRoute,
   CadastroSucessoRoute: CadastroSucessoRoute,
+  CheckoutScholarshipIdRoute: CheckoutScholarshipIdRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   GuiaSlugRoute: GuiaSlugRoute,
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
@@ -1801,6 +1843,7 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasIndexRoute: BolsasIndexRoute,
   GuiaIndexRoute: GuiaIndexRoute,
   NoticiasIndexRoute: NoticiasIndexRoute,
+  ApiPublicCheckoutFinalizeRoute: ApiPublicCheckoutFinalizeRoute,
   ApiPublicInstitutionApplicationRoute: ApiPublicInstitutionApplicationRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,

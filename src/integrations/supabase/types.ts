@@ -260,6 +260,191 @@ export type Database = {
         }
         Relationships: []
       }
+      checkout_acceptances: {
+        Row: {
+          accepted_at: string
+          checkout_session_id: string | null
+          id: string
+          ip_address: unknown
+          lead_cpf: string | null
+          lead_email: string | null
+          lead_name: string | null
+          term_kind: string
+          term_version: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          accepted_at?: string
+          checkout_session_id?: string | null
+          id?: string
+          ip_address?: unknown
+          lead_cpf?: string | null
+          lead_email?: string | null
+          lead_name?: string | null
+          term_kind: string
+          term_version?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          accepted_at?: string
+          checkout_session_id?: string | null
+          id?: string
+          ip_address?: unknown
+          lead_cpf?: string | null
+          lead_email?: string | null
+          lead_name?: string | null
+          term_kind?: string
+          term_version?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_acceptances_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checkout_events: {
+        Row: {
+          checkout_session_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json
+        }
+        Insert: {
+          checkout_session_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json
+        }
+        Update: {
+          checkout_session_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_events_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checkout_sessions: {
+        Row: {
+          abandonment_email_sent_at: string | null
+          address_data: Json
+          amount_charged: number | null
+          created_at: string
+          current_step: Database["public"]["Enums"]["checkout_step"]
+          expires_at: string
+          id: string
+          installments: number | null
+          ip_address: unknown
+          payment_method: Database["public"]["Enums"]["payment_method"] | null
+          personal_data: Json
+          pricing_rule_id: string | null
+          reservation_id: string | null
+          scholarship_id: string
+          session_token: string
+          status: Database["public"]["Enums"]["checkout_status"]
+          updated_at: string
+          user_agent: string | null
+          user_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          abandonment_email_sent_at?: string | null
+          address_data?: Json
+          amount_charged?: number | null
+          created_at?: string
+          current_step?: Database["public"]["Enums"]["checkout_step"]
+          expires_at?: string
+          id?: string
+          installments?: number | null
+          ip_address?: unknown
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null
+          personal_data?: Json
+          pricing_rule_id?: string | null
+          reservation_id?: string | null
+          scholarship_id: string
+          session_token?: string
+          status?: Database["public"]["Enums"]["checkout_status"]
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          abandonment_email_sent_at?: string | null
+          address_data?: Json
+          amount_charged?: number | null
+          created_at?: string
+          current_step?: Database["public"]["Enums"]["checkout_step"]
+          expires_at?: string
+          id?: string
+          installments?: number | null
+          ip_address?: unknown
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null
+          personal_data?: Json
+          pricing_rule_id?: string | null
+          reservation_id?: string | null
+          scholarship_id?: string
+          session_token?: string
+          status?: Database["public"]["Enums"]["checkout_status"]
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_sessions_pricing_rule_id_fkey"
+            columns: ["pricing_rule_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_pricing_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkout_sessions_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkout_sessions_scholarship_id_fkey"
+            columns: ["scholarship_id"]
+            isOneToOne: false
+            referencedRelation: "scholarships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consent_log: {
         Row: {
           consent_type: string
@@ -1377,52 +1562,82 @@ export type Database = {
       }
       marketplace_pricing_rules: {
         Row: {
+          allow_boleto: boolean
+          allow_card: boolean
+          allow_pix: boolean
+          boleto_due_days: number
           created_at: string
           currency: string
           fee_description: string | null
           fee_display_name: string
           fixed_amount: number | null
           id: string
+          interest_rate_pct: number
           is_active: boolean
           letter_validity_days: number
+          max_installments: number
           maximum_amount: number | null
+          min_installment_amount: number
           minimum_amount: number | null
           percentage_rate: number | null
+          pix_expiration_minutes: number
           pricing_type: Database["public"]["Enums"]["pricing_type"]
+          reservation_ttl_minutes: number
+          reserve_before_payment: boolean
           scope_id: string | null
           scope_type: Database["public"]["Enums"]["pricing_scope_type"]
           updated_at: string
         }
         Insert: {
+          allow_boleto?: boolean
+          allow_card?: boolean
+          allow_pix?: boolean
+          boleto_due_days?: number
           created_at?: string
           currency?: string
           fee_description?: string | null
           fee_display_name?: string
           fixed_amount?: number | null
           id?: string
+          interest_rate_pct?: number
           is_active?: boolean
           letter_validity_days?: number
+          max_installments?: number
           maximum_amount?: number | null
+          min_installment_amount?: number
           minimum_amount?: number | null
           percentage_rate?: number | null
+          pix_expiration_minutes?: number
           pricing_type: Database["public"]["Enums"]["pricing_type"]
+          reservation_ttl_minutes?: number
+          reserve_before_payment?: boolean
           scope_id?: string | null
           scope_type: Database["public"]["Enums"]["pricing_scope_type"]
           updated_at?: string
         }
         Update: {
+          allow_boleto?: boolean
+          allow_card?: boolean
+          allow_pix?: boolean
+          boleto_due_days?: number
           created_at?: string
           currency?: string
           fee_description?: string | null
           fee_display_name?: string
           fixed_amount?: number | null
           id?: string
+          interest_rate_pct?: number
           is_active?: boolean
           letter_validity_days?: number
+          max_installments?: number
           maximum_amount?: number | null
+          min_installment_amount?: number
           minimum_amount?: number | null
           percentage_rate?: number | null
+          pix_expiration_minutes?: number
           pricing_type?: Database["public"]["Enums"]["pricing_type"]
+          reservation_ttl_minutes?: number
+          reserve_before_payment?: boolean
           scope_id?: string | null
           scope_type?: Database["public"]["Enums"]["pricing_scope_type"]
           updated_at?: string
@@ -1912,12 +2127,15 @@ export type Database = {
       reservations: {
         Row: {
           amount_paid: number | null
+          checkout_session_id: string | null
           course_offering_id: string
           created_at: string
           expires_at: string | null
           id: string
+          installments: number | null
           institution_id: string
           letter_id: string | null
+          payment_method: Database["public"]["Enums"]["payment_method"] | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           pricing_rule_id: string | null
           reservation_code: string
@@ -1926,15 +2144,23 @@ export type Database = {
           status: Database["public"]["Enums"]["reservation_status"]
           updated_at: string
           user_id: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
         }
         Insert: {
           amount_paid?: number | null
+          checkout_session_id?: string | null
           course_offering_id: string
           created_at?: string
           expires_at?: string | null
           id?: string
+          installments?: number | null
           institution_id: string
           letter_id?: string | null
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           pricing_rule_id?: string | null
           reservation_code: string
@@ -1943,15 +2169,23 @@ export type Database = {
           status?: Database["public"]["Enums"]["reservation_status"]
           updated_at?: string
           user_id: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
         }
         Update: {
           amount_paid?: number | null
+          checkout_session_id?: string | null
           course_offering_id?: string
           created_at?: string
           expires_at?: string | null
           id?: string
+          installments?: number | null
           institution_id?: string
           letter_id?: string | null
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           pricing_rule_id?: string | null
           reservation_code?: string
@@ -1960,6 +2194,11 @@ export type Database = {
           status?: Database["public"]["Enums"]["reservation_status"]
           updated_at?: string
           user_id?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
         }
         Relationships: [
           {
@@ -2331,12 +2570,15 @@ export type Database = {
         Args: { p_reservation_id: string }
         Returns: {
           amount_paid: number | null
+          checkout_session_id: string | null
           course_offering_id: string
           created_at: string
           expires_at: string | null
           id: string
+          installments: number | null
           institution_id: string
           letter_id: string | null
+          payment_method: Database["public"]["Enums"]["payment_method"] | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           pricing_rule_id: string | null
           reservation_code: string
@@ -2345,6 +2587,11 @@ export type Database = {
           status: Database["public"]["Enums"]["reservation_status"]
           updated_at: string
           user_id: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
         }
         SetofOptions: {
           from: "*"
@@ -2352,6 +2599,33 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      checkout_check_existing_account: {
+        Args: { p_cpf?: string; p_email?: string }
+        Returns: Json
+      }
+      checkout_finalize: {
+        Args: { p_session_token: string; p_user_id: string }
+        Returns: string
+      }
+      checkout_record_acceptances: {
+        Args: { p_session_token: string; p_terms: string[] }
+        Returns: undefined
+      }
+      checkout_save_step: {
+        Args: {
+          p_address?: Json
+          p_installments?: number
+          p_payment_method?: Database["public"]["Enums"]["payment_method"]
+          p_personal?: Json
+          p_session_token: string
+          p_step: Database["public"]["Enums"]["checkout_step"]
+        }
+        Returns: Json
+      }
+      checkout_start: {
+        Args: { p_scholarship_id: string; p_session_token?: string }
+        Returns: Json
       }
       claim_first_admin: { Args: never; Returns: undefined }
       claim_institution: {
@@ -2373,12 +2647,15 @@ export type Database = {
         Args: { p_approve: boolean; p_notes?: string; p_reservation_id: string }
         Returns: {
           amount_paid: number | null
+          checkout_session_id: string | null
           course_offering_id: string
           created_at: string
           expires_at: string | null
           id: string
+          installments: number | null
           institution_id: string
           letter_id: string | null
+          payment_method: Database["public"]["Enums"]["payment_method"] | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           pricing_rule_id: string | null
           reservation_code: string
@@ -2387,6 +2664,11 @@ export type Database = {
           status: Database["public"]["Enums"]["reservation_status"]
           updated_at: string
           user_id: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
         }
         SetofOptions: {
           from: "*"
@@ -2399,12 +2681,15 @@ export type Database = {
         Args: { p_scholarship_id: string }
         Returns: {
           amount_paid: number | null
+          checkout_session_id: string | null
           course_offering_id: string
           created_at: string
           expires_at: string | null
           id: string
+          installments: number | null
           institution_id: string
           letter_id: string | null
+          payment_method: Database["public"]["Enums"]["payment_method"] | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           pricing_rule_id: string | null
           reservation_code: string
@@ -2413,6 +2698,11 @@ export type Database = {
           status: Database["public"]["Enums"]["reservation_status"]
           updated_at: string
           user_id: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
         }
         SetofOptions: {
           from: "*"
@@ -2584,12 +2874,15 @@ export type Database = {
         Args: { p_method: string; p_reservation_id: string }
         Returns: {
           amount_paid: number | null
+          checkout_session_id: string | null
           course_offering_id: string
           created_at: string
           expires_at: string | null
           id: string
+          installments: number | null
           institution_id: string
           letter_id: string | null
+          payment_method: Database["public"]["Enums"]["payment_method"] | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           pricing_rule_id: string | null
           reservation_code: string
@@ -2598,6 +2891,11 @@ export type Database = {
           status: Database["public"]["Enums"]["reservation_status"]
           updated_at: string
           user_id: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
         }
         SetofOptions: {
           from: "*"
@@ -3037,6 +3335,8 @@ export type Database = {
         | "PLATFORM_SALES"
         | "PLATFORM_ADMIN"
         | "INSTITUTION_APPLICANT"
+      checkout_status: "ACTIVE" | "ABANDONED" | "CONVERTED" | "EXPIRED"
+      checkout_step: "DATA" | "SCHOLARSHIP" | "REVIEW" | "PAYMENT" | "DONE"
       course_level:
         | "FUNDAMENTAL"
         | "MEDIO"
@@ -3091,6 +3391,7 @@ export type Database = {
         | "PUBLISHED"
         | "ARCHIVED"
       offering_status: "ACTIVE" | "PAUSED" | "SOLD_OUT" | "ARCHIVED"
+      payment_method: "PIX" | "BOLETO" | "CARD"
       payment_status:
         | "PENDING"
         | "PAID"
@@ -3260,6 +3561,8 @@ export const Constants = {
         "PLATFORM_ADMIN",
         "INSTITUTION_APPLICANT",
       ],
+      checkout_status: ["ACTIVE", "ABANDONED", "CONVERTED", "EXPIRED"],
+      checkout_step: ["DATA", "SCHOLARSHIP", "REVIEW", "PAYMENT", "DONE"],
       course_level: [
         "FUNDAMENTAL",
         "MEDIO",
@@ -3313,6 +3616,7 @@ export const Constants = {
       ],
       news_status: ["DRAFT", "IN_REVIEW", "SCHEDULED", "PUBLISHED", "ARCHIVED"],
       offering_status: ["ACTIVE", "PAUSED", "SOLD_OUT", "ARCHIVED"],
+      payment_method: ["PIX", "BOLETO", "CARD"],
       payment_status: [
         "PENDING",
         "PAID",

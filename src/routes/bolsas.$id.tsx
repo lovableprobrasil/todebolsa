@@ -360,43 +360,18 @@ function InfoRow({
 function ReserveButton({
   scholarshipId,
 }: { scholarshipId: string; courseOfferingId: string; institutionId: string; price: number }) {
-  const { user } = useAuth();
   const navigate = useNavigate();
-  const qc = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: async () => {
-      if (!user) throw new Error("auth");
-      const { data, error } = await supabase.rpc("create_reservation", { p_scholarship_id: scholarshipId });
-      if (error) throw error;
-      return data as { id: string };
-    },
-    onSuccess: (res) => {
-      qc.invalidateQueries({ queryKey: ["reservations"] });
-      qc.invalidateQueries({ queryKey: ["scholarship", scholarshipId] });
-      toast.success("Bolsa reservada! Conclua o pagamento para garantir sua vaga.");
-      navigate({ to: "/reservas/$id", params: { id: res.id } });
-    },
-    onError: (e: Error) => {
-      if (e.message === "auth") {
-        navigate({ to: "/auth", search: { redirect: window.location.pathname } });
-        return;
-      }
-      toast.error(e.message || "Não foi possível reservar agora.");
-    },
-  });
-
   return (
     <Button
       size="lg"
       className="w-full font-semibold"
-      onClick={() => mutation.mutate()}
-      disabled={mutation.isPending}
+      onClick={() => navigate({ to: "/checkout/$scholarshipId", params: { scholarshipId } })}
     >
-      {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Garantir bolsa agora"}
+      Garantir bolsa agora
     </Button>
   );
 }
+
 
 function FavoriteButton({ scholarshipId }: { scholarshipId: string }) {
   const { user } = useAuth();
