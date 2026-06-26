@@ -13,6 +13,11 @@ import { ReviewForm } from "@/components/reviews/ReviewForm";
 import { DocumentUpload } from "@/components/enrollment/DocumentUpload";
 import { downloadScholarshipLetterPdf } from "@/lib/letter-pdf";
 import { sendTransactionalEmail } from "@/lib/email/send";
+import { studentRequestRefund } from "@/lib/refunds.functions";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogDescription,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/_authenticated/reservas/$id")({
   component: ReservationDetailPage,
