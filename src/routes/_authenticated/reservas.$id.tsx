@@ -145,6 +145,39 @@ function ReservationDetailPage() {
     },
   });
 
+  // Refund status (para alunos em reservas pagas)
+  const { data: existingRefund } = useQuery({
+    enabled: isPaid && !!user,
+    queryKey: ["reservation-refund", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("refunds")
+        .select("id, status, requested_at, processed_at, reason")
+        .eq("reservation_id", id)
+        .order("requested_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data as null | { id: string; status: string; requested_at: string; processed_at: string | null; reason: string | null };
+    },
+  });
+
+  const [refundOpen, setRefundOpen] = useState(false);
+  const [refundReason, setRefundReason] = useState("");
+  const requestRefund = useMutation({
+    mutationFn: async () => {
+      const res = await studentRequestRefund({ data: { reservation_id: id, reason: refundReason } });
+      if ("error" in res) throw new Error(res.error);
+    },
+    onSuccess: () => {
+      toast.success("Pedido de cancelamento enviado. Nossa equipe vai processar o reembolso em até 7 dias úteis.");
+      setRefundOpen(false);
+      setRefundReason("");
+      qc.invalidateQueries({ queryKey: ["reservation-refund", id] });
+    },
+    onError: (e: Error) => toast.error(e.message || "Não foi possível enviar o pedido."),
+  });
+
   // Envia automaticamente o e-mail da carta uma única vez
   useEffect(() => {
     if (!letter || !user || !r || letter.email_sent_at) return;
