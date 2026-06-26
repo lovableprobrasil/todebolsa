@@ -41,6 +41,25 @@ function AcquisitionFramePage() {
     return () => window.removeEventListener("message", onMessage);
   }, []);
 
+  useEffect(() => {
+    if (frameState !== "loading") return;
+    let attempts = 0;
+    const timer = window.setInterval(() => {
+      attempts += 1;
+      const text = iframeRef.current?.contentDocument?.body?.innerText ?? "";
+      if (/Bolsa não encontrada|Não foi possível carregar|Página não encontrada/i.test(text)) {
+        setFrameState("error");
+        window.clearInterval(timer);
+      }
+      if (/Seus dados|Confirme os detalhes da bolsa|Pagamento seguro/i.test(text)) {
+        setFrameState("ready");
+        window.clearInterval(timer);
+      }
+      if (attempts >= 40) window.clearInterval(timer);
+    }, 250);
+    return () => window.clearInterval(timer);
+  }, [frameState, frameKey]);
+
   const inspectFrame = () => {
     const text = iframeRef.current?.contentDocument?.body?.innerText ?? "";
     if (/Bolsa não encontrada|Não foi possível carregar|Página não encontrada/i.test(text)) {
