@@ -81,7 +81,7 @@ function CheckoutPage() {
           end_at, max_uses, used_count, rules, required_documents,
           course_offerings!inner(
             id, vacancies_available,
-            courses!inner(id, name, level, modality, shift, original_price, institutions!inner(id, name, trade_name, logo_url, slug))
+            courses!inner(id, name, level, modality, shift, original_price, institutions!inner(id, trade_name, logo_url, slug))
           )
         `)
         .eq("id", scholarshipId)
