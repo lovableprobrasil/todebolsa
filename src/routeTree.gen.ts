@@ -53,6 +53,7 @@ import { Route as GuiaCategoriaSlugRouteImport } from './routes/guia.categoria.$
 import { Route as BolsasCidadeCityRouteImport } from './routes/bolsas.cidade.$city'
 import { Route as BolsasCategoriaLevelRouteImport } from './routes/bolsas.categoria.$level'
 import { Route as ApiPublicInstitutionApplicationRouteImport } from './routes/api/public/institution-application'
+import { Route as ApiPublicCheckoutFinalizeRouteImport } from './routes/api/public/checkout-finalize'
 import { Route as AuthenticatedReservasIdRouteImport } from './routes/_authenticated/reservas.$id'
 import { Route as AuthenticatedInstituicaoImportarBolsasRouteImport } from './routes/_authenticated/instituicao.importar-bolsas'
 import { Route as AuthenticatedInstituicaoCredenciamentoRouteImport } from './routes/_authenticated/instituicao.credenciamento'
@@ -310,6 +311,12 @@ const ApiPublicInstitutionApplicationRoute =
   ApiPublicInstitutionApplicationRouteImport.update({
     id: '/api/public/institution-application',
     path: '/api/public/institution-application',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCheckoutFinalizeRoute =
+  ApiPublicCheckoutFinalizeRouteImport.update({
+    id: '/api/public/checkout-finalize',
+    path: '/api/public/checkout-finalize',
     getParentRoute: () => rootRouteImport,
   } as any)
 const AuthenticatedReservasIdRoute = AuthenticatedReservasIdRouteImport.update({
@@ -579,6 +586,7 @@ export interface FileRoutesByFullPath {
   '/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
   '/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/checkout-finalize': typeof ApiPublicCheckoutFinalizeRoute
   '/api/public/institution-application': typeof ApiPublicInstitutionApplicationRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -656,6 +664,7 @@ export interface FileRoutesByTo {
   '/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
   '/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/checkout-finalize': typeof ApiPublicCheckoutFinalizeRoute
   '/api/public/institution-application': typeof ApiPublicInstitutionApplicationRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -739,6 +748,7 @@ export interface FileRoutesById {
   '/_authenticated/instituicao/credenciamento': typeof AuthenticatedInstituicaoCredenciamentoRoute
   '/_authenticated/instituicao/importar-bolsas': typeof AuthenticatedInstituicaoImportarBolsasRoute
   '/_authenticated/reservas/$id': typeof AuthenticatedReservasIdRoute
+  '/api/public/checkout-finalize': typeof ApiPublicCheckoutFinalizeRoute
   '/api/public/institution-application': typeof ApiPublicInstitutionApplicationRoute
   '/bolsas/categoria/$level': typeof BolsasCategoriaLevelRoute
   '/bolsas/cidade/$city': typeof BolsasCidadeCityRoute
@@ -822,6 +832,7 @@ export interface FileRouteTypes {
     | '/instituicao/credenciamento'
     | '/instituicao/importar-bolsas'
     | '/reservas/$id'
+    | '/api/public/checkout-finalize'
     | '/api/public/institution-application'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -899,6 +910,7 @@ export interface FileRouteTypes {
     | '/instituicao/credenciamento'
     | '/instituicao/importar-bolsas'
     | '/reservas/$id'
+    | '/api/public/checkout-finalize'
     | '/api/public/institution-application'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -981,6 +993,7 @@ export interface FileRouteTypes {
     | '/_authenticated/instituicao/credenciamento'
     | '/_authenticated/instituicao/importar-bolsas'
     | '/_authenticated/reservas/$id'
+    | '/api/public/checkout-finalize'
     | '/api/public/institution-application'
     | '/bolsas/categoria/$level'
     | '/bolsas/cidade/$city'
@@ -1037,6 +1050,7 @@ export interface RootRouteChildren {
   BolsasIndexRoute: typeof BolsasIndexRoute
   GuiaIndexRoute: typeof GuiaIndexRoute
   NoticiasIndexRoute: typeof NoticiasIndexRoute
+  ApiPublicCheckoutFinalizeRoute: typeof ApiPublicCheckoutFinalizeRoute
   ApiPublicInstitutionApplicationRoute: typeof ApiPublicInstitutionApplicationRoute
   BolsasCategoriaLevelRoute: typeof BolsasCategoriaLevelRoute
   BolsasCidadeCityRoute: typeof BolsasCidadeCityRoute
@@ -1360,6 +1374,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/institution-application'
       fullPath: '/api/public/institution-application'
       preLoaderRoute: typeof ApiPublicInstitutionApplicationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/checkout-finalize': {
+      id: '/api/public/checkout-finalize'
+      path: '/api/public/checkout-finalize'
+      fullPath: '/api/public/checkout-finalize'
+      preLoaderRoute: typeof ApiPublicCheckoutFinalizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/reservas/$id': {
@@ -1801,6 +1822,7 @@ const rootRouteChildren: RootRouteChildren = {
   BolsasIndexRoute: BolsasIndexRoute,
   GuiaIndexRoute: GuiaIndexRoute,
   NoticiasIndexRoute: NoticiasIndexRoute,
+  ApiPublicCheckoutFinalizeRoute: ApiPublicCheckoutFinalizeRoute,
   ApiPublicInstitutionApplicationRoute: ApiPublicInstitutionApplicationRoute,
   BolsasCategoriaLevelRoute: BolsasCategoriaLevelRoute,
   BolsasCidadeCityRoute: BolsasCidadeCityRoute,
