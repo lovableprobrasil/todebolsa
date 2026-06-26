@@ -34,6 +34,7 @@ import { Route as InstituicoesSlugRouteImport } from './routes/instituicoes.$slu
 import { Route as InstituicaoCadastrarRouteImport } from './routes/instituicao.cadastrar'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as CheckoutScholarshipIdRouteImport } from './routes/checkout.$scholarshipId'
 import { Route as CadastroSucessoRouteImport } from './routes/cadastro.sucesso'
 import { Route as BolsasIdRouteImport } from './routes/bolsas.$id'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -213,6 +214,11 @@ const GuiaSlugRoute = GuiaSlugRouteImport.update({
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
   path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutScholarshipIdRoute = CheckoutScholarshipIdRouteImport.update({
+  id: '/checkout/$scholarshipId',
+  path: '/checkout/$scholarshipId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CadastroSucessoRoute = CadastroSucessoRouteImport.update({
@@ -558,6 +564,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
+  '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -639,6 +646,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
+  '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -720,6 +728,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/bolsas/$id': typeof BolsasIdRoute
   '/cadastro/sucesso': typeof CadastroSucessoRoute
+  '/checkout/$scholarshipId': typeof CheckoutScholarshipIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/instituicao/cadastrar': typeof InstituicaoCadastrarRoute
@@ -804,6 +813,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
+    | '/checkout/$scholarshipId'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -885,6 +895,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
+    | '/checkout/$scholarshipId'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -965,6 +976,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/bolsas/$id'
     | '/cadastro/sucesso'
+    | '/checkout/$scholarshipId'
     | '/email/unsubscribe'
     | '/guia/$slug'
     | '/instituicao/cadastrar'
@@ -1040,6 +1052,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   BolsasIdRoute: typeof BolsasIdRoute
   CadastroSucessoRoute: typeof CadastroSucessoRoute
+  CheckoutScholarshipIdRoute: typeof CheckoutScholarshipIdRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   GuiaSlugRoute: typeof GuiaSlugRoute
   InstituicaoCadastrarRoute: typeof InstituicaoCadastrarRoute
@@ -1241,6 +1254,13 @@ declare module '@tanstack/react-router' {
       path: '/email/unsubscribe'
       fullPath: '/email/unsubscribe'
       preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/$scholarshipId': {
+      id: '/checkout/$scholarshipId'
+      path: '/checkout/$scholarshipId'
+      fullPath: '/checkout/$scholarshipId'
+      preLoaderRoute: typeof CheckoutScholarshipIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cadastro/sucesso': {
@@ -1812,6 +1832,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   BolsasIdRoute: BolsasIdRoute,
   CadastroSucessoRoute: CadastroSucessoRoute,
+  CheckoutScholarshipIdRoute: CheckoutScholarshipIdRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   GuiaSlugRoute: GuiaSlugRoute,
   InstituicaoCadastrarRoute: InstituicaoCadastrarRoute,
