@@ -106,10 +106,14 @@ function AdminUsers() {
                   </div>
                   <div className="min-w-0">
                     <div className="font-bold truncate flex items-center gap-2">
-                      {u.name ?? "Sem nome"}
+                      {u.profile?.name ?? u.name ?? "Sem nome"}
                       {u.suspended && <Badge className="bg-destructive/10 text-destructive border-0">Suspenso</Badge>}
                     </div>
-                    <div className="text-xs text-muted-foreground truncate">{u.email}</div>
+                    <div className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                      <span className="inline-flex items-center gap-1"><Mail className="h-3 w-3" />{u.email}</span>
+                      {u.profile?.phone && <span className="inline-flex items-center gap-1"><Phone className="h-3 w-3" />{u.profile.phone}</span>}
+                      {u.profile?.cpf && <span className="inline-flex items-center gap-1"><IdCard className="h-3 w-3" />{u.profile.cpf}</span>}
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-1">
@@ -120,8 +124,9 @@ function AdminUsers() {
               </div>
 
               <div className="mt-3 flex flex-wrap gap-2">
+                <EditUserDialog user={u} onSaved={invalidate} />
                 <RoleSelector currentRoles={u.roles ?? []} onGrant={(role) => grant.mutate({ uid: u.id, role: role as Role })} />
-                {(u.roles ?? []).filter((r: string) => r !== "STUDENT").map((r: string) => (
+                {(u.roles ?? []).map((r: string) => (
                   <Button key={r} size="sm" variant="ghost" onClick={() => revoke.mutate({ uid: u.id, role: r as Role })}>
                     <ShieldOff className="h-3.5 w-3.5 mr-1" /> Remover {roleLabel(r)}
                   </Button>
