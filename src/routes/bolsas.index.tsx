@@ -30,6 +30,7 @@ type BolsasSearch = {
   modality?: string;
   institutionId?: string;
   minDiscount?: number;
+  minPrice?: number;
   maxPrice?: number;
   minRating?: number;
   sort?: SortMode;
