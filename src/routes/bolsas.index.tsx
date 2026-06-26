@@ -9,6 +9,7 @@ import { listScholarships, listInstitutionsLite } from "@/lib/scholarships";
 import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { SlidersHorizontal, X, Star, ArrowUpDown, Search as SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
