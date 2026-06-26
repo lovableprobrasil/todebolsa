@@ -24,6 +24,9 @@ export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
   const discount = discountPercent(original, final);
   const savingMonth = original - final;
   const savingYear = savingMonth * 12;
+  const ratingAvg = Number(inst.rating_avg ?? 0);
+  const ratingCount = Number(inst.rating_count ?? 0);
+  const hasRating = ratingAvg > 0 && ratingCount > 0;
 
   return (
     <Card className="group overflow-hidden border-border/60 hover:border-primary/40 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)]">
@@ -31,7 +34,7 @@ export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
         <div className="flex items-start justify-between gap-3 p-5 pb-3">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-brand-blue-soft text-brand-blue">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-brand-blue-soft text-brand-blue shrink-0">
                 <GraduationCap className="h-3.5 w-3.5" />
               </span>
               <span className="truncate font-medium">{inst.trade_name}</span>
@@ -39,9 +42,23 @@ export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
             <h3 className="font-display font-bold text-lg leading-tight line-clamp-2">
               {course.name}
             </h3>
+            <div className="mt-1.5 text-xs">
+              {hasRating ? (
+                <span className="inline-flex items-center gap-1 text-foreground/80">
+                  <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                  <strong className="font-semibold">{ratingAvg.toFixed(1)}</strong>
+                  <span className="text-muted-foreground">
+                    ({ratingCount} {ratingCount === 1 ? "avaliação" : "avaliações"})
+                  </span>
+                </span>
+              ) : (
+                <span className="text-muted-foreground">Curso novo no Tô de Bolsa</span>
+              )}
+            </div>
           </div>
           <DiscountBadge percent={discount} />
         </div>
+
 
         <div className="px-5 pb-3 flex flex-wrap gap-1.5">
           <Badge variant="secondary" className="text-xs">
