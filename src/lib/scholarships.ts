@@ -65,6 +65,7 @@ export type SortMode =
 
 export type SearchFilters = {
   level?: string;
+  area?: string;
   query?: string;
   city?: string;
   state?: string;
