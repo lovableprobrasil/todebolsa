@@ -925,7 +925,8 @@ function ScholarshipFormDialog({
               !f.title.trim() ||
               !f.original_price ||
               !f.discount_value ||
-              (!isEad && !f.institution_unit_id)
+              (!isEad && !f.institution_unit_id) ||
+              (isEad && !f.institution_unit_id && units.length > 0 ? false : false)
             }
           >
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
