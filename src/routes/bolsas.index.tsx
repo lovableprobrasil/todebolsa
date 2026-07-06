@@ -6,7 +6,7 @@ import { Footer } from "@/components/site/Footer";
 import { SearchBar } from "@/components/site/SearchBar";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { listScholarships, listInstitutionsLite } from "@/lib/scholarships";
-import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL } from "@/lib/format";
+import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL, KNOWLEDGE_AREAS, AREA_LABEL } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
