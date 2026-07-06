@@ -860,13 +860,27 @@ function ScholarshipFormDialog({
           </FieldUI>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <FieldUI label="Prazo do curso (meses)">
-              <Input
-                type="number" min="1"
-                value={f.duration_months}
-                onChange={(e) => setF({ ...f, duration_months: e.target.value })}
-                placeholder="Ex.: 48"
-              />
+            <FieldUI label="Duração do curso">
+              <div className="flex gap-2">
+                <Input
+                  type="number" min="0" step="0.5"
+                  value={f.duration_value}
+                  onChange={(e) => setF({ ...f, duration_value: e.target.value })}
+                  placeholder="Ex.: 48"
+                  className="flex-1"
+                />
+                <div className="w-32">
+                  <SelectUI
+                    value={f.duration_unit}
+                    onChange={(v) => setF({ ...f, duration_unit: v as "HORAS" | "MESES" | "ANOS" })}
+                    options={[
+                      { value: "HORAS", label: "Horas" },
+                      { value: "MESES", label: "Meses" },
+                      { value: "ANOS", label: "Anos" },
+                    ]}
+                  />
+                </div>
+              </div>
             </FieldUI>
             <FieldUI label="Vagas">
               <Input
