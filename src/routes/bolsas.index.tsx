@@ -132,6 +132,7 @@ function BolsasPage() {
   const filters = useMemo(
     () => ({
       level: search.level,
+      area: search.area,
       query: search.q,
       city: search.city,
       modality: search.modality,
