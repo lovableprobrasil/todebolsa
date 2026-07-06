@@ -679,7 +679,7 @@ function ScholarshipFormDialog({
       area: c?.area ?? "",
       institution_unit_id: isEad ? "" : (editing.course_offering?.institution_unit?.id ?? ""),
       original_price: String(c?.original_price ?? ""),
-      discount_type: editing.discount_type,
+      discount_type: (editing.discount_type === "FIXED" ? "FIXED" : "PERCENT"),
       discount_value: String(editing.discount_value ?? ""),
       vacancies: String(editing.max_uses ?? 10),
       end_at: editing.end_at ? editing.end_at.slice(0, 10) : "",
