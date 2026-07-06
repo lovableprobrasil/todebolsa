@@ -852,18 +852,15 @@ function ScholarshipFormDialog({
             <FieldUI label="Tipo de desconto">
               <SelectUI
                 value={f.discount_type}
-                onChange={(v) => setF({ ...f, discount_type: v as "PERCENT" | "FIXED" | "FINAL_PRICE" })}
+                onChange={(v) => setF({ ...f, discount_type: v as "PERCENT" | "FIXED" })}
                 options={[
                   { value: "PERCENT", label: "Percentual (%) sobre o valor" },
                   { value: "FIXED", label: "Valor fixo (R$) de desconto" },
-                  { value: "FINAL_PRICE", label: "Preço final com desconto (R$)" },
                 ]}
               />
             </FieldUI>
             <FieldUI label={
-              f.discount_type === "PERCENT" ? "Percentual de desconto (%)" :
-              f.discount_type === "FIXED" ? "Valor do desconto (R$)" :
-              "Preço final (R$)"
+              f.discount_type === "PERCENT" ? "Percentual de desconto (%)" : "Valor do desconto (R$)"
             }>
               <Input
                 type="number" min="0" step="0.01"
