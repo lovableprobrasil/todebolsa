@@ -677,7 +677,7 @@ function ScholarshipFormDialog({
       modality: c?.modality ?? "PRESENCIAL",
       shift: c?.shift ?? "FLEXIVEL",
       area: c?.area ?? "",
-      institution_unit_id: isEad ? "" : (editing.course_offering?.institution_unit?.id ?? ""),
+      institution_unit_id: editing.course_offering?.institution_unit?.id ?? "",
       original_price: String(c?.original_price ?? ""),
       discount_type: (editing.discount_type === "FIXED" ? "FIXED" : "PERCENT"),
       discount_value: String(editing.discount_value ?? ""),
