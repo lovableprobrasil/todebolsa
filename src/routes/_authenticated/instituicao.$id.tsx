@@ -86,21 +86,19 @@ function ManageInstitutionPage() {
         </Button>
       </header>
 
-      <Tabs defaultValue="matriculas" className="space-y-4">
+      <Tabs defaultValue="bolsas" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="matriculas"><GraduationCap className="h-4 w-4 mr-1" /> Matrículas a efetivar</TabsTrigger>
-          <TabsTrigger value="perfil"><Building2 className="h-4 w-4 mr-1" /> Perfil</TabsTrigger>
-          <TabsTrigger value="unidades"><MapPin className="h-4 w-4 mr-1" /> Unidades</TabsTrigger>
-          <TabsTrigger value="cursos"><BookOpen className="h-4 w-4 mr-1" /> Cursos & Turmas</TabsTrigger>
           <TabsTrigger value="bolsas"><Tag className="h-4 w-4 mr-1" /> Bolsas</TabsTrigger>
+          <TabsTrigger value="matriculas"><GraduationCap className="h-4 w-4 mr-1" /> Matrículas a efetivar</TabsTrigger>
+          <TabsTrigger value="unidades"><MapPin className="h-4 w-4 mr-1" /> Unidades</TabsTrigger>
+          <TabsTrigger value="perfil"><Building2 className="h-4 w-4 mr-1" /> Perfil</TabsTrigger>
           <TabsTrigger value="financeiro"><DollarSign className="h-4 w-4 mr-1" /> Financeiro</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="matriculas"><EnrollmentsTab institutionId={id} /></TabsContent>
-        <TabsContent value="perfil"><ProfileTab inst={inst} /></TabsContent>
-        <TabsContent value="unidades"><UnitsTab institutionId={id} /></TabsContent>
-        <TabsContent value="cursos"><CoursesTab institutionId={id} /></TabsContent>
         <TabsContent value="bolsas"><ScholarshipsTab institutionId={id} /></TabsContent>
+        <TabsContent value="matriculas"><EnrollmentsTab institutionId={id} /></TabsContent>
+        <TabsContent value="unidades"><UnitsTab institutionId={id} /></TabsContent>
+        <TabsContent value="perfil"><ProfileTab inst={inst} /></TabsContent>
         <TabsContent value="financeiro"><FinanceTab institutionId={id} /></TabsContent>
       </Tabs>
     </div>
@@ -657,7 +655,7 @@ function ScholarshipFormDialog({
     area: "",
     institution_unit_id: "",
     original_price: "",
-    discount_type: "PERCENT" as "PERCENT" | "FIXED" | "FINAL_PRICE",
+    discount_type: "PERCENT" as "PERCENT" | "FIXED",
     discount_value: "",
     vacancies: "10",
     end_at: "",
@@ -679,9 +677,9 @@ function ScholarshipFormDialog({
       modality: c?.modality ?? "PRESENCIAL",
       shift: c?.shift ?? "FLEXIVEL",
       area: c?.area ?? "",
-      institution_unit_id: isEad ? "" : (editing.course_offering?.institution_unit?.id ?? ""),
+      institution_unit_id: editing.course_offering?.institution_unit?.id ?? "",
       original_price: String(c?.original_price ?? ""),
-      discount_type: editing.discount_type,
+      discount_type: (editing.discount_type === "FIXED" ? "FIXED" : "PERCENT"),
       discount_value: String(editing.discount_value ?? ""),
       vacancies: String(editing.max_uses ?? 10),
       end_at: editing.end_at ? editing.end_at.slice(0, 10) : "",
@@ -697,8 +695,7 @@ function ScholarshipFormDialog({
   const value = Number(f.discount_value) || 0;
   const finalPrice =
     f.discount_type === "PERCENT" ? Math.max(0, original * (1 - value / 100))
-    : f.discount_type === "FIXED" ? Math.max(0, original - value)
-    : value;
+    : Math.max(0, original - value);
 
   const isEad = f.modality === "EAD";
   const isMonthly = f.price_mode === "MONTHLY";
@@ -713,7 +710,7 @@ function ScholarshipFormDialog({
         p_modality: f.modality,
         p_shift: f.shift,
         p_area: f.area || "",
-        p_institution_unit_id: isEad ? null : (f.institution_unit_id || null),
+        p_institution_unit_id: (!f.institution_unit_id || f.institution_unit_id === "__none__") ? null : f.institution_unit_id,
         p_original_price: original,
         p_discount_type: f.discount_type,
         p_discount_value: value,
@@ -768,7 +765,7 @@ function ScholarshipFormDialog({
             <FieldUI label="Modalidade">
               <SelectUI
                 value={f.modality}
-                onChange={(v) => setF({ ...f, modality: v, institution_unit_id: v === "EAD" ? "" : f.institution_unit_id })}
+                onChange={(v) => setF({ ...f, modality: v })}
                 options={MODALITIES.map((m) => ({ value: m, label: MODALITY_LABEL[m] ?? m }))}
               />
             </FieldUI>
@@ -788,18 +785,24 @@ function ScholarshipFormDialog({
               />
             </FieldUI>
           </div>
-          <FieldUI label={isEad ? "Unidade (não exigida para EAD)" : "Unidade"}>
-            {isEad ? (
-              <div className="text-sm text-muted-foreground rounded-md border border-dashed border-border px-3 py-2">
-                Bolsa 100% online — cidade não é obrigatória.
-              </div>
-            ) : (
-              <SelectUI
-                value={f.institution_unit_id}
-                onChange={(v) => setF({ ...f, institution_unit_id: v })}
-                placeholder={units.length === 0 ? "Cadastre uma unidade primeiro" : "Selecione a unidade"}
-                options={units.map((u) => ({ value: u.id, label: `${u.name}${u.city ? ` — ${u.city}/${u.state}` : ""}` }))}
-              />
+          <FieldUI label={isEad ? "Unidade (opcional para EAD)" : "Unidade"}>
+            <SelectUI
+              value={f.institution_unit_id}
+              onChange={(v) => setF({ ...f, institution_unit_id: v })}
+              placeholder={
+                units.length === 0
+                  ? (isEad ? "Sem unidade específica (100% online)" : "Cadastre uma unidade primeiro")
+                  : (isEad ? "Sem unidade específica (100% online)" : "Selecione a unidade")
+              }
+              options={[
+                ...(isEad ? [{ value: "__none__", label: "Sem unidade específica (100% online)" }] : []),
+                ...units.map((u) => ({ value: u.id, label: `${u.name}${u.city ? ` — ${u.city}/${u.state}` : ""}` })),
+              ]}
+            />
+            {isEad && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Para bolsas 100% online você pode deixar sem unidade ou vincular a uma existente.
+              </p>
             )}
           </FieldUI>
 
@@ -848,18 +851,15 @@ function ScholarshipFormDialog({
             <FieldUI label="Tipo de desconto">
               <SelectUI
                 value={f.discount_type}
-                onChange={(v) => setF({ ...f, discount_type: v as "PERCENT" | "FIXED" | "FINAL_PRICE" })}
+                onChange={(v) => setF({ ...f, discount_type: v as "PERCENT" | "FIXED" })}
                 options={[
                   { value: "PERCENT", label: "Percentual (%) sobre o valor" },
                   { value: "FIXED", label: "Valor fixo (R$) de desconto" },
-                  { value: "FINAL_PRICE", label: "Preço final com desconto (R$)" },
                 ]}
               />
             </FieldUI>
             <FieldUI label={
-              f.discount_type === "PERCENT" ? "Percentual de desconto (%)" :
-              f.discount_type === "FIXED" ? "Valor do desconto (R$)" :
-              "Preço final (R$)"
+              f.discount_type === "PERCENT" ? "Percentual de desconto (%)" : "Valor do desconto (R$)"
             }>
               <Input
                 type="number" min="0" step="0.01"
@@ -925,7 +925,8 @@ function ScholarshipFormDialog({
               !f.title.trim() ||
               !f.original_price ||
               !f.discount_value ||
-              (!isEad && !f.institution_unit_id)
+              (!isEad && !f.institution_unit_id) ||
+              (isEad && !f.institution_unit_id && units.length > 0 ? false : false)
             }
           >
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
