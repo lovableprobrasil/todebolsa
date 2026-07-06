@@ -2382,11 +2382,14 @@ export type Database = {
           created_at: string
           discount_type: Database["public"]["Enums"]["discount_type"]
           discount_value: number
+          duration_months: number | null
           end_at: string | null
           id: string
+          installments_count: number | null
           is_active: boolean
           is_featured: boolean
           max_uses: number | null
+          price_mode: Database["public"]["Enums"]["scholarship_price_mode"]
           price_with_scholarship: number
           required_documents: string[] | null
           rules: string | null
@@ -2400,11 +2403,14 @@ export type Database = {
           created_at?: string
           discount_type: Database["public"]["Enums"]["discount_type"]
           discount_value: number
+          duration_months?: number | null
           end_at?: string | null
           id?: string
+          installments_count?: number | null
           is_active?: boolean
           is_featured?: boolean
           max_uses?: number | null
+          price_mode?: Database["public"]["Enums"]["scholarship_price_mode"]
           price_with_scholarship: number
           required_documents?: string[] | null
           rules?: string | null
@@ -2418,11 +2424,14 @@ export type Database = {
           created_at?: string
           discount_type?: Database["public"]["Enums"]["discount_type"]
           discount_value?: number
+          duration_months?: number | null
           end_at?: string | null
           id?: string
+          installments_count?: number | null
           is_active?: boolean
           is_featured?: boolean
           max_uses?: number | null
+          price_mode?: Database["public"]["Enums"]["scholarship_price_mode"]
           price_with_scholarship?: number
           required_documents?: string[] | null
           rules?: string | null
@@ -2847,13 +2856,16 @@ export type Database = {
           p_area: string
           p_discount_type: string
           p_discount_value: number
+          p_duration_months?: number
           p_end_at: string
+          p_installments_count?: number
           p_institution_id: string
           p_institution_unit_id: string
           p_is_active: boolean
           p_level: string
           p_modality: string
           p_original_price: number
+          p_price_mode?: string
           p_rules: string
           p_scholarship_id: string
           p_shift: string
@@ -3520,6 +3532,7 @@ export type Database = {
         | "CANCELLED"
       review_status: "PENDING" | "APPROVED" | "REJECTED"
       scholarship_letter_status: "ISSUED" | "USED" | "EXPIRED" | "CANCELLED"
+      scholarship_price_mode: "MONTHLY" | "UPFRONT"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3749,6 +3762,7 @@ export const Constants = {
       ],
       review_status: ["PENDING", "APPROVED", "REJECTED"],
       scholarship_letter_status: ["ISSUED", "USED", "EXPIRED", "CANCELLED"],
+      scholarship_price_mode: ["MONTHLY", "UPFRONT"],
     },
   },
 } as const
