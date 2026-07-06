@@ -86,21 +86,19 @@ function ManageInstitutionPage() {
         </Button>
       </header>
 
-      <Tabs defaultValue="matriculas" className="space-y-4">
+      <Tabs defaultValue="bolsas" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="matriculas"><GraduationCap className="h-4 w-4 mr-1" /> Matrículas a efetivar</TabsTrigger>
-          <TabsTrigger value="perfil"><Building2 className="h-4 w-4 mr-1" /> Perfil</TabsTrigger>
-          <TabsTrigger value="unidades"><MapPin className="h-4 w-4 mr-1" /> Unidades</TabsTrigger>
-          <TabsTrigger value="cursos"><BookOpen className="h-4 w-4 mr-1" /> Cursos & Turmas</TabsTrigger>
           <TabsTrigger value="bolsas"><Tag className="h-4 w-4 mr-1" /> Bolsas</TabsTrigger>
+          <TabsTrigger value="matriculas"><GraduationCap className="h-4 w-4 mr-1" /> Matrículas a efetivar</TabsTrigger>
+          <TabsTrigger value="unidades"><MapPin className="h-4 w-4 mr-1" /> Unidades</TabsTrigger>
+          <TabsTrigger value="perfil"><Building2 className="h-4 w-4 mr-1" /> Perfil</TabsTrigger>
           <TabsTrigger value="financeiro"><DollarSign className="h-4 w-4 mr-1" /> Financeiro</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="matriculas"><EnrollmentsTab institutionId={id} /></TabsContent>
-        <TabsContent value="perfil"><ProfileTab inst={inst} /></TabsContent>
-        <TabsContent value="unidades"><UnitsTab institutionId={id} /></TabsContent>
-        <TabsContent value="cursos"><CoursesTab institutionId={id} /></TabsContent>
         <TabsContent value="bolsas"><ScholarshipsTab institutionId={id} /></TabsContent>
+        <TabsContent value="matriculas"><EnrollmentsTab institutionId={id} /></TabsContent>
+        <TabsContent value="unidades"><UnitsTab institutionId={id} /></TabsContent>
+        <TabsContent value="perfil"><ProfileTab inst={inst} /></TabsContent>
         <TabsContent value="financeiro"><FinanceTab institutionId={id} /></TabsContent>
       </Tabs>
     </div>
