@@ -343,7 +343,7 @@ function NewCourseDialog({
     onSuccess: () => {
       toast.success("Curso criado");
       setOpen(false);
-      setF({ name: "", level: "GRADUACAO", modality: "PRESENCIAL", shift: "NOITE", original_price: "", duration_months: "", description: "" });
+      setF({ name: "", level: "GRADUACAO", area: "", modality: "PRESENCIAL", shift: "NOITE", original_price: "", duration_months: "", description: "" });
       onCreated();
     },
     onError: (e: Error) => toast.error(e.message),
