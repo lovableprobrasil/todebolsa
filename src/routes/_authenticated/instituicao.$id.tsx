@@ -786,18 +786,24 @@ function ScholarshipFormDialog({
               />
             </FieldUI>
           </div>
-          <FieldUI label={isEad ? "Unidade (não exigida para EAD)" : "Unidade"}>
-            {isEad ? (
-              <div className="text-sm text-muted-foreground rounded-md border border-dashed border-border px-3 py-2">
-                Bolsa 100% online — cidade não é obrigatória.
-              </div>
-            ) : (
-              <SelectUI
-                value={f.institution_unit_id}
-                onChange={(v) => setF({ ...f, institution_unit_id: v })}
-                placeholder={units.length === 0 ? "Cadastre uma unidade primeiro" : "Selecione a unidade"}
-                options={units.map((u) => ({ value: u.id, label: `${u.name}${u.city ? ` — ${u.city}/${u.state}` : ""}` }))}
-              />
+          <FieldUI label={isEad ? "Unidade (opcional para EAD)" : "Unidade"}>
+            <SelectUI
+              value={f.institution_unit_id}
+              onChange={(v) => setF({ ...f, institution_unit_id: v })}
+              placeholder={
+                units.length === 0
+                  ? (isEad ? "Sem unidade específica (100% online)" : "Cadastre uma unidade primeiro")
+                  : (isEad ? "Sem unidade específica (100% online)" : "Selecione a unidade")
+              }
+              options={[
+                ...(isEad ? [{ value: "__none__", label: "Sem unidade específica (100% online)" }] : []),
+                ...units.map((u) => ({ value: u.id, label: `${u.name}${u.city ? ` — ${u.city}/${u.state}` : ""}` })),
+              ]}
+            />
+            {isEad && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Para bolsas 100% online você pode deixar sem unidade ou vincular a uma existente.
+              </p>
             )}
           </FieldUI>
 
