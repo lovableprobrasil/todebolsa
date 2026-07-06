@@ -2760,6 +2760,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      ensure_ead_unit: { Args: { p_institution_id: string }; Returns: string }
       expire_reservations: { Args: never; Returns: number }
       expire_scholarship_letters: { Args: never; Returns: number }
       export_my_data: { Args: never; Returns: Json }
@@ -2829,6 +2830,10 @@ export type Database = {
       }
       increment_news_share: { Args: { _slug: string }; Returns: undefined }
       increment_news_view: { Args: { _slug: string }; Returns: undefined }
+      institution_delete_scholarship: {
+        Args: { p_scholarship_id: string }
+        Returns: undefined
+      }
       institution_finance_overview: {
         Args: { p_institution_id: string }
         Returns: Json
@@ -2836,6 +2841,26 @@ export type Database = {
       institution_paid_leads_report: {
         Args: { p_institution_id: string }
         Returns: Json
+      }
+      institution_save_scholarship: {
+        Args: {
+          p_area: string
+          p_discount_type: string
+          p_discount_value: number
+          p_end_at: string
+          p_institution_id: string
+          p_institution_unit_id: string
+          p_is_active: boolean
+          p_level: string
+          p_modality: string
+          p_original_price: number
+          p_rules: string
+          p_scholarship_id: string
+          p_shift: string
+          p_title: string
+          p_vacancies: number
+        }
+        Returns: string
       }
       is_institution_admin: {
         Args: { _institution_id: string; _user_id: string }

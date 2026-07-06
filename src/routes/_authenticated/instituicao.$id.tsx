@@ -452,41 +452,67 @@ function NewOfferingDialog({ courseId, units, onCreated }: { courseId: string; u
 }
 
 // ---------------- Scholarships Tab ----------------
+type ScholarshipRow = {
+  id: string;
+  title: string;
+  discount_type: "PERCENT" | "FIXED" | "FINAL_PRICE";
+  discount_value: number;
+  price_with_scholarship: number;
+  is_active: boolean;
+  is_featured: boolean;
+  end_at: string | null;
+  rules: string | null;
+  max_uses: number | null;
+  course_offering: {
+    id: string;
+    institution_unit: { id: string; name: string; city: string; state: string };
+    course: {
+      id: string;
+      name: string;
+      level: string;
+      modality: string;
+      shift: string;
+      area: string | null;
+      original_price: number;
+      institution_id: string;
+    };
+  } | null;
+};
+
 function ScholarshipsTab({ institutionId }: { institutionId: string }) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<ScholarshipRow | null>(null);
 
-  const { data: offerings } = useQuery({
-    queryKey: ["offerings-options", institutionId],
+  const { data: units } = useQuery({
+    queryKey: ["institution-units-options", institutionId],
     queryFn: async () => {
       const { data } = await supabase
-        .from("course_offerings")
-        .select(`
-          id, vacancies_total,
-          course:courses!inner(id, name, original_price, institution_id),
-          institution_unit:institution_units!inner(name, city, state)
-        `)
-        .eq("course.institution_id", institutionId)
-        .eq("status", "ACTIVE");
+        .from("institution_units")
+        .select("id, name, city, state")
+        .eq("institution_id", institutionId)
+        .order("is_main", { ascending: false });
       return data ?? [];
     },
   });
 
-  const { data: scholarships } = useQuery({
+  const { data: scholarships, isLoading } = useQuery({
     queryKey: ["scholarships", institutionId],
     queryFn: async () => {
       const { data } = await supabase
         .from("scholarships")
         .select(`
-          id, title, discount_type, discount_value, price_with_scholarship, is_active, is_featured, start_at, end_at,
+          id, title, discount_type, discount_value, price_with_scholarship, is_active, is_featured,
+          end_at, rules, max_uses,
           course_offering:course_offerings!inner(
-            course:courses!inner(name, original_price, institution_id),
-            institution_unit:institution_units!inner(name, city, state)
+            id,
+            institution_unit:institution_units!inner(id, name, city, state),
+            course:courses!inner(id, name, level, modality, shift, area, original_price, institution_id)
           )
         `)
         .eq("course_offering.course.institution_id", institutionId)
         .order("created_at", { ascending: false });
-      return data ?? [];
+      return (data ?? []) as unknown as ScholarshipRow[];
     },
   });
 
@@ -495,7 +521,17 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
       const { error } = await supabase.from("scholarships").update({ is_active: value }).eq("id", id);
       if (error) throw error;
     },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["scholarships", institutionId] }),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const del = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc("institution_delete_scholarship", { p_scholarship_id: id });
+      if (error) throw error;
+    },
     onSuccess: () => {
+      toast.success("Bolsa removida.");
       qc.invalidateQueries({ queryKey: ["scholarships", institutionId] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -509,16 +545,23 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
             <Upload className="h-4 w-4" /> Importar bolsas (CSV)
           </Link>
         </Button>
-        <NewScholarshipDialog
-          offerings={offerings ?? []}
-          open={open}
-          setOpen={setOpen}
-          onCreated={() => qc.invalidateQueries({ queryKey: ["scholarships", institutionId] })}
-        />
+        <Button className="gap-2" onClick={() => { setEditing(null); setOpen(true); }}>
+          <Plus className="h-4 w-4" /> Nova bolsa
+        </Button>
       </div>
 
+      <ScholarshipFormDialog
+        open={open}
+        setOpen={setOpen}
+        institutionId={institutionId}
+        units={units ?? []}
+        editing={editing}
+        onSaved={() => qc.invalidateQueries({ queryKey: ["scholarships", institutionId] })}
+      />
+
       <div className="space-y-2">
-        {scholarships?.length === 0 && (
+        {isLoading && <div className="h-20 rounded-2xl bg-muted animate-pulse" />}
+        {!isLoading && scholarships?.length === 0 && (
           <p className="text-sm text-muted-foreground">
             Nenhuma bolsa cadastrada. Crie sua primeira bolsa para começar a receber reservas.
           </p>
@@ -527,26 +570,54 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
           const original = Number(s.course_offering?.course?.original_price ?? 0);
           const final = Number(s.price_with_scholarship);
           const pct = original > 0 ? Math.round(((original - final) / original) * 100) : 0;
+          const unit = s.course_offering?.institution_unit;
+          const isEad = s.course_offering?.course?.modality === "EAD";
           return (
             <div key={s.id} className="rounded-xl border border-border bg-card p-4 flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="font-bold">{s.title}</div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="font-bold">{s.title}</div>
+                  {!s.is_active && <Badge variant="outline" className="text-xs">Pausada</Badge>}
+                </div>
                 <div className="text-sm text-muted-foreground mt-0.5">
-                  {s.course_offering?.course?.name} · {s.course_offering?.institution_unit?.name}
+                  {COURSE_LEVEL_LABEL[s.course_offering?.course?.level ?? ""] ?? s.course_offering?.course?.level}
+                  {" · "}{MODALITY_LABEL[s.course_offering?.course?.modality ?? ""] ?? s.course_offering?.course?.modality}
+                  {isEad ? " · Online" : unit ? ` · ${unit.name}${unit.city ? ` (${unit.city}/${unit.state})` : ""}` : ""}
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <Badge className="bg-primary text-primary-foreground border-0">{pct}% OFF</Badge>
-                  <span className="text-sm font-bold text-primary">{formatBRL(final)}/mês</span>
+                  <span className="text-sm font-bold text-primary">{formatBRL(final)}</span>
                   <span className="text-xs text-muted-foreground line-through">{formatBRL(original)}</span>
                 </div>
               </div>
-              <Button
-                variant={s.is_active ? "outline" : "default"}
-                size="sm"
-                onClick={() => toggleActive.mutate({ id: s.id, value: !s.is_active })}
-              >
-                {s.is_active ? "Pausar" : "Ativar"}
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => { setEditing(s); setOpen(true); }}
+                >
+                  <Pencil className="h-4 w-4 mr-1" /> Editar
+                </Button>
+                <Button
+                  variant={s.is_active ? "outline" : "default"}
+                  size="sm"
+                  onClick={() => toggleActive.mutate({ id: s.id, value: !s.is_active })}
+                >
+                  {s.is_active ? "Pausar" : "Ativar"}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => {
+                    if (confirm(`Remover a bolsa "${s.title}"? Se houver reservas, ela será desativada em vez de excluída.`)) {
+                      del.mutate(s.id);
+                    }
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           );
         })}
@@ -555,95 +626,254 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
   );
 }
 
-function NewScholarshipDialog({
-  offerings, open, setOpen, onCreated,
-}: { offerings: any[]; open: boolean; setOpen: (v: boolean) => void; onCreated: () => void }) {
-  const [f, setF] = useState({
-    course_offering_id: "", title: "", discount_type: "PERCENT" as "PERCENT" | "FIXED" | "FINAL_PRICE",
-    discount_value: "", end_at: "", rules: "",
-  });
+function ScholarshipFormDialog({
+  open, setOpen, institutionId, units, editing, onSaved,
+}: {
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  institutionId: string;
+  units: Array<{ id: string; name: string; city: string; state: string }>;
+  editing: ScholarshipRow | null;
+  onSaved: () => void;
+}) {
+  const empty = {
+    title: "",
+    level: "GRADUACAO",
+    modality: "PRESENCIAL",
+    shift: "FLEXIVEL",
+    area: "",
+    institution_unit_id: "",
+    original_price: "",
+    discount_type: "PERCENT" as "PERCENT" | "FIXED" | "FINAL_PRICE",
+    discount_value: "",
+    vacancies: "10",
+    end_at: "",
+    rules: "",
+    is_active: true,
+  };
+  const [f, setF] = useState(empty);
 
-  const selected = offerings.find((o) => o.id === f.course_offering_id);
-  const original = Number(selected?.course?.original_price ?? 0);
+  // Populate form when editing changes / dialog opens
+  const editingId = editing?.id ?? null;
+  const openKey = `${open}-${editingId}`;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset when open/editing changes
+  useState(() => openKey); // no-op to please TS
+
+  // Sync when dialog opens
+  if (open && editing && f.title !== editing.title) {
+    const c = editing.course_offering?.course;
+    const isEad = c?.modality === "EAD";
+    setF({
+      title: editing.title ?? "",
+      level: c?.level ?? "GRADUACAO",
+      modality: c?.modality ?? "PRESENCIAL",
+      shift: c?.shift ?? "FLEXIVEL",
+      area: c?.area ?? "",
+      institution_unit_id: isEad ? "" : (editing.course_offering?.institution_unit?.id ?? ""),
+      original_price: String(c?.original_price ?? ""),
+      discount_type: editing.discount_type,
+      discount_value: String(editing.discount_value ?? ""),
+      vacancies: String(editing.max_uses ?? 10),
+      end_at: editing.end_at ? editing.end_at.slice(0, 10) : "",
+      rules: editing.rules ?? "",
+      is_active: editing.is_active,
+    });
+  }
+  if (open && !editing && f !== empty && f.title === "" && f.original_price === "") {
+    // already empty
+  }
+
+  const original = Number(f.original_price) || 0;
   const value = Number(f.discount_value) || 0;
   const finalPrice =
     f.discount_type === "PERCENT" ? Math.max(0, original * (1 - value / 100))
     : f.discount_type === "FIXED" ? Math.max(0, original - value)
     : value;
 
-  const create = useMutation({
+  const isEad = f.modality === "EAD";
+
+  const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("scholarships").insert({
-        course_offering_id: f.course_offering_id,
-        title: f.title,
-        discount_type: f.discount_type as any,
-        discount_value: value,
-        price_with_scholarship: finalPrice,
-        end_at: f.end_at ? new Date(f.end_at).toISOString() : null,
-        rules: f.rules || null,
-        is_active: true,
-      });
+      const { data, error } = await supabase.rpc("institution_save_scholarship", {
+        p_scholarship_id: editing?.id ?? null,
+        p_institution_id: institutionId,
+        p_title: f.title.trim(),
+        p_level: f.level,
+        p_modality: f.modality,
+        p_shift: f.shift,
+        p_area: f.area || "",
+        p_institution_unit_id: isEad ? null : (f.institution_unit_id || null),
+        p_original_price: original,
+        p_discount_type: f.discount_type,
+        p_discount_value: value,
+        p_vacancies: Number(f.vacancies) || 1,
+        p_end_at: f.end_at ? new Date(f.end_at).toISOString() : null,
+        p_rules: f.rules || "",
+        p_is_active: f.is_active,
+      } as never);
       if (error) throw error;
+      return data;
     },
     onSuccess: () => {
-      toast.success("Bolsa criada");
+      toast.success(editing ? "Bolsa atualizada." : "Bolsa criada.");
       setOpen(false);
-      setF({ course_offering_id: "", title: "", discount_type: "PERCENT", discount_value: "", end_at: "", rules: "" });
-      onCreated();
+      setF(empty);
+      onSaved();
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-2" disabled={offerings.length === 0}>
-          <Plus className="h-4 w-4" /> Nova bolsa
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-lg">
-        <DialogHeader><DialogTitle>Nova bolsa</DialogTitle></DialogHeader>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        setOpen(v);
+        if (!v) setF(empty);
+      }}
+    >
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{editing ? "Editar bolsa" : "Nova bolsa"}</DialogTitle>
+        </DialogHeader>
         <div className="space-y-3">
-          <FieldUI label="Turma">
-            <SelectUI
-              value={f.course_offering_id}
-              onChange={(v) => setF({...f, course_offering_id: v})}
-              placeholder="Selecione uma turma"
-              options={offerings.map((o) => ({
-                value: o.id,
-                label: `${o.course?.name} · ${o.institution_unit?.name} (${formatBRL(Number(o.course?.original_price))})`,
-              }))}
+          <FieldUI label="Nome do curso">
+            <Input
+              value={f.title}
+              onChange={(e) => setF({ ...f, title: e.target.value })}
+              placeholder="Ex.: Administração"
             />
           </FieldUI>
-          <FieldUI label="Título"><Input value={f.title} onChange={(e) => setF({...f, title: e.target.value})} placeholder="Ex.: Bolsa de inverno 2026" /></FieldUI>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <FieldUI label="Nível">
+              <SelectUI
+                value={f.level}
+                onChange={(v) => setF({ ...f, level: v })}
+                options={LEVELS.map((l) => ({ value: l, label: COURSE_LEVEL_LABEL[l] ?? l }))}
+              />
+            </FieldUI>
+            <FieldUI label="Modalidade">
+              <SelectUI
+                value={f.modality}
+                onChange={(v) => setF({ ...f, modality: v, institution_unit_id: v === "EAD" ? "" : f.institution_unit_id })}
+                options={MODALITIES.map((m) => ({ value: m, label: MODALITY_LABEL[m] ?? m }))}
+              />
+            </FieldUI>
+            <FieldUI label="Turno">
+              <SelectUI
+                value={f.shift}
+                onChange={(v) => setF({ ...f, shift: v })}
+                options={SHIFTS.map((s) => ({ value: s, label: SHIFT_LABEL[s] ?? s }))}
+              />
+            </FieldUI>
+            <FieldUI label="Área de conhecimento">
+              <SelectUI
+                value={f.area}
+                onChange={(v) => setF({ ...f, area: v })}
+                placeholder="Selecione uma área (opcional)"
+                options={KNOWLEDGE_AREAS.map((a) => ({ value: a.slug, label: a.label }))}
+              />
+            </FieldUI>
+          </div>
+          <FieldUI label={isEad ? "Unidade (não exigida para EAD)" : "Unidade"}>
+            {isEad ? (
+              <div className="text-sm text-muted-foreground rounded-md border border-dashed border-border px-3 py-2">
+                Bolsa 100% online — cidade não é obrigatória.
+              </div>
+            ) : (
+              <SelectUI
+                value={f.institution_unit_id}
+                onChange={(v) => setF({ ...f, institution_unit_id: v })}
+                placeholder={units.length === 0 ? "Cadastre uma unidade primeiro" : "Selecione a unidade"}
+                options={units.map((u) => ({ value: u.id, label: `${u.name}${u.city ? ` — ${u.city}/${u.state}` : ""}` }))}
+              />
+            )}
+          </FieldUI>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <FieldUI label="Valor do curso ou mensalidade (R$)">
+              <Input
+                type="number" min="0" step="0.01"
+                value={f.original_price}
+                onChange={(e) => setF({ ...f, original_price: e.target.value })}
+                placeholder="Ex.: 1200,00"
+              />
+            </FieldUI>
+            <FieldUI label="Vagas">
+              <Input
+                type="number" min="1"
+                value={f.vacancies}
+                onChange={(e) => setF({ ...f, vacancies: e.target.value })}
+              />
+            </FieldUI>
             <FieldUI label="Tipo de desconto">
-              <SelectUI value={f.discount_type} onChange={(v) => setF({...f, discount_type: v as any})}
+              <SelectUI
+                value={f.discount_type}
+                onChange={(v) => setF({ ...f, discount_type: v as "PERCENT" | "FIXED" | "FINAL_PRICE" })}
                 options={[
-                  { value: "PERCENT", label: "Porcentagem (%)" },
-                  { value: "FIXED", label: "Valor fixo (R$)" },
-                  { value: "FINAL_PRICE", label: "Preço final (R$)" },
+                  { value: "PERCENT", label: "Percentual (%) sobre o valor" },
+                  { value: "FIXED", label: "Valor fixo (R$) de desconto" },
+                  { value: "FINAL_PRICE", label: "Preço final com desconto (R$)" },
                 ]}
               />
             </FieldUI>
-            <FieldUI label="Valor">
-              <Input type="number" min="0" step="0.01" value={f.discount_value} onChange={(e) => setF({...f, discount_value: e.target.value})} />
+            <FieldUI label={
+              f.discount_type === "PERCENT" ? "Percentual de desconto (%)" :
+              f.discount_type === "FIXED" ? "Valor do desconto (R$)" :
+              "Preço final (R$)"
+            }>
+              <Input
+                type="number" min="0" step="0.01"
+                value={f.discount_value}
+                onChange={(e) => setF({ ...f, discount_value: e.target.value })}
+              />
             </FieldUI>
           </div>
-          {selected && (
+
+          {original > 0 && value > 0 && (
             <div className="rounded-lg bg-secondary p-3 text-sm">
-              Mensalidade original: <strong>{formatBRL(original)}</strong> →
-              {" "}<span className="text-primary font-bold">{formatBRL(finalPrice)}</span>
+              De <strong>{formatBRL(original)}</strong> por{" "}
+              <span className="text-primary font-bold">{formatBRL(finalPrice)}</span>
+              {original > finalPrice && (
+                <span className="ml-2 text-muted-foreground">
+                  (economia de {formatBRL(original - finalPrice)} · {Math.round(((original - finalPrice) / original) * 100)}% OFF)
+                </span>
+              )}
             </div>
           )}
-          <FieldUI label="Validade (opcional)">
-            <Input type="date" value={f.end_at} onChange={(e) => setF({...f, end_at: e.target.value})} />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <FieldUI label="Validade da oferta (opcional)">
+              <Input type="date" value={f.end_at} onChange={(e) => setF({ ...f, end_at: e.target.value })} />
+            </FieldUI>
+            <FieldUI label="Status">
+              <SelectUI
+                value={f.is_active ? "ACTIVE" : "PAUSED"}
+                onChange={(v) => setF({ ...f, is_active: v === "ACTIVE" })}
+                options={[
+                  { value: "ACTIVE", label: "Ativa (visível no marketplace)" },
+                  { value: "PAUSED", label: "Pausada" },
+                ]}
+              />
+            </FieldUI>
+          </div>
+          <FieldUI label="Regras / observações (opcional)">
+            <Textarea rows={2} value={f.rules} onChange={(e) => setF({ ...f, rules: e.target.value })} />
           </FieldUI>
-          <FieldUI label="Regras"><Textarea rows={2} value={f.rules} onChange={(e) => setF({...f, rules: e.target.value})} /></FieldUI>
         </div>
         <DialogFooter>
-          <Button onClick={() => create.mutate()} disabled={create.isPending || !f.course_offering_id || !f.title || !f.discount_value}>
-            {create.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />} Criar bolsa
+          <Button variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+          <Button
+            onClick={() => save.mutate()}
+            disabled={
+              save.isPending ||
+              !f.title.trim() ||
+              !f.original_price ||
+              !f.discount_value ||
+              (!isEad && !f.institution_unit_id)
+            }
+          >
+            {save.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+            {editing ? "Salvar alterações" : "Criar bolsa"}
           </Button>
         </DialogFooter>
       </DialogContent>
