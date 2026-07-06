@@ -589,8 +589,18 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <Badge className="bg-primary text-primary-foreground border-0">{pct}% OFF</Badge>
-                  <span className="text-sm font-bold text-primary">{formatBRL(final)}</span>
+                  <span className="text-sm font-bold text-primary">
+                    {formatBRL(final)}{s.price_mode === "MONTHLY" ? "/mês" : ""}
+                  </span>
                   <span className="text-xs text-muted-foreground line-through">{formatBRL(original)}</span>
+                  {s.duration_months ? (
+                    <span className="text-xs text-muted-foreground">· {s.duration_months} meses</span>
+                  ) : null}
+                  {s.installments_count ? (
+                    <span className="text-xs text-muted-foreground">
+                      · {s.installments_count}{s.price_mode === "MONTHLY" ? " mensalidades" : "x"}
+                    </span>
+                  ) : null}
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
