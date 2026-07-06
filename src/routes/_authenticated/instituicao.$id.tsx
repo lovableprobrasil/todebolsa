@@ -463,6 +463,9 @@ type ScholarshipRow = {
   end_at: string | null;
   rules: string | null;
   max_uses: number | null;
+  duration_months: number | null;
+  price_mode: "MONTHLY" | "UPFRONT" | null;
+  installments_count: number | null;
   course_offering: {
     id: string;
     institution_unit: { id: string; name: string; city: string; state: string };
