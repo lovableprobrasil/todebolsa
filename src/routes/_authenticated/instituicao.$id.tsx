@@ -710,7 +710,7 @@ function ScholarshipFormDialog({
         p_end_at: f.end_at ? new Date(f.end_at).toISOString() : null,
         p_rules: f.rules || "",
         p_is_active: f.is_active,
-      });
+      } as never);
       if (error) throw error;
       return data;
     },
