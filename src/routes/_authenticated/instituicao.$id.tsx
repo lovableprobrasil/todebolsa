@@ -506,7 +506,7 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
         .from("scholarships")
         .select(`
           id, title, discount_type, discount_value, price_with_scholarship, is_active, is_featured,
-          end_at, rules, max_uses,
+          end_at, rules, max_uses, duration_months, price_mode, installments_count,
           course_offering:course_offerings!inner(
             id,
             institution_unit:institution_units!inner(id, name, city, state),
