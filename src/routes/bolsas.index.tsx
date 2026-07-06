@@ -25,6 +25,7 @@ type SortMode =
 
 type BolsasSearch = {
   level?: string;
+  area?: string;
   q?: string;
   city?: string;
   modality?: string;
