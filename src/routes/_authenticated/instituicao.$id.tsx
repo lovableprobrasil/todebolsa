@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { COURSE_LEVEL_LABEL, MODALITY_LABEL, SHIFT_LABEL, formatBRL } from "@/lib/format";
+import { COURSE_LEVEL_LABEL, MODALITY_LABEL, SHIFT_LABEL, formatBRL, KNOWLEDGE_AREAS } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/instituicao/$id")({
   component: ManageInstitutionPage,
@@ -318,7 +318,7 @@ function NewCourseDialog({
   institutionId, units, open, setOpen, onCreated,
 }: { institutionId: string; units: any[]; open: boolean; setOpen: (v: boolean) => void; onCreated: () => void }) {
   const [f, setF] = useState({
-    name: "", level: "GRADUACAO", modality: "PRESENCIAL", shift: "NOITE",
+    name: "", level: "GRADUACAO", area: "", modality: "PRESENCIAL", shift: "NOITE",
     original_price: "", duration_months: "", description: "",
   });
 
@@ -330,19 +330,20 @@ function NewCourseDialog({
         slug,
         name: f.name,
         level: f.level as any,
+        area: f.area || null,
         modality: f.modality as any,
         shift: f.shift as any,
         original_price: Number(f.original_price),
         duration_months: f.duration_months ? Number(f.duration_months) : null,
         description: f.description || null,
         is_active: true,
-      });
+      } as any);
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Curso criado");
       setOpen(false);
-      setF({ name: "", level: "GRADUACAO", modality: "PRESENCIAL", shift: "NOITE", original_price: "", duration_months: "", description: "" });
+      setF({ name: "", level: "GRADUACAO", area: "", modality: "PRESENCIAL", shift: "NOITE", original_price: "", duration_months: "", description: "" });
       onCreated();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -355,6 +356,13 @@ function NewCourseDialog({
         <DialogHeader><DialogTitle>Novo curso</DialogTitle></DialogHeader>
         <div className="space-y-3">
           <FieldUI label="Nome do curso"><Input value={f.name} onChange={(e) => setF({...f, name: e.target.value})} /></FieldUI>
+          <FieldUI label="Área de conhecimento">
+            <SelectUI
+              value={f.area}
+              onChange={(v) => setF({...f, area: v})}
+              options={[{ value: "", label: "Selecione uma área" }, ...KNOWLEDGE_AREAS.map((a) => ({ value: a.slug, label: a.label }))]}
+            />
+          </FieldUI>
           <div className="grid grid-cols-3 gap-3">
             <FieldUI label="Nível">
               <SelectUI value={f.level} onChange={(v) => setF({...f, level: v})} options={LEVELS.map((l) => ({ value: l, label: COURSE_LEVEL_LABEL[l] ?? l }))} />

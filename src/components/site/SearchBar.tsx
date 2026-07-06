@@ -1,29 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Search, MapPin } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CATEGORIES } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CATEGORIES, KNOWLEDGE_AREAS, MODALITY_LABEL } from "@/lib/format";
+
+const MODALITIES = ["PRESENCIAL", "SEMIPRESENCIAL", "EAD"] as const;
 
 export function SearchBar({
   initialLevel,
-  initialQuery,
+  initialArea,
+  initialModality,
   initialCity,
-  showLevelChips = true,
+  initialQuery,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  showLevelChips: _showLevelChips = true,
 }: {
   initialLevel?: string;
-  initialQuery?: string;
+  initialArea?: string;
+  initialModality?: string;
   initialCity?: string;
+  initialQuery?: string;
   showLevelChips?: boolean;
 }) {
   const navigate = useNavigate();
-  const [level, setLevel] = useState<string | undefined>(initialLevel ?? "GRADUACAO");
-  const [query, setQuery] = useState(initialQuery ?? "");
-  const [city, setCity] = useState(initialCity ?? "");
+  const [level, setLevel] = useState<string>(initialLevel ?? "");
+  const [area, setArea] = useState<string>(initialArea ?? "");
+  const [modality, setModality] = useState<string>(initialModality ?? "");
+  const [city, setCity] = useState<string>(initialCity ?? "");
+  const [query, setQuery] = useState<string>(initialQuery ?? "");
 
-  const placeholder =
-    CATEGORIES.find((c) => c.slug === level)?.placeholder ?? "Curso, instituição, cidade ou área";
+  const isEad = modality === "EAD";
+
+  // Ao trocar para EAD, cidade deixa de ser exigida — limpamos o campo
+  useEffect(() => {
+    if (isEad && city) setCity("");
+  }, [isEad, city]);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -31,67 +50,117 @@ export function SearchBar({
       to: "/bolsas",
       search: {
         level: level || undefined,
+        area: area || undefined,
+        modality: modality || undefined,
+        city: !isEad && city.trim() ? city.trim() : undefined,
         q: query.trim() || undefined,
-        city: city.trim() || undefined,
       },
     });
   }
 
   return (
-    <div className="rounded-2xl bg-card border border-border shadow-[var(--shadow-card)] p-3 md:p-4 space-y-3">
-      {showLevelChips ? (
-        <div className="flex flex-wrap gap-1.5">
-          {CATEGORIES.map((c) => {
-            const active = level === c.slug;
-            return (
-              <button
-                key={c.slug}
-                type="button"
-                onClick={() => setLevel(active ? undefined : c.slug)}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium border transition-colors",
-                  active
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-foreground/80 border-border hover:border-primary/40 hover:text-foreground",
-                )}
-                aria-pressed={active}
-              >
-                {c.label}
-              </button>
-            );
-          })}
-        </div>
-      ) : null}
-
-      <form
-        onSubmit={submit}
-        className="grid gap-2 md:grid-cols-[1.6fr_1fr_auto] md:items-center"
-      >
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
-            className="h-12 pl-9"
-            aria-label="Buscar"
-          />
+    <div className="rounded-2xl bg-card border border-border shadow-[var(--shadow-card)] p-3 md:p-4">
+      <form onSubmit={submit} className="grid gap-2 md:grid-cols-2 lg:grid-cols-4">
+        {/* Tipo de curso */}
+        <div className="space-y-1">
+          <label className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Tipo de curso
+          </label>
+          <Select value={level || "ALL"} onValueChange={(v) => setLevel(v === "ALL" ? "" : v)}>
+            <SelectTrigger className="h-12">
+              <SelectValue placeholder="Todos os tipos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todos os tipos</SelectItem>
+              {CATEGORIES.map((c) => (
+                <SelectItem key={c.slug} value={c.slug}>
+                  {c.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="relative">
-          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="Cidade ou EAD"
-            className="h-12 pl-9"
-            aria-label="Cidade"
-          />
+        {/* Área de interesse */}
+        <div className="space-y-1">
+          <label className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Área de interesse
+          </label>
+          <Select value={area || "ALL"} onValueChange={(v) => setArea(v === "ALL" ? "" : v)}>
+            <SelectTrigger className="h-12">
+              <SelectValue placeholder="Todas as áreas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todas as áreas</SelectItem>
+              {KNOWLEDGE_AREAS.map((a) => (
+                <SelectItem key={a.slug} value={a.slug}>
+                  {a.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <Button type="submit" size="lg" className="h-12 px-6 font-semibold">
-          Buscar bolsas
-        </Button>
+        {/* Modalidade */}
+        <div className="space-y-1">
+          <label className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Modalidade
+          </label>
+          <Select value={modality || "ALL"} onValueChange={(v) => setModality(v === "ALL" ? "" : v)}>
+            <SelectTrigger className="h-12">
+              <SelectValue placeholder="Todas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todas</SelectItem>
+              {MODALITIES.map((m) => (
+                <SelectItem key={m} value={m}>
+                  {MODALITY_LABEL[m]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Cidade */}
+        <div className="space-y-1">
+          <label className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Cidade {isEad ? "(não exigido em EAD)" : ""}
+          </label>
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder={isEad ? "Curso à distância" : "Cidade"}
+              disabled={isEad}
+              className="h-12 pl-9"
+              aria-label="Cidade"
+            />
+          </div>
+        </div>
+
+        {/* Palavra-chave opcional */}
+        <div className="md:col-span-2 lg:col-span-3 space-y-1">
+          <label className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Palavra-chave (opcional)
+          </label>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Ex.: enfermagem, direito, inglês..."
+              className="h-12 pl-9"
+              aria-label="Palavra-chave"
+            />
+          </div>
+        </div>
+
+        <div className="md:col-span-2 lg:col-span-1 flex items-end">
+          <Button type="submit" size="lg" className="h-12 w-full font-semibold">
+            Buscar bolsas
+          </Button>
+        </div>
       </form>
     </div>
   );

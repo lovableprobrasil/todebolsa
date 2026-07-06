@@ -6,7 +6,7 @@ import { Footer } from "@/components/site/Footer";
 import { SearchBar } from "@/components/site/SearchBar";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
 import { listScholarships, listInstitutionsLite } from "@/lib/scholarships";
-import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL } from "@/lib/format";
+import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL, KNOWLEDGE_AREAS, AREA_LABEL } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -25,6 +25,7 @@ type SortMode =
 
 type BolsasSearch = {
   level?: string;
+  area?: string;
   q?: string;
   city?: string;
   modality?: string;
@@ -69,6 +70,7 @@ function num(v: unknown): number | undefined {
 export const Route = createFileRoute("/bolsas/")({
   validateSearch: (raw: Record<string, unknown>): BolsasSearch => ({
     level: str(raw.level),
+    area: str(raw.area),
     q: str(raw.q),
     city: str(raw.city),
     modality: str(raw.modality),
@@ -130,6 +132,7 @@ function BolsasPage() {
   const filters = useMemo(
     () => ({
       level: search.level,
+      area: search.area,
       query: search.q,
       city: search.city,
       modality: search.modality,
@@ -155,6 +158,12 @@ function BolsasPage() {
       key: "level",
       label: COURSE_LEVEL_LABEL[search.level] ?? search.level,
       onRemove: () => update({ level: undefined }),
+    });
+  if (search.area)
+    activeChips.push({
+      key: "area",
+      label: AREA_LABEL[search.area] ?? search.area,
+      onRemove: () => update({ area: undefined }),
     });
   if (search.modality)
     activeChips.push({
@@ -226,6 +235,23 @@ function BolsasPage() {
             <SelectItem value="ALL">Todos os níveis</SelectItem>
             {CATEGORIES.map((c) => (
               <SelectItem key={c.slug} value={c.slug}>{c.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </section>
+
+      {/* Área de interesse */}
+      <section>
+        <h3 className="text-sm font-bold mb-2">Área de interesse</h3>
+        <Select
+          value={search.area ?? "ALL"}
+          onValueChange={(v) => update({ area: v === "ALL" ? undefined : v })}
+        >
+          <SelectTrigger className="w-full"><SelectValue placeholder="Todas as áreas" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Todas as áreas</SelectItem>
+            {KNOWLEDGE_AREAS.map((a) => (
+              <SelectItem key={a.slug} value={a.slug}>{a.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -350,6 +376,8 @@ function BolsasPage() {
           </p>
           <SearchBar
             initialLevel={search.level}
+            initialArea={search.area}
+            initialModality={search.modality}
             initialQuery={search.q}
             initialCity={search.city}
             showLevelChips={false}

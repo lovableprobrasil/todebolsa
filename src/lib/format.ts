@@ -61,3 +61,25 @@ export const CATEGORIES = [
   { slug: "MBA", label: "MBA", icon: "TrendingUp", placeholder: "Digite o MBA desejado" },
   { slug: "CURSO_LIVRE", label: "Cursos Livres", icon: "Sparkles", placeholder: "Digite o curso livre desejado" },
 ] as const;
+
+export const KNOWLEDGE_AREAS = [
+  { slug: "SAUDE", label: "Saúde e Bem-estar" },
+  { slug: "TECNOLOGIA", label: "Tecnologia e Computação" },
+  { slug: "NEGOCIOS", label: "Negócios e Gestão" },
+  { slug: "ENGENHARIAS", label: "Engenharias" },
+  { slug: "DIREITO", label: "Direito e Ciências Jurídicas" },
+  { slug: "EDUCACAO", label: "Educação e Licenciaturas" },
+  { slug: "COMUNICACAO", label: "Comunicação e Marketing" },
+  { slug: "ARTES", label: "Artes e Design" },
+  { slug: "CIENCIAS_HUMANAS", label: "Ciências Humanas e Sociais" },
+  { slug: "CIENCIAS_EXATAS", label: "Ciências Exatas e Naturais" },
+  { slug: "AGRARIAS", label: "Ciências Agrárias e Ambientais" },
+  { slug: "GASTRONOMIA", label: "Gastronomia e Hotelaria" },
+  { slug: "IDIOMAS_AREA", label: "Idiomas" },
+  { slug: "CONCURSOS", label: "Concursos e Preparatórios" },
+  { slug: "OUTROS", label: "Outras áreas" },
+] as const;
+
+export const AREA_LABEL: Record<string, string> = Object.fromEntries(
+  KNOWLEDGE_AREAS.map((a) => [a.slug, a.label]),
+);

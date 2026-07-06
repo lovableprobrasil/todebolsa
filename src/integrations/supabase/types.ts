@@ -540,6 +540,7 @@ export type Database = {
       }
       courses: {
         Row: {
+          area: string | null
           created_at: string
           description: string | null
           duration_months: number | null
@@ -558,6 +559,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          area?: string | null
           created_at?: string
           description?: string | null
           duration_months?: number | null
@@ -576,6 +578,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          area?: string | null
           created_at?: string
           description?: string | null
           duration_months?: number | null

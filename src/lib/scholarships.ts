@@ -65,6 +65,7 @@ export type SortMode =
 
 export type SearchFilters = {
   level?: string;
+  area?: string;
   query?: string;
   city?: string;
   state?: string;
@@ -92,6 +93,7 @@ export async function listScholarships(filters: SearchFilters = {}): Promise<Sch
   if (filters.maxPrice) q = q.lte("price_with_scholarship", filters.maxPrice);
   if (filters.minPrice) q = q.gte("price_with_scholarship", filters.minPrice);
   if (filters.level) q = q.eq("course_offering.course.level", filters.level);
+  if (filters.area) q = q.eq("course_offering.course.area", filters.area);
   if (filters.modality) q = q.eq("course_offering.course.modality", filters.modality);
   if (filters.city) q = q.ilike("course_offering.institution_unit.city", `%${filters.city}%`);
   if (filters.state) q = q.eq("course_offering.institution_unit.state", filters.state);
