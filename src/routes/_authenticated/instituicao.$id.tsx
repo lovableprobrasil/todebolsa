@@ -463,6 +463,9 @@ type ScholarshipRow = {
   end_at: string | null;
   rules: string | null;
   max_uses: number | null;
+  duration_months: number | null;
+  price_mode: "MONTHLY" | "UPFRONT" | null;
+  installments_count: number | null;
   course_offering: {
     id: string;
     institution_unit: { id: string; name: string; city: string; state: string };
@@ -503,7 +506,7 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
         .from("scholarships")
         .select(`
           id, title, discount_type, discount_value, price_with_scholarship, is_active, is_featured,
-          end_at, rules, max_uses,
+          end_at, rules, max_uses, duration_months, price_mode, installments_count,
           course_offering:course_offerings!inner(
             id,
             institution_unit:institution_units!inner(id, name, city, state),
@@ -586,8 +589,18 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <Badge className="bg-primary text-primary-foreground border-0">{pct}% OFF</Badge>
-                  <span className="text-sm font-bold text-primary">{formatBRL(final)}</span>
+                  <span className="text-sm font-bold text-primary">
+                    {formatBRL(final)}{s.price_mode === "MONTHLY" ? "/mês" : ""}
+                  </span>
                   <span className="text-xs text-muted-foreground line-through">{formatBRL(original)}</span>
+                  {s.duration_months ? (
+                    <span className="text-xs text-muted-foreground">· {s.duration_months} meses</span>
+                  ) : null}
+                  {s.installments_count ? (
+                    <span className="text-xs text-muted-foreground">
+                      · {s.installments_count}{s.price_mode === "MONTHLY" ? " mensalidades" : "x"}
+                    </span>
+                  ) : null}
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -650,16 +663,13 @@ function ScholarshipFormDialog({
     end_at: "",
     rules: "",
     is_active: true,
+    duration_months: "",
+    price_mode: "MONTHLY" as "MONTHLY" | "UPFRONT",
+    installments_count: "",
   };
   const [f, setF] = useState(empty);
 
-  // Populate form when editing changes / dialog opens
-  const editingId = editing?.id ?? null;
-  const openKey = `${open}-${editingId}`;
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset when open/editing changes
-  useState(() => openKey); // no-op to please TS
-
-  // Sync when dialog opens
+  // Sync when dialog opens with an editing row
   if (open && editing && f.title !== editing.title) {
     const c = editing.course_offering?.course;
     const isEad = c?.modality === "EAD";
@@ -677,10 +687,10 @@ function ScholarshipFormDialog({
       end_at: editing.end_at ? editing.end_at.slice(0, 10) : "",
       rules: editing.rules ?? "",
       is_active: editing.is_active,
+      duration_months: editing.duration_months ? String(editing.duration_months) : "",
+      price_mode: (editing.price_mode ?? "MONTHLY") as "MONTHLY" | "UPFRONT",
+      installments_count: editing.installments_count ? String(editing.installments_count) : "",
     });
-  }
-  if (open && !editing && f !== empty && f.title === "" && f.original_price === "") {
-    // already empty
   }
 
   const original = Number(f.original_price) || 0;
@@ -691,6 +701,7 @@ function ScholarshipFormDialog({
     : value;
 
   const isEad = f.modality === "EAD";
+  const isMonthly = f.price_mode === "MONTHLY";
 
   const save = useMutation({
     mutationFn: async () => {
@@ -710,6 +721,9 @@ function ScholarshipFormDialog({
         p_end_at: f.end_at ? new Date(f.end_at).toISOString() : null,
         p_rules: f.rules || "",
         p_is_active: f.is_active,
+        p_duration_months: f.duration_months ? Number(f.duration_months) : null,
+        p_price_mode: f.price_mode,
+        p_installments_count: f.installments_count ? Number(f.installments_count) : null,
       } as never);
       if (error) throw error;
       return data;
@@ -790,12 +804,12 @@ function ScholarshipFormDialog({
           </FieldUI>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <FieldUI label="Valor do curso ou mensalidade (R$)">
+            <FieldUI label="Prazo do curso (meses)">
               <Input
-                type="number" min="0" step="0.01"
-                value={f.original_price}
-                onChange={(e) => setF({ ...f, original_price: e.target.value })}
-                placeholder="Ex.: 1200,00"
+                type="number" min="1"
+                value={f.duration_months}
+                onChange={(e) => setF({ ...f, duration_months: e.target.value })}
+                placeholder="Ex.: 48"
               />
             </FieldUI>
             <FieldUI label="Vagas">
@@ -803,6 +817,32 @@ function ScholarshipFormDialog({
                 type="number" min="1"
                 value={f.vacancies}
                 onChange={(e) => setF({ ...f, vacancies: e.target.value })}
+              />
+            </FieldUI>
+            <FieldUI label="Tipo de cobrança">
+              <SelectUI
+                value={f.price_mode}
+                onChange={(v) => setF({ ...f, price_mode: v as "MONTHLY" | "UPFRONT" })}
+                options={[
+                  { value: "MONTHLY", label: "Mensalidade" },
+                  { value: "UPFRONT", label: "Preço cheio (valor total)" },
+                ]}
+              />
+            </FieldUI>
+            <FieldUI label={isMonthly ? "Qtd. de mensalidades" : "Qtd. de parcelas"}>
+              <Input
+                type="number" min="1"
+                value={f.installments_count}
+                onChange={(e) => setF({ ...f, installments_count: e.target.value })}
+                placeholder={isMonthly ? "Ex.: 48" : "Ex.: 12"}
+              />
+            </FieldUI>
+            <FieldUI label={isMonthly ? "Valor da mensalidade (R$)" : "Valor cheio do curso (R$)"}>
+              <Input
+                type="number" min="0" step="0.01"
+                value={f.original_price}
+                onChange={(e) => setF({ ...f, original_price: e.target.value })}
+                placeholder={isMonthly ? "Ex.: 1200,00" : "Ex.: 24000,00"}
               />
             </FieldUI>
             <FieldUI label="Tipo de desconto">
@@ -829,17 +869,33 @@ function ScholarshipFormDialog({
             </FieldUI>
           </div>
 
-          {original > 0 && value > 0 && (
-            <div className="rounded-lg bg-secondary p-3 text-sm">
-              De <strong>{formatBRL(original)}</strong> por{" "}
-              <span className="text-primary font-bold">{formatBRL(finalPrice)}</span>
-              {original > finalPrice && (
-                <span className="ml-2 text-muted-foreground">
-                  (economia de {formatBRL(original - finalPrice)} · {Math.round(((original - finalPrice) / original) * 100)}% OFF)
-                </span>
-              )}
-            </div>
-          )}
+          {original > 0 && value > 0 && (() => {
+            const installments = Number(f.installments_count) || 0;
+            const total = isMonthly ? finalPrice * (installments || 1) : finalPrice;
+            const totalOriginal = isMonthly ? original * (installments || 1) : original;
+            return (
+              <div className="rounded-lg bg-secondary p-3 text-sm space-y-1">
+                <div>
+                  De <strong>{formatBRL(original)}</strong>
+                  {isMonthly ? "/mês" : ""} por{" "}
+                  <span className="text-primary font-bold">{formatBRL(finalPrice)}</span>
+                  {isMonthly ? "/mês" : ""}
+                  {original > finalPrice && (
+                    <span className="ml-2 text-muted-foreground">
+                      ({Math.round(((original - finalPrice) / original) * 100)}% OFF)
+                    </span>
+                  )}
+                </div>
+                {installments > 0 && (
+                  <div className="text-muted-foreground text-xs">
+                    Total {isMonthly ? "em " + installments + " mensalidades" : "em " + installments + "x"}:
+                    {" "}<strong className="text-foreground">{formatBRL(total)}</strong>
+                    {totalOriginal > total && ` (economia de ${formatBRL(totalOriginal - total)})`}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldUI label="Validade da oferta (opcional)">
