@@ -770,7 +770,8 @@ function ScholarshipFormDialog({
         p_end_at: f.end_at ? new Date(f.end_at).toISOString() : null,
         p_rules: f.rules || "",
         p_is_active: f.is_active,
-        p_duration_months: f.duration_months ? Number(f.duration_months) : null,
+        p_duration_value: f.duration_value ? Number(f.duration_value) : null,
+        p_duration_unit: f.duration_value ? f.duration_unit : null,
         p_price_mode: f.price_mode,
         p_installments_count: f.installments_count ? Number(f.installments_count) : null,
       } as never);
