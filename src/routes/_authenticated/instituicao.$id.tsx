@@ -650,16 +650,13 @@ function ScholarshipFormDialog({
     end_at: "",
     rules: "",
     is_active: true,
+    duration_months: "",
+    price_mode: "MONTHLY" as "MONTHLY" | "UPFRONT",
+    installments_count: "",
   };
   const [f, setF] = useState(empty);
 
-  // Populate form when editing changes / dialog opens
-  const editingId = editing?.id ?? null;
-  const openKey = `${open}-${editingId}`;
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset when open/editing changes
-  useState(() => openKey); // no-op to please TS
-
-  // Sync when dialog opens
+  // Sync when dialog opens with an editing row
   if (open && editing && f.title !== editing.title) {
     const c = editing.course_offering?.course;
     const isEad = c?.modality === "EAD";
@@ -677,10 +674,10 @@ function ScholarshipFormDialog({
       end_at: editing.end_at ? editing.end_at.slice(0, 10) : "",
       rules: editing.rules ?? "",
       is_active: editing.is_active,
+      duration_months: editing.duration_months ? String(editing.duration_months) : "",
+      price_mode: (editing.price_mode ?? "MONTHLY") as "MONTHLY" | "UPFRONT",
+      installments_count: editing.installments_count ? String(editing.installments_count) : "",
     });
-  }
-  if (open && !editing && f !== empty && f.title === "" && f.original_price === "") {
-    // already empty
   }
 
   const original = Number(f.original_price) || 0;
@@ -691,6 +688,7 @@ function ScholarshipFormDialog({
     : value;
 
   const isEad = f.modality === "EAD";
+  const isMonthly = f.price_mode === "MONTHLY";
 
   const save = useMutation({
     mutationFn: async () => {
@@ -710,6 +708,9 @@ function ScholarshipFormDialog({
         p_end_at: f.end_at ? new Date(f.end_at).toISOString() : null,
         p_rules: f.rules || "",
         p_is_active: f.is_active,
+        p_duration_months: f.duration_months ? Number(f.duration_months) : null,
+        p_price_mode: f.price_mode,
+        p_installments_count: f.installments_count ? Number(f.installments_count) : null,
       } as never);
       if (error) throw error;
       return data;
