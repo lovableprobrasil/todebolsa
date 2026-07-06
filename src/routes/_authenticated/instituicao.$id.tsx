@@ -655,7 +655,7 @@ function ScholarshipFormDialog({
     area: "",
     institution_unit_id: "",
     original_price: "",
-    discount_type: "PERCENT" as "PERCENT" | "FIXED" | "FINAL_PRICE",
+    discount_type: "PERCENT" as "PERCENT" | "FIXED",
     discount_value: "",
     vacancies: "10",
     end_at: "",
