@@ -794,12 +794,12 @@ function ScholarshipFormDialog({
           </FieldUI>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <FieldUI label="Valor do curso ou mensalidade (R$)">
+            <FieldUI label="Prazo do curso (meses)">
               <Input
-                type="number" min="0" step="0.01"
-                value={f.original_price}
-                onChange={(e) => setF({ ...f, original_price: e.target.value })}
-                placeholder="Ex.: 1200,00"
+                type="number" min="1"
+                value={f.duration_months}
+                onChange={(e) => setF({ ...f, duration_months: e.target.value })}
+                placeholder="Ex.: 48"
               />
             </FieldUI>
             <FieldUI label="Vagas">
@@ -807,6 +807,32 @@ function ScholarshipFormDialog({
                 type="number" min="1"
                 value={f.vacancies}
                 onChange={(e) => setF({ ...f, vacancies: e.target.value })}
+              />
+            </FieldUI>
+            <FieldUI label="Tipo de cobrança">
+              <SelectUI
+                value={f.price_mode}
+                onChange={(v) => setF({ ...f, price_mode: v as "MONTHLY" | "UPFRONT" })}
+                options={[
+                  { value: "MONTHLY", label: "Mensalidade" },
+                  { value: "UPFRONT", label: "Preço cheio (valor total)" },
+                ]}
+              />
+            </FieldUI>
+            <FieldUI label={isMonthly ? "Qtd. de mensalidades" : "Qtd. de parcelas"}>
+              <Input
+                type="number" min="1"
+                value={f.installments_count}
+                onChange={(e) => setF({ ...f, installments_count: e.target.value })}
+                placeholder={isMonthly ? "Ex.: 48" : "Ex.: 12"}
+              />
+            </FieldUI>
+            <FieldUI label={isMonthly ? "Valor da mensalidade (R$)" : "Valor cheio do curso (R$)"}>
+              <Input
+                type="number" min="0" step="0.01"
+                value={f.original_price}
+                onChange={(e) => setF({ ...f, original_price: e.target.value })}
+                placeholder={isMonthly ? "Ex.: 1200,00" : "Ex.: 24000,00"}
               />
             </FieldUI>
             <FieldUI label="Tipo de desconto">
