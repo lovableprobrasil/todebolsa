@@ -159,6 +159,12 @@ function BolsasPage() {
       label: COURSE_LEVEL_LABEL[search.level] ?? search.level,
       onRemove: () => update({ level: undefined }),
     });
+  if (search.area)
+    activeChips.push({
+      key: "area",
+      label: AREA_LABEL[search.area] ?? search.area,
+      onRemove: () => update({ area: undefined }),
+    });
   if (search.modality)
     activeChips.push({
       key: "modality",
