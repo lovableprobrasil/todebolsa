@@ -356,6 +356,13 @@ function NewCourseDialog({
         <DialogHeader><DialogTitle>Novo curso</DialogTitle></DialogHeader>
         <div className="space-y-3">
           <FieldUI label="Nome do curso"><Input value={f.name} onChange={(e) => setF({...f, name: e.target.value})} /></FieldUI>
+          <FieldUI label="Área de conhecimento">
+            <SelectUI
+              value={f.area}
+              onChange={(v) => setF({...f, area: v})}
+              options={[{ value: "", label: "Selecione uma área" }, ...KNOWLEDGE_AREAS.map((a) => ({ value: a.slug, label: a.label }))]}
+            />
+          </FieldUI>
           <div className="grid grid-cols-3 gap-3">
             <FieldUI label="Nível">
               <SelectUI value={f.level} onChange={(v) => setF({...f, level: v})} options={LEVELS.map((l) => ({ value: l, label: COURSE_LEVEL_LABEL[l] ?? l }))} />
