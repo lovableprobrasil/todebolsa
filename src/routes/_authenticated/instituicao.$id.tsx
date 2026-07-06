@@ -859,17 +859,33 @@ function ScholarshipFormDialog({
             </FieldUI>
           </div>
 
-          {original > 0 && value > 0 && (
-            <div className="rounded-lg bg-secondary p-3 text-sm">
-              De <strong>{formatBRL(original)}</strong> por{" "}
-              <span className="text-primary font-bold">{formatBRL(finalPrice)}</span>
-              {original > finalPrice && (
-                <span className="ml-2 text-muted-foreground">
-                  (economia de {formatBRL(original - finalPrice)} · {Math.round(((original - finalPrice) / original) * 100)}% OFF)
-                </span>
-              )}
-            </div>
-          )}
+          {original > 0 && value > 0 && (() => {
+            const installments = Number(f.installments_count) || 0;
+            const total = isMonthly ? finalPrice * (installments || 1) : finalPrice;
+            const totalOriginal = isMonthly ? original * (installments || 1) : original;
+            return (
+              <div className="rounded-lg bg-secondary p-3 text-sm space-y-1">
+                <div>
+                  De <strong>{formatBRL(original)}</strong>
+                  {isMonthly ? "/mês" : ""} por{" "}
+                  <span className="text-primary font-bold">{formatBRL(finalPrice)}</span>
+                  {isMonthly ? "/mês" : ""}
+                  {original > finalPrice && (
+                    <span className="ml-2 text-muted-foreground">
+                      ({Math.round(((original - finalPrice) / original) * 100)}% OFF)
+                    </span>
+                  )}
+                </div>
+                {installments > 0 && (
+                  <div className="text-muted-foreground text-xs">
+                    Total {isMonthly ? "em " + installments + " mensalidades" : "em " + installments + "x"}:
+                    {" "}<strong className="text-foreground">{formatBRL(total)}</strong>
+                    {totalOriginal > total && ` (economia de ${formatBRL(totalOriginal - total)})`}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldUI label="Validade da oferta (opcional)">
