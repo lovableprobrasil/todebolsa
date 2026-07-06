@@ -706,16 +706,19 @@ function ScholarshipFormDialog({
     end_at: "",
     rules: "",
     is_active: true,
-    duration_months: "",
+    duration_value: "",
+    duration_unit: "MESES" as "HORAS" | "MESES" | "ANOS",
     price_mode: "MONTHLY" as "MONTHLY" | "UPFRONT",
     installments_count: "",
   };
   const [f, setF] = useState(empty);
 
-  // Sync when dialog opens with an editing row
-  if (open && editing && f.title !== editing.title) {
+  // Sync form once per opened editing row (fix: previous inline setState re-ran on every keystroke, blocking title edits)
+  useEffect(() => {
+    if (!open) return;
+    if (!editing) { setF(empty); return; }
     const c = editing.course_offering?.course;
-    const isEad = c?.modality === "EAD";
+    const raw = editing as unknown as { duration_value?: number | string | null; duration_unit?: string | null };
     setF({
       title: editing.title ?? "",
       level: c?.level ?? "GRADUACAO",
@@ -730,11 +733,15 @@ function ScholarshipFormDialog({
       end_at: editing.end_at ? editing.end_at.slice(0, 10) : "",
       rules: editing.rules ?? "",
       is_active: editing.is_active,
-      duration_months: editing.duration_months ? String(editing.duration_months) : "",
+      duration_value: raw.duration_value != null
+        ? String(raw.duration_value)
+        : (editing.duration_months ? String(editing.duration_months) : ""),
+      duration_unit: ((raw.duration_unit as "HORAS" | "MESES" | "ANOS") ?? "MESES"),
       price_mode: (editing.price_mode ?? "MONTHLY") as "MONTHLY" | "UPFRONT",
       installments_count: editing.installments_count ? String(editing.installments_count) : "",
     });
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing?.id, open]);
 
   const original = Number(f.original_price) || 0;
   const value = Number(f.discount_value) || 0;
