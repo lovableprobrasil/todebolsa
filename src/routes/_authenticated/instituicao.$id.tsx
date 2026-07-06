@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Building2, Plus, BookOpen, Tag, MapPin, Loader2, Pencil, Trash2, Save, Clock, CheckCircle2, AlertCircle, Ban, GraduationCap, XCircle, Upload, DollarSign } from "lucide-react";
 import { FinanceTab } from "@/components/institution/FinanceTab";
@@ -706,16 +706,19 @@ function ScholarshipFormDialog({
     end_at: "",
     rules: "",
     is_active: true,
-    duration_months: "",
+    duration_value: "",
+    duration_unit: "MESES" as "HORAS" | "MESES" | "ANOS",
     price_mode: "MONTHLY" as "MONTHLY" | "UPFRONT",
     installments_count: "",
   };
   const [f, setF] = useState(empty);
 
-  // Sync when dialog opens with an editing row
-  if (open && editing && f.title !== editing.title) {
+  // Sync form once per opened editing row (fix: previous inline setState re-ran on every keystroke, blocking title edits)
+  useEffect(() => {
+    if (!open) return;
+    if (!editing) { setF(empty); return; }
     const c = editing.course_offering?.course;
-    const isEad = c?.modality === "EAD";
+    const raw = editing as unknown as { duration_value?: number | string | null; duration_unit?: string | null };
     setF({
       title: editing.title ?? "",
       level: c?.level ?? "GRADUACAO",
@@ -730,11 +733,15 @@ function ScholarshipFormDialog({
       end_at: editing.end_at ? editing.end_at.slice(0, 10) : "",
       rules: editing.rules ?? "",
       is_active: editing.is_active,
-      duration_months: editing.duration_months ? String(editing.duration_months) : "",
+      duration_value: raw.duration_value != null
+        ? String(raw.duration_value)
+        : (editing.duration_months ? String(editing.duration_months) : ""),
+      duration_unit: ((raw.duration_unit as "HORAS" | "MESES" | "ANOS") ?? "MESES"),
       price_mode: (editing.price_mode ?? "MONTHLY") as "MONTHLY" | "UPFRONT",
       installments_count: editing.installments_count ? String(editing.installments_count) : "",
     });
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing?.id, open]);
 
   const original = Number(f.original_price) || 0;
   const value = Number(f.discount_value) || 0;
@@ -763,7 +770,8 @@ function ScholarshipFormDialog({
         p_end_at: f.end_at ? new Date(f.end_at).toISOString() : null,
         p_rules: f.rules || "",
         p_is_active: f.is_active,
-        p_duration_months: f.duration_months ? Number(f.duration_months) : null,
+        p_duration_value: f.duration_value ? Number(f.duration_value) : null,
+        p_duration_unit: f.duration_value ? f.duration_unit : null,
         p_price_mode: f.price_mode,
         p_installments_count: f.installments_count ? Number(f.installments_count) : null,
       } as never);
@@ -852,13 +860,27 @@ function ScholarshipFormDialog({
           </FieldUI>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <FieldUI label="Prazo do curso (meses)">
-              <Input
-                type="number" min="1"
-                value={f.duration_months}
-                onChange={(e) => setF({ ...f, duration_months: e.target.value })}
-                placeholder="Ex.: 48"
-              />
+            <FieldUI label="Duração do curso">
+              <div className="flex gap-2">
+                <Input
+                  type="number" min="0" step="0.5"
+                  value={f.duration_value}
+                  onChange={(e) => setF({ ...f, duration_value: e.target.value })}
+                  placeholder="Ex.: 48"
+                  className="flex-1"
+                />
+                <div className="w-32">
+                  <SelectUI
+                    value={f.duration_unit}
+                    onChange={(v) => setF({ ...f, duration_unit: v as "HORAS" | "MESES" | "ANOS" })}
+                    options={[
+                      { value: "HORAS", label: "Horas" },
+                      { value: "MESES", label: "Meses" },
+                      { value: "ANOS", label: "Anos" },
+                    ]}
+                  />
+                </div>
+              </div>
             </FieldUI>
             <FieldUI label="Vagas">
               <Input
