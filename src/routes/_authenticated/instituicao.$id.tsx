@@ -765,7 +765,7 @@ function ScholarshipFormDialog({
             <FieldUI label="Modalidade">
               <SelectUI
                 value={f.modality}
-                onChange={(v) => setF({ ...f, modality: v, institution_unit_id: v === "EAD" ? "" : f.institution_unit_id })}
+                onChange={(v) => setF({ ...f, modality: v })}
                 options={MODALITIES.map((m) => ({ value: m, label: MODALITY_LABEL[m] ?? m }))}
               />
             </FieldUI>
