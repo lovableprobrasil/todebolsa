@@ -240,6 +240,23 @@ function BolsasPage() {
         </Select>
       </section>
 
+      {/* Área de interesse */}
+      <section>
+        <h3 className="text-sm font-bold mb-2">Área de interesse</h3>
+        <Select
+          value={search.area ?? "ALL"}
+          onValueChange={(v) => update({ area: v === "ALL" ? undefined : v })}
+        >
+          <SelectTrigger className="w-full"><SelectValue placeholder="Todas as áreas" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Todas as áreas</SelectItem>
+            {KNOWLEDGE_AREAS.map((a) => (
+              <SelectItem key={a.slug} value={a.slug}>{a.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </section>
+
       {/* Modalidade */}
       <section>
         <h3 className="text-sm font-bold mb-2">Modalidade</h3>
