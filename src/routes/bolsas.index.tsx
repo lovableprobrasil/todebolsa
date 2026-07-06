@@ -376,6 +376,8 @@ function BolsasPage() {
           </p>
           <SearchBar
             initialLevel={search.level}
+            initialArea={search.area}
+            initialModality={search.modality}
             initialQuery={search.q}
             initialCity={search.city}
             showLevelChips={false}
