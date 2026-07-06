@@ -330,13 +330,14 @@ function NewCourseDialog({
         slug,
         name: f.name,
         level: f.level as any,
+        area: f.area || null,
         modality: f.modality as any,
         shift: f.shift as any,
         original_price: Number(f.original_price),
         duration_months: f.duration_months ? Number(f.duration_months) : null,
         description: f.description || null,
         is_active: true,
-      });
+      } as any);
       if (error) throw error;
     },
     onSuccess: () => {
