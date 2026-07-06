@@ -529,6 +529,16 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ScholarshipRow | null>(null);
+  const [q, setQ] = useState("");
+  const [fLevel, setFLevel] = useState("");
+  const [fModality, setFModality] = useState("");
+  const [fShift, setFShift] = useState("");
+  const [fArea, setFArea] = useState("");
+  const [fUnit, setFUnit] = useState("");
+  const [fStatus, setFStatus] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
 
   const { data: units } = useQuery({
     queryKey: ["institution-units-options", institutionId],
@@ -583,6 +593,28 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const filtered = (scholarships ?? []).filter((s) => {
+    const c = s.course_offering?.course;
+    const u = s.course_offering?.institution_unit;
+    if (q && !s.title.toLowerCase().includes(q.toLowerCase()) && !(c?.name ?? "").toLowerCase().includes(q.toLowerCase())) return false;
+    if (fLevel && c?.level !== fLevel) return false;
+    if (fModality && c?.modality !== fModality) return false;
+    if (fShift && c?.shift !== fShift) return false;
+    if (fArea && (c?.area ?? "") !== fArea) return false;
+    if (fUnit && u?.id !== fUnit) return false;
+    if (fStatus === "ACTIVE" && !s.is_active) return false;
+    if (fStatus === "PAUSED" && s.is_active) return false;
+    return true;
+  });
+
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * pageSize;
+  const pageRows = filtered.slice(start, start + pageSize);
+
+  const resetPage = () => setPage(1);
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap justify-end gap-2">
@@ -605,14 +637,75 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
         onSaved={() => qc.invalidateQueries({ queryKey: ["scholarships", institutionId] })}
       />
 
+      <div className="rounded-xl border border-border bg-card p-3 space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+          <Input
+            placeholder="Buscar por título ou curso..."
+            value={q}
+            onChange={(e) => { setQ(e.target.value); resetPage(); }}
+          />
+          <Select value={fLevel || "ALL"} onValueChange={(v) => { setFLevel(v === "ALL" ? "" : v); resetPage(); }}>
+            <SelectTrigger><SelectValue placeholder="Nível" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todos os níveis</SelectItem>
+              {LEVELS.map((l) => <SelectItem key={l} value={l}>{COURSE_LEVEL_LABEL[l] ?? l}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fModality || "ALL"} onValueChange={(v) => { setFModality(v === "ALL" ? "" : v); resetPage(); }}>
+            <SelectTrigger><SelectValue placeholder="Modalidade" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todas as modalidades</SelectItem>
+              {MODALITIES.map((m) => <SelectItem key={m} value={m}>{MODALITY_LABEL[m] ?? m}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fShift || "ALL"} onValueChange={(v) => { setFShift(v === "ALL" ? "" : v); resetPage(); }}>
+            <SelectTrigger><SelectValue placeholder="Turno" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todos os turnos</SelectItem>
+              {SHIFTS.map((s) => <SelectItem key={s} value={s}>{SHIFT_LABEL[s] ?? s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fArea || "ALL"} onValueChange={(v) => { setFArea(v === "ALL" ? "" : v); resetPage(); }}>
+            <SelectTrigger><SelectValue placeholder="Área" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todas as áreas</SelectItem>
+              {KNOWLEDGE_AREAS.map((a) => <SelectItem key={a.slug} value={a.slug}>{a.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fUnit || "ALL"} onValueChange={(v) => { setFUnit(v === "ALL" ? "" : v); resetPage(); }}>
+            <SelectTrigger><SelectValue placeholder="Unidade" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todas as unidades</SelectItem>
+              {(units ?? []).map((u: any) => <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={fStatus || "ALL"} onValueChange={(v) => { setFStatus(v === "ALL" ? "" : v); resetPage(); }}>
+            <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todos os status</SelectItem>
+              <SelectItem value="ACTIVE">Ativas</SelectItem>
+              <SelectItem value="PAUSED">Pausadas</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            onClick={() => { setQ(""); setFLevel(""); setFModality(""); setFShift(""); setFArea(""); setFUnit(""); setFStatus(""); resetPage(); }}
+          >
+            Limpar filtros
+          </Button>
+        </div>
+      </div>
+
       <div className="space-y-2">
         {isLoading && <div className="h-20 rounded-2xl bg-muted animate-pulse" />}
-        {!isLoading && scholarships?.length === 0 && (
+        {!isLoading && total === 0 && (
           <p className="text-sm text-muted-foreground">
-            Nenhuma bolsa cadastrada. Crie sua primeira bolsa para começar a receber reservas.
+            {(scholarships?.length ?? 0) === 0
+              ? "Nenhuma bolsa cadastrada. Crie sua primeira bolsa para começar a receber reservas."
+              : "Nenhuma bolsa encontrada com os filtros aplicados."}
           </p>
         )}
-        {scholarships?.map((s) => {
+        {pageRows.map((s) => {
           const original = Number(s.course_offering?.course?.original_price ?? 0);
           const final = Number(s.price_with_scholarship);
           const pct = original > 0 ? Math.round(((original - final) / original) * 100) : 0;
@@ -678,9 +771,34 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
           );
         })}
       </div>
+
+      {total > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
+          <div className="text-sm text-muted-foreground">
+            Mostrando {start + 1}–{Math.min(start + pageSize, total)} de {total}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Por página:</span>
+            <Select value={String(pageSize)} onValueChange={(v) => { setPageSize(Number(v)); resetPage(); }}>
+              <SelectTrigger className="w-20"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {[10, 20, 30, 50].map((n) => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}>
+              Anterior
+            </Button>
+            <span className="text-sm">Página {currentPage} de {totalPages}</span>
+            <Button variant="outline" size="sm" disabled={currentPage >= totalPages} onClick={() => setPage(currentPage + 1)}>
+              Próxima
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
 
 function ScholarshipFormDialog({
   open, setOpen, institutionId, units, editing, onSaved,
