@@ -148,32 +148,59 @@ function ProfileTab({ inst }: { inst: any }) {
 }
 
 // ---------------- Units Tab ----------------
+type UnitRow = { id: string; name: string; city: string; state: string; address: string | null; phone: string | null; is_main: boolean };
+
 function UnitsTab({ institutionId }: { institutionId: string }) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [f, setF] = useState({ name: "", city: "", state: "", address: "", phone: "" });
+  const [editing, setEditing] = useState<UnitRow | null>(null);
+  const empty = { name: "", city: "", state: "", address: "", phone: "" };
+  const [f, setF] = useState(empty);
 
   const { data: units } = useQuery({
     queryKey: ["units", institutionId],
     queryFn: async () => {
       const { data } = await supabase.from("institution_units").select("*").eq("institution_id", institutionId).order("is_main", { ascending: false });
-      return data ?? [];
+      return (data ?? []) as UnitRow[];
     },
   });
 
-  const create = useMutation({
+  const openNew = () => {
+    setEditing(null);
+    setF(empty);
+    setOpen(true);
+  };
+  const openEdit = (u: UnitRow) => {
+    setEditing(u);
+    setF({ name: u.name, city: u.city, state: u.state, address: u.address ?? "", phone: u.phone ?? "" });
+    setOpen(true);
+  };
+
+  const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("institution_units").insert({
-        institution_id: institutionId, name: f.name, city: f.city, state: f.state.toUpperCase().slice(0,2),
-        address: f.address || null, phone: f.phone || null, is_main: false,
-      });
-      if (error) throw error;
+      const payload = {
+        name: f.name,
+        city: f.city,
+        state: f.state.toUpperCase().slice(0, 2),
+        address: f.address || null,
+        phone: f.phone || null,
+      };
+      if (editing) {
+        const { error } = await supabase.from("institution_units").update(payload).eq("id", editing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("institution_units").insert({
+          institution_id: institutionId, ...payload, is_main: false,
+        });
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["units", institutionId] });
-      toast.success("Unidade criada");
+      toast.success(editing ? "Unidade atualizada" : "Unidade criada");
       setOpen(false);
-      setF({ name: "", city: "", state: "", address: "", phone: "" });
+      setEditing(null);
+      setF(empty);
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -187,16 +214,21 @@ function UnitsTab({ institutionId }: { institutionId: string }) {
       qc.invalidateQueries({ queryKey: ["units", institutionId] });
       toast.success("Unidade removida");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) =>
+      toast.error(
+        /foreign key|violates/i.test(e.message)
+          ? "Existem bolsas/turmas vinculadas a esta unidade. Remova-as ou pause-as antes de excluir."
+          : e.message,
+      ),
   });
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button className="gap-2"><Plus className="h-4 w-4" /> Nova unidade</Button></DialogTrigger>
+        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditing(null); setF(empty); } }}>
+          <DialogTrigger asChild><Button className="gap-2" onClick={openNew}><Plus className="h-4 w-4" /> Nova unidade</Button></DialogTrigger>
           <DialogContent>
-            <DialogHeader><DialogTitle>Nova unidade</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editing ? "Editar unidade" : "Nova unidade"}</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <FieldUI label="Nome"><Input value={f.name} onChange={(e) => setF({...f, name: e.target.value})} /></FieldUI>
               <div className="grid grid-cols-2 gap-3">
@@ -207,8 +239,9 @@ function UnitsTab({ institutionId }: { institutionId: string }) {
               <FieldUI label="Telefone"><Input value={f.phone} onChange={(e) => setF({...f, phone: e.target.value})} /></FieldUI>
             </div>
             <DialogFooter>
-              <Button onClick={() => create.mutate()} disabled={create.isPending || !f.name || !f.city || !f.state}>
-                {create.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />} Criar
+              <Button variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+              <Button onClick={() => save.mutate()} disabled={save.isPending || !f.name || !f.city || !f.state}>
+                {save.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />} {editing ? "Salvar" : "Criar"}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -226,11 +259,23 @@ function UnitsTab({ institutionId }: { institutionId: string }) {
               </div>
               <div className="text-sm text-muted-foreground truncate">{u.city}/{u.state} · {u.address ?? "—"}</div>
             </div>
-            {!u.is_main && (
-              <Button variant="ghost" size="sm" onClick={() => del.mutate(u.id)}>
-                <Trash2 className="h-4 w-4 text-destructive" />
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => openEdit(u)}>
+                <Pencil className="h-4 w-4 mr-1" /> Editar
               </Button>
-            )}
+              {!u.is_main && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => {
+                    if (confirm(`Excluir a unidade "${u.name}"?`)) del.mutate(u.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         ))}
       </div>
