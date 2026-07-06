@@ -318,7 +318,7 @@ function NewCourseDialog({
   institutionId, units, open, setOpen, onCreated,
 }: { institutionId: string; units: any[]; open: boolean; setOpen: (v: boolean) => void; onCreated: () => void }) {
   const [f, setF] = useState({
-    name: "", level: "GRADUACAO", modality: "PRESENCIAL", shift: "NOITE",
+    name: "", level: "GRADUACAO", area: "", modality: "PRESENCIAL", shift: "NOITE",
     original_price: "", duration_months: "", description: "",
   });
 
