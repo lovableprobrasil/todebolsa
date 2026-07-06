@@ -2383,6 +2383,8 @@ export type Database = {
           discount_type: Database["public"]["Enums"]["discount_type"]
           discount_value: number
           duration_months: number | null
+          duration_unit: Database["public"]["Enums"]["duration_unit"] | null
+          duration_value: number | null
           end_at: string | null
           id: string
           installments_count: number | null
@@ -2404,6 +2406,8 @@ export type Database = {
           discount_type: Database["public"]["Enums"]["discount_type"]
           discount_value: number
           duration_months?: number | null
+          duration_unit?: Database["public"]["Enums"]["duration_unit"] | null
+          duration_value?: number | null
           end_at?: string | null
           id?: string
           installments_count?: number | null
@@ -2425,6 +2429,8 @@ export type Database = {
           discount_type?: Database["public"]["Enums"]["discount_type"]
           discount_value?: number
           duration_months?: number | null
+          duration_unit?: Database["public"]["Enums"]["duration_unit"] | null
+          duration_value?: number | null
           end_at?: string | null
           id?: string
           installments_count?: number | null
@@ -2857,6 +2863,8 @@ export type Database = {
           p_discount_type: string
           p_discount_value: number
           p_duration_months?: number
+          p_duration_unit?: string
+          p_duration_value?: number
           p_end_at: string
           p_installments_count?: number
           p_institution_id: string
@@ -3461,6 +3469,7 @@ export type Database = {
       course_modality: "PRESENCIAL" | "SEMIPRESENCIAL" | "EAD"
       course_shift: "MANHA" | "TARDE" | "NOITE" | "INTEGRAL" | "FLEXIVEL"
       discount_type: "PERCENT" | "FIXED" | "FINAL_PRICE"
+      duration_unit: "HORAS" | "MESES" | "ANOS"
       enrollment_doc_status: "PENDING" | "APPROVED" | "REJECTED"
       enrollment_doc_type:
         | "RG"
@@ -3689,6 +3698,7 @@ export const Constants = {
       course_modality: ["PRESENCIAL", "SEMIPRESENCIAL", "EAD"],
       course_shift: ["MANHA", "TARDE", "NOITE", "INTEGRAL", "FLEXIVEL"],
       discount_type: ["PERCENT", "FIXED", "FINAL_PRICE"],
+      duration_unit: ["HORAS", "MESES", "ANOS"],
       enrollment_doc_status: ["PENDING", "APPROVED", "REJECTED"],
       enrollment_doc_type: [
         "RG",
