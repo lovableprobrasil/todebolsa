@@ -695,8 +695,7 @@ function ScholarshipFormDialog({
   const value = Number(f.discount_value) || 0;
   const finalPrice =
     f.discount_type === "PERCENT" ? Math.max(0, original * (1 - value / 100))
-    : f.discount_type === "FIXED" ? Math.max(0, original - value)
-    : value;
+    : Math.max(0, original - value);
 
   const isEad = f.modality === "EAD";
   const isMonthly = f.price_mode === "MONTHLY";
