@@ -529,6 +529,16 @@ function ScholarshipsTab({ institutionId }: { institutionId: string }) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ScholarshipRow | null>(null);
+  const [q, setQ] = useState("");
+  const [fLevel, setFLevel] = useState("");
+  const [fModality, setFModality] = useState("");
+  const [fShift, setFShift] = useState("");
+  const [fArea, setFArea] = useState("");
+  const [fUnit, setFUnit] = useState("");
+  const [fStatus, setFStatus] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
 
   const { data: units } = useQuery({
     queryKey: ["institution-units-options", institutionId],
