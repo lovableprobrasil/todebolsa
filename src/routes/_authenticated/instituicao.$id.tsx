@@ -710,7 +710,7 @@ function ScholarshipFormDialog({
         p_modality: f.modality,
         p_shift: f.shift,
         p_area: f.area || "",
-        p_institution_unit_id: isEad ? null : (f.institution_unit_id || null),
+        p_institution_unit_id: (!f.institution_unit_id || f.institution_unit_id === "__none__") ? null : f.institution_unit_id,
         p_original_price: original,
         p_discount_type: f.discount_type,
         p_discount_value: value,
