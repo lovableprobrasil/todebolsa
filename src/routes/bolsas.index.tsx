@@ -70,6 +70,7 @@ function num(v: unknown): number | undefined {
 export const Route = createFileRoute("/bolsas/")({
   validateSearch: (raw: Record<string, unknown>): BolsasSearch => ({
     level: str(raw.level),
+    area: str(raw.area),
     q: str(raw.q),
     city: str(raw.city),
     modality: str(raw.modality),
