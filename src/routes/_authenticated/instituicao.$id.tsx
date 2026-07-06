@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { COURSE_LEVEL_LABEL, MODALITY_LABEL, SHIFT_LABEL, formatBRL } from "@/lib/format";
+import { COURSE_LEVEL_LABEL, MODALITY_LABEL, SHIFT_LABEL, formatBRL, KNOWLEDGE_AREAS } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/instituicao/$id")({
   component: ManageInstitutionPage,
