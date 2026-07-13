@@ -475,9 +475,16 @@ function BolsasPage() {
           {isLoading ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-[380px] rounded-2xl bg-muted animate-pulse" />
+                <ScholarshipCardSkeleton key={i} />
               ))}
             </div>
+          ) : isError ? (
+            <SectionState
+              variant="error"
+              title="Não conseguimos carregar as bolsas"
+              description="Verifique sua conexão e tente novamente em instantes."
+              action={{ label: "Tentar novamente", onClick: () => refetch() }}
+            />
           ) : data && data.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {data.map((s) => (
@@ -485,15 +492,14 @@ function BolsasPage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-border p-12 text-center">
-              <p className="font-semibold mb-1">Nenhuma bolsa encontrada</p>
-              <p className="text-sm text-muted-foreground mb-4">
-                Tente remover alguns filtros ou ampliar sua busca.
-              </p>
-              <Button variant="outline" size="sm" onClick={clearAll}>
-                Limpar filtros
-              </Button>
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <div className="space-y-6">
+              <SectionState
+                variant="empty"
+                title="Nenhuma bolsa encontrada"
+                description="Tente remover alguns filtros ou ampliar sua busca por outra cidade, área ou nível de ensino."
+                action={{ label: "Limpar filtros", onClick: clearAll }}
+              />
+              <div className="flex flex-wrap justify-center gap-2">
                 {CATEGORIES.slice(0, 6).map((c) => (
                   <Link
                     key={c.slug}
