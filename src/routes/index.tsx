@@ -380,9 +380,22 @@ function InstitutionsSection() {
             <div key={i} className="h-[180px] rounded-2xl bg-muted animate-pulse" />
           ))}
         </div>
+      ) : isError ? (
+        <SectionState
+          variant="error"
+          title="Não foi possível carregar as instituições"
+          description="Tente novamente em instantes."
+          action={{ label: "Tentar novamente", onClick: () => void refetch() }}
+        />
+      ) : items.length === 0 ? (
+        <SectionState
+          variant="empty"
+          title="Nenhuma instituição parceira disponível ainda"
+          description="Volte em breve — novas parcerias entram toda semana."
+        />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {(data ?? []).map((i) => (
+          {items.map((i) => (
             <Link
               key={i.id}
               to="/instituicoes/$slug"
