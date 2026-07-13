@@ -549,7 +549,7 @@ function CoursesSection() {
               Cursos com bolsas de estudo
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Os cursos mais procurados — com desconto garantido em diversas instituições.
+              Os cursos mais procurados — descontos disponíveis em diversas instituições parceiras.
             </p>
           </div>
           <Button variant="outline" asChild>
