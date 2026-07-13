@@ -5,6 +5,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CategoryGrid } from "@/components/site/CategoryGrid";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
+import { ScholarshipCardSkeleton } from "@/components/site/ScholarshipCardSkeleton";
+import { SectionState } from "@/components/site/SectionState";
 import { SearchBar } from "@/components/site/SearchBar";
 import { TrustBadges } from "@/components/site/TrustBadges";
 import { StudentTestimonials } from "@/components/site/StudentTestimonials";
