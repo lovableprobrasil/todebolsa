@@ -91,23 +91,31 @@ export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
           </div>
         </div>
 
-        <div className="mx-5 mb-4 rounded-xl bg-accent/60 p-4">
-          <div className="flex items-end justify-between gap-2 mb-2">
-            <div>
-              <div className="text-xs text-muted-foreground line-through">
-                {formatBRL(original)}/mês
-              </div>
-              <div className="font-display text-2xl font-extrabold text-primary leading-none">
-                {formatBRL(final)}
-                <span className="text-sm font-medium text-foreground/70">/mês</span>
-              </div>
-            </div>
-            <div className="text-right text-xs">
-              <div className="text-muted-foreground">Economia anual</div>
-              <div className="font-bold text-success">{formatBRL(savingYear)}</div>
-            </div>
+        <div className="mx-5 mb-3 rounded-xl bg-secondary/60 p-4">
+          <div className="text-xs text-muted-foreground line-through">
+            De {formatBRL(original)}/mês
           </div>
-          <UgeBadge />
+          <div className="mt-0.5 flex items-baseline gap-2">
+            <span className="font-display text-3xl font-extrabold text-primary leading-none">
+              {formatBRL(final)}
+            </span>
+            <span className="text-sm font-medium text-foreground/70">/mês</span>
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+            <span className="font-semibold text-success">
+              Economize {formatBRL(savingMonth)} por mês
+            </span>
+            <span className="text-muted-foreground">·</span>
+            <span className="font-semibold text-foreground/80">
+              {discount}% de desconto
+            </span>
+          </div>
+          <div className="mt-2 text-[11px] text-muted-foreground">
+            Consulte as condições e regras de manutenção da bolsa.
+          </div>
+          <div className="mt-3">
+            <UgeBadge />
+          </div>
         </div>
 
         <div className="px-5 pb-5 grid grid-cols-2 gap-2">
