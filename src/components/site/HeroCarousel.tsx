@@ -24,7 +24,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useNavigate } from "@tanstack/react-router";
-import heroStudent from "@/assets/hero-student-card.webp";
+import heroSlide1 from "@/assets/hero-slide-1.jpg";
+import heroSlide2 from "@/assets/hero-slide-2.jpg";
+import heroSlide3 from "@/assets/hero-slide-3.jpg";
+import heroSlide4 from "@/assets/hero-slide-4.jpg";
+import heroSlide5 from "@/assets/hero-slide-5.jpg";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics";
 
@@ -38,7 +42,8 @@ type Slide = {
   secondary?: { label: string; to: string; search?: Record<string, string> };
   highlight: string;
   accent: "primary" | "brand-blue" | "accent";
-  showSearch?: boolean;
+  image: string;
+  imageAlt: string;
 };
 
 const SLIDES: Slide[] = [
@@ -57,7 +62,8 @@ const SLIDES: Slide[] = [
     secondary: { label: "Ver todas as ofertas", to: "/bolsas" },
     highlight: "Marketplace nacional de bolsas de estudo",
     accent: "primary",
-    showSearch: true,
+    image: heroSlide1,
+    imageAlt: "Estudantes brasileiros de diferentes idades sorrindo em frente a uma universidade moderna",
   },
   {
     id: "economia",
@@ -73,6 +79,8 @@ const SLIDES: Slide[] = [
     primary: { label: "Buscar bolsas", to: "/bolsas" },
     highlight: "Compare cursos e mensalidades em segundos",
     accent: "primary",
+    image: heroSlide2,
+    imageAlt: "Mulher estudando em casa no notebook, comparando bolsas de estudo",
   },
   {
     id: "facilidade",
@@ -88,6 +96,8 @@ const SLIDES: Slide[] = [
     secondary: { label: "Como funciona", to: "/faq" },
     highlight: "Contratação rápida · Sem filas · Sem processos complicados",
     accent: "brand-blue",
+    image: heroSlide3,
+    imageAlt: "Jovem sorrindo utilizando o celular para contratar sua bolsa de estudos",
   },
   {
     id: "desconto",
@@ -103,6 +113,8 @@ const SLIDES: Slide[] = [
     primary: { label: "Conhecer as bolsas", to: "/bolsas" },
     highlight: "Planeje hoje a economia da sua formação",
     accent: "primary",
+    image: heroSlide4,
+    imageAlt: "Família celebrando a formatura com toga e diploma no campus",
   },
   {
     id: "transformacao",
@@ -119,6 +131,8 @@ const SLIDES: Slide[] = [
     secondary: { label: "Explorar instituições", to: "/bolsas" },
     highlight: "Diversidade de cursos, modalidades e instituições",
     accent: "brand-blue",
+    image: heroSlide5,
+    imageAlt: "Grupo diverso de estudantes e profissionais em frente a uma instituição de ensino",
   },
 ];
 
@@ -279,8 +293,8 @@ export function HeroCarousel() {
                     )}
                   </div>
 
-                  {s.showSearch && <HeroSearch onFocusChange={setPaused} />}
                 </div>
+
               );
             })}
 
@@ -296,16 +310,24 @@ export function HeroCarousel() {
           {/* Visual column */}
           <div className="relative hidden lg:block">
             <div aria-hidden className="absolute inset-x-8 bottom-6 h-40 rounded-[3rem] bg-primary/25 blur-3xl" />
-            <div className="relative">
-              <img
-                src={heroStudent}
-                alt="Estudante brasileiro sorrindo com carteira digital de estudante"
-                width={896}
-                height={1152}
-                fetchPriority="high"
-                decoding="async"
-                className="relative w-full h-auto max-h-[560px] object-contain object-bottom mx-auto drop-shadow-2xl"
-              />
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/10 shadow-[var(--shadow-elegant)]">
+              {SLIDES.map((s, i) => (
+                <img
+                  key={s.id}
+                  src={s.image}
+                  alt={s.imageAlt}
+                  width={1024}
+                  height={1280}
+                  fetchPriority={i === 0 ? "high" : "low"}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  className={cn(
+                    "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
+                    i === index ? "opacity-100" : "opacity-0",
+                  )}
+                />
+              ))}
+              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-hero/70 via-hero/10 to-transparent" />
               {/* Floating badge that changes per slide */}
               <div
                 key={slide.id}
