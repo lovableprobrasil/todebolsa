@@ -23,7 +23,6 @@ export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
   const final = Number(s.price_with_scholarship);
   const discount = discountPercent(original, final);
   const savingMonth = original - final;
-  const savingYear = savingMonth * 12;
   const ratingAvg = Number(inst.rating_avg ?? 0);
   const ratingCount = Number(inst.rating_count ?? 0);
   const hasRating = ratingAvg > 0 && ratingCount > 0;
