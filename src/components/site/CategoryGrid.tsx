@@ -22,6 +22,13 @@ export function CategoryGrid() {
             key={c.slug}
             to="/bolsas"
             search={{ level: c.slug }}
+            onClick={() =>
+              void trackEvent("category_click", {
+                entityType: "category",
+                entityId: c.slug,
+                metadata: { label: c.label },
+              })
+            }
             className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-card p-4 text-center hover:border-primary hover:bg-accent/40 hover:-translate-y-0.5 transition-all"
           >
             <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
