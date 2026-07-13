@@ -42,7 +42,8 @@ type Slide = {
   secondary?: { label: string; to: string; search?: Record<string, string> };
   highlight: string;
   accent: "primary" | "brand-blue" | "accent";
-  showSearch?: boolean;
+  image: string;
+  imageAlt: string;
 };
 
 const SLIDES: Slide[] = [
@@ -61,7 +62,8 @@ const SLIDES: Slide[] = [
     secondary: { label: "Ver todas as ofertas", to: "/bolsas" },
     highlight: "Marketplace nacional de bolsas de estudo",
     accent: "primary",
-    showSearch: true,
+    image: heroSlide1,
+    imageAlt: "Estudantes brasileiros de diferentes idades sorrindo em frente a uma universidade moderna",
   },
   {
     id: "economia",
@@ -77,6 +79,8 @@ const SLIDES: Slide[] = [
     primary: { label: "Buscar bolsas", to: "/bolsas" },
     highlight: "Compare cursos e mensalidades em segundos",
     accent: "primary",
+    image: heroSlide2,
+    imageAlt: "Mulher estudando em casa no notebook, comparando bolsas de estudo",
   },
   {
     id: "facilidade",
@@ -92,6 +96,8 @@ const SLIDES: Slide[] = [
     secondary: { label: "Como funciona", to: "/faq" },
     highlight: "Contratação rápida · Sem filas · Sem processos complicados",
     accent: "brand-blue",
+    image: heroSlide3,
+    imageAlt: "Jovem sorrindo utilizando o celular para contratar sua bolsa de estudos",
   },
   {
     id: "desconto",
@@ -107,6 +113,8 @@ const SLIDES: Slide[] = [
     primary: { label: "Conhecer as bolsas", to: "/bolsas" },
     highlight: "Planeje hoje a economia da sua formação",
     accent: "primary",
+    image: heroSlide4,
+    imageAlt: "Família celebrando a formatura com toga e diploma no campus",
   },
   {
     id: "transformacao",
@@ -123,6 +131,8 @@ const SLIDES: Slide[] = [
     secondary: { label: "Explorar instituições", to: "/bolsas" },
     highlight: "Diversidade de cursos, modalidades e instituições",
     accent: "brand-blue",
+    image: heroSlide5,
+    imageAlt: "Grupo diverso de estudantes e profissionais em frente a uma instituição de ensino",
   },
 ];
 
