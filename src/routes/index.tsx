@@ -101,82 +101,8 @@ function HomeSearch() {
 }
 
 
-function Hero() {
-  return (
-    <section className="relative overflow-hidden bg-hero text-hero-foreground">
-      {/* glow */}
-      <div aria-hidden className="pointer-events-none absolute -top-40 -left-40 h-[480px] w-[480px] rounded-full bg-primary/20 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 h-[420px] w-[420px] rounded-full bg-brand-blue/40 blur-3xl" />
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-16 md:pt-20 md:pb-24">
-        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-center">
-          <div>
-            <div className="flex flex-col sm:flex-row gap-3 mb-8">
-              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur px-4 py-3">
-                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                  <Percent className="h-5 w-5" />
-                </span>
-                <div className="min-w-0">
-                  <div className="font-display text-base font-extrabold text-primary leading-none">ATÉ 90% OFF</div>
-                  <div className="text-xs text-hero-muted mt-1">em instituições parceiras cadastradas</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur px-4 py-3">
-                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-                  <IdCard className="h-5 w-5" />
-                </span>
-                <div className="min-w-0">
-                  <div className="font-display text-base font-extrabold leading-none">Carteira Digital</div>
-                  <div className="text-xs text-hero-muted mt-1">Emitida pela UGE · Meia-entrada garantida</div>
-                </div>
-              </div>
-            </div>
-
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.04] tracking-tight">
-              Educação acessível{" "}
-              <span className="text-primary">para transformar</span>{" "}
-              seu futuro
-            </h1>
-            <p className="mt-5 text-lg text-hero-muted max-w-xl">
-              Encontre bolsas para faculdade, escola, técnico, idiomas e muito mais.
-              Oportunidades para todas as idades e fases da vida.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button size="lg" className="rounded-xl h-12 px-6 text-base" asChild>
-                <a href="#busca-bolsas">
-                  Buscar bolsas agora <ArrowRight className="h-4 w-4 ml-1" />
-                </a>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-xl h-12 px-6 text-base bg-transparent border-white/25 text-hero-foreground hover:bg-white/10 hover:text-hero-foreground"
-                asChild
-              >
-                <Link to="/carteira-uge">Ver cursos com Carteira UGE</Link>
-              </Button>
-            </div>
-          </div>
 
 
-          <div className="relative">
-            <div aria-hidden className="absolute inset-x-8 bottom-6 h-40 rounded-[3rem] bg-primary/20 blur-3xl" />
-            <img
-              src={heroStudent}
-              alt="Estudante sorrindo segurando carteira de estudante digital e física"
-              width={896}
-              height={1152}
-              fetchPriority="high"
-              decoding="async"
-              className="relative w-full h-auto max-h-[640px] object-contain object-bottom mx-auto drop-shadow-2xl"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function PopularBar() {
   return (
