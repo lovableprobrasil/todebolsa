@@ -293,8 +293,8 @@ export function HeroCarousel() {
                     )}
                   </div>
 
-                  {s.showSearch && <HeroSearch onFocusChange={setPaused} />}
                 </div>
+
               );
             })}
 
@@ -310,16 +310,24 @@ export function HeroCarousel() {
           {/* Visual column */}
           <div className="relative hidden lg:block">
             <div aria-hidden className="absolute inset-x-8 bottom-6 h-40 rounded-[3rem] bg-primary/25 blur-3xl" />
-            <div className="relative">
-              <img
-                src={heroStudent}
-                alt="Estudante brasileiro sorrindo com carteira digital de estudante"
-                width={896}
-                height={1152}
-                fetchPriority="high"
-                decoding="async"
-                className="relative w-full h-auto max-h-[560px] object-contain object-bottom mx-auto drop-shadow-2xl"
-              />
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/10 shadow-[var(--shadow-elegant)]">
+              {SLIDES.map((s, i) => (
+                <img
+                  key={s.id}
+                  src={s.image}
+                  alt={s.imageAlt}
+                  width={1024}
+                  height={1280}
+                  fetchPriority={i === 0 ? "high" : "low"}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  className={cn(
+                    "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
+                    i === index ? "opacity-100" : "opacity-0",
+                  )}
+                />
+              ))}
+              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-hero/70 via-hero/10 to-transparent" />
               {/* Floating badge that changes per slide */}
               <div
                 key={slide.id}
