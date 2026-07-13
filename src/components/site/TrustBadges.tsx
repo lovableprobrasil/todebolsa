@@ -1,10 +1,10 @@
-import { ShieldCheck, Lock, IdCard, Scale } from "lucide-react";
+import { ShieldCheck, Lock, Sparkles, LifeBuoy } from "lucide-react";
 
 const ITEMS = [
-  { icon: ShieldCheck, title: "Site seguro", text: "HTTPS e dados criptografados" },
-  { icon: Lock, title: "Pagamento protegido", text: "Antifraude e estorno garantido" },
-  { icon: Scale, title: "LGPD", text: "Seus dados sob controle" },
-  { icon: IdCard, title: "Carteira UGE", text: "Reconhecida em todo o Brasil" },
+  { icon: ShieldCheck, title: "Instituições parceiras verificadas", text: "Cadastros conferidos antes da publicação" },
+  { icon: Sparkles, title: "Processo digital", text: "Contratação online, sem filas ou papelada" },
+  { icon: Lock, title: "Pagamento protegido", text: "Processado em ambiente seguro" },
+  { icon: LifeBuoy, title: "Suporte durante a contratação", text: "Time do Tô de Bolsa acompanha você" },
 ];
 
 export function TrustBadges() {
