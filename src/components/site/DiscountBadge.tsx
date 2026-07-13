@@ -17,11 +17,14 @@ export function DiscountBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full font-bold text-white shadow-sm",
+        "inline-flex items-center gap-1 rounded-full font-bold",
         sizes[size],
         className,
       )}
-      style={{ backgroundImage: "var(--gradient-discount)" }}
+      style={{
+        backgroundColor: "var(--warning-soft)",
+        color: "var(--warning-ink)",
+      }}
     >
       {percent}% OFF
     </span>

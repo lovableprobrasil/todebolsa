@@ -1,450 +1,184 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Pause,
-  Play,
-  Percent,
+  BadgePercent,
+  GraduationCap,
+  MonitorPlay,
   ShieldCheck,
   Sparkles,
-  GraduationCap,
-  TrendingUp,
-  Search,
-  MapPin,
+  Wifi,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useNavigate } from "@tanstack/react-router";
-import heroSlide1 from "@/assets/hero-slide-1.jpg";
-import heroSlide2 from "@/assets/hero-slide-2.jpg";
-import heroSlide3 from "@/assets/hero-slide-3.jpg";
-import { cn } from "@/lib/utils";
+import heroStudent from "@/assets/hero-student-new.jpg";
 import { trackEvent } from "@/lib/analytics";
 
-type Slide = {
-  id: string;
-  eyebrow: string;
-  eyebrowIcon: typeof Percent;
-  title: React.ReactNode;
-  text: string;
-  primary: { label: string; to: string; search?: Record<string, string> };
-  secondary?: { label: string; to: string; search?: Record<string, string> };
-  highlight: string;
-  accent: "primary" | "brand-blue" | "accent";
-  image: string;
-  imageAlt: string;
-};
-
-const SLIDES: Slide[] = [
-  {
-    id: "encontre",
-    eyebrow: "Marketplace de bolsas de estudo",
-    eyebrowIcon: GraduationCap,
-    title: (
-      <>
-        Encontre a bolsa ideal para{" "}
-        <span className="text-primary">transformar seu futuro</span>
-      </>
-    ),
-    text: "Compare cursos e instituições e economize na mensalidade durante sua formação.",
-    primary: { label: "Encontrar minha bolsa", to: "/bolsas" },
-    secondary: { label: "Ver como funciona", to: "/faq" },
-    highlight: "Bolsas com descontos de até 90%",
-    accent: "primary",
-    image: heroSlide1,
-    imageAlt: "Estudantes brasileiros diversos em frente a uma universidade",
-  },
-  {
-    id: "economia",
-    eyebrow: "Economia real na mensalidade",
-    eyebrowIcon: TrendingUp,
-    title: (
-      <>
-        Economize na mensalidade durante sua{" "}
-        <span className="text-primary">formação</span>
-      </>
-    ),
-    text: "Planeje seus estudos com bolsas verificadas e mensalidades reduzidas em instituições parceiras.",
-    primary: { label: "Encontrar minha bolsa", to: "/bolsas" },
-    secondary: { label: "Ver como funciona", to: "/faq" },
-    highlight: "Compare preços e regras de manutenção com clareza",
-    accent: "primary",
-    image: heroSlide2,
-    imageAlt: "Estudante brasileira estudando em casa no notebook",
-  },
-  {
-    id: "instituicoes",
-    eyebrow: "Instituições parceiras verificadas",
-    eyebrowIcon: ShieldCheck,
-    title: (
-      <>
-        As melhores instituições e oportunidades{" "}
-        <span className="text-primary">estão aqui</span>
-      </>
-    ),
-    text: "Faculdades, escolas, técnicos, idiomas e mais — cadastrados e validados pelo Tô de Bolsa.",
-    primary: { label: "Encontrar minha bolsa", to: "/bolsas" },
-    secondary: { label: "Ver como funciona", to: "/faq" },
-    highlight: "Qualidade educacional e diversidade de opções",
-    accent: "brand-blue",
-    image: heroSlide3,
-    imageAlt: "Jovem brasileiro usando o celular para pesquisar cursos",
-  },
-];
-
-const AUTOPLAY_MS = 6500;
-
-function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
+/**
+ * Hero principal — Tô de Bolsa 2026 (Edtech Indigo).
+ * Nome exportado é mantido (HeroCarousel) para preservar imports existentes,
+ * mas o componente agora é um hero estático conforme a nova identidade visual.
+ */
 export function HeroCarousel() {
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [userPaused, setUserPaused] = useState(false);
-  const [reduced, setReduced] = useState(false);
-  const touchStartX = useRef<number | null>(null);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    setReduced(prefersReducedMotion());
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = () => setReduced(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-
-  const go = useCallback(
-    (dir: number) => setIndex((i) => (i + dir + SLIDES.length) % SLIDES.length),
-    [],
-  );
-  const goTo = useCallback((n: number) => setIndex(n), []);
-
-  useEffect(() => {
-    if (paused || userPaused || reduced) return;
-    timerRef.current = setInterval(() => {
-      setIndex((i) => (i + 1) % SLIDES.length);
-    }, AUTOPLAY_MS);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [paused, userPaused, reduced]);
-
-  useEffect(() => {
-    void trackEvent("hero_slide_view", {
-      entityType: "hero_slide",
-      entityId: SLIDES[index].id,
-      metadata: { index },
-    });
-  }, [index]);
-
-  function onKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "ArrowLeft") go(-1);
-    else if (e.key === "ArrowRight") go(1);
-  }
-
-  function onTouchStart(e: React.TouchEvent) {
-    touchStartX.current = e.touches[0].clientX;
-  }
-  function onTouchEnd(e: React.TouchEvent) {
-    if (touchStartX.current == null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
-    touchStartX.current = null;
-  }
-
-  const slide = SLIDES[index];
-
   return (
     <section
-      aria-roledescription="carrossel"
-      aria-label="Destaques Tô de Bolsa"
-      className="relative overflow-hidden bg-hero text-hero-foreground"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
-      onKeyDown={onKeyDown}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-      tabIndex={0}
+      aria-label="Encontre a bolsa que cabe nos seus planos"
+      className="relative overflow-hidden text-hero-foreground"
+      style={{ background: "var(--gradient-hero)" }}
     >
-      {/* Ambient glows */}
-      <div aria-hidden className="pointer-events-none absolute -top-40 -left-40 h-[480px] w-[480px] rounded-full bg-primary/20 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-40 right-0 h-[420px] w-[420px] rounded-full bg-brand-blue/40 blur-3xl" />
+      {/* Brilho radial violeta discreto à direita */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(60% 55% at 82% 40%, rgba(124,58,237,0.35), transparent 70%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full blur-3xl"
+        style={{ background: "rgba(79,70,229,0.28)" }}
+      />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-14 md:pt-16 md:pb-20 min-h-[560px] md:min-h-[620px]">
-        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-8 lg:gap-14 items-center">
-          {/* Text column */}
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-16 md:pt-20 md:pb-24">
+        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-14 items-center">
+          {/* Texto */}
           <div className="relative">
-            {SLIDES.map((s, i) => {
-              const Icon = s.eyebrowIcon;
-              const active = i === index;
-              return (
-                <div
-                  key={s.id}
-                  aria-hidden={!active}
-                  aria-roledescription="slide"
-                  aria-label={`${i + 1} de ${SLIDES.length}`}
-                  className={cn(
-                    "transition-all duration-500 ease-out",
-                    active
-                      ? "relative opacity-100 translate-y-0"
-                      : "pointer-events-none absolute inset-0 opacity-0 translate-y-2",
-                  )}
-                >
-                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] backdrop-blur px-3 py-1.5 text-xs font-semibold text-hero-foreground">
-                    <Icon className="h-3.5 w-3.5 text-primary" />
-                    {s.eyebrow}
-                  </div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur px-3 py-1.5 text-xs font-semibold">
+              <BadgePercent className="h-3.5 w-3.5" style={{ color: "var(--brand-highlight)" }} />
+              Bolsas com até 90% de desconto
+            </span>
 
-                  <h1 className="mt-5 font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight">
-                    {s.title}
-                  </h1>
-                  <p className="mt-4 text-base sm:text-lg text-hero-muted max-w-xl">
-                    {s.text}
-                  </p>
+            <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight">
+              Encontre a bolsa que{" "}
+              <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(120deg, #FBBF24 0%, #F59E0B 100%)",
+                }}
+              >
+                cabe nos seus planos
+              </span>
+            </h1>
 
-                  <div className="mt-3 inline-flex items-center gap-2 text-sm text-hero-muted">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    <span>{s.highlight}</span>
-                  </div>
+            <p className="mt-5 text-base sm:text-lg text-hero-muted max-w-xl">
+              Compare cursos e instituições e economize na mensalidade durante
+              sua formação.
+            </p>
 
-                  <div className="mt-7 flex flex-wrap gap-3">
-                    <Button
-                      size="lg"
-                      className="rounded-xl h-12 px-6 text-base"
-                      asChild
-                      onClick={() =>
-                        void trackEvent("hero_cta_click", {
-                          entityType: "hero_slide",
-                          entityId: s.id,
-                          metadata: { cta: "primary" },
-                        })
-                      }
-                    >
-                      <Link to={s.primary.to} search={s.primary.search}>
-                        {s.primary.label} <ArrowRight className="h-4 w-4 ml-1" />
-                      </Link>
-                    </Button>
-                    {s.secondary && (
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="rounded-xl h-12 px-6 text-base bg-transparent border-white/25 text-hero-foreground hover:bg-white/10 hover:text-hero-foreground"
-                        asChild
-                        onClick={() =>
-                          void trackEvent("hero_cta_click", {
-                            entityType: "hero_slide",
-                            entityId: s.id,
-                            metadata: { cta: "secondary" },
-                          })
-                        }
-                      >
-                        <Link to={s.secondary.to} search={s.secondary.search}>
-                          {s.secondary.label}
-                        </Link>
-                      </Button>
-                    )}
-                  </div>
-
-                </div>
-
-              );
-            })}
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button
+                size="lg"
+                asChild
+                className="rounded-xl h-12 px-6 text-base font-semibold shadow-[var(--shadow-elegant)] transition-colors"
+                style={{
+                  backgroundColor: "var(--brand-highlight)",
+                  color: "var(--brand-ink)",
+                }}
+                onClick={() =>
+                  void trackEvent("hero_cta_click", {
+                    entityType: "hero",
+                    entityId: "primary",
+                    metadata: { cta: "encontrar" },
+                  })
+                }
+              >
+                <Link to="/bolsas">
+                  Encontrar minha bolsa
+                  <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                asChild
+                className="rounded-xl h-12 px-6 text-base bg-transparent border-white/40 text-hero-foreground hover:bg-white/10 hover:text-hero-foreground"
+                onClick={() =>
+                  void trackEvent("hero_cta_click", {
+                    entityType: "hero",
+                    entityId: "secondary",
+                    metadata: { cta: "como-funciona" },
+                  })
+                }
+              >
+                <Link to="/faq">Ver como funciona</Link>
+              </Button>
+            </div>
 
             {/* Trust strip */}
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-hero-muted">
-              <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-primary" /> Site seguro</span>
-              <span className="inline-flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-primary" /> Bolsas verificadas</span>
-              <span className="inline-flex items-center gap-1.5"><GraduationCap className="h-3.5 w-3.5 text-primary" /> Instituições parceiras</span>
-              <span className="inline-flex items-center gap-1.5"><Percent className="h-3.5 w-3.5 text-primary" /> Descontos transparentes</span>
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldCheck className="h-3.5 w-3.5" style={{ color: "var(--brand-highlight)" }} /> Site seguro
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5" style={{ color: "var(--brand-highlight)" }} /> Bolsas verificadas
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <GraduationCap className="h-3.5 w-3.5" style={{ color: "var(--brand-highlight)" }} /> Instituições parceiras
+              </span>
             </div>
           </div>
 
-          {/* Visual column */}
-          <div className="relative hidden lg:block">
-            <div aria-hidden className="absolute inset-x-8 bottom-6 h-40 rounded-[3rem] bg-primary/25 blur-3xl" />
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/10 shadow-[var(--shadow-elegant)]">
-              {SLIDES.map((s, i) => (
-                <img
-                  key={s.id}
-                  src={s.image}
-                  alt={s.imageAlt}
-                  width={1024}
-                  height={1280}
-                  fetchPriority={i === 0 ? "high" : "low"}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  className={cn(
-                    "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
-                    i === index ? "opacity-100" : "opacity-0",
-                  )}
-                />
-              ))}
-              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-hero/70 via-hero/10 to-transparent" />
-              {/* Floating badge that changes per slide */}
+          {/* Visual */}
+          <div className="relative">
+            <div
+              aria-hidden
+              className="absolute inset-x-8 bottom-6 h-40 rounded-[3rem] blur-3xl"
+              style={{ background: "rgba(124,58,237,0.35)" }}
+            />
+            <div className="relative aspect-[4/5] w-full max-w-md mx-auto overflow-hidden rounded-[2rem] border border-white/10 shadow-[var(--shadow-elegant)]">
+              <img
+                src={heroStudent}
+                alt="Estudante brasileira estudando em ambiente moderno"
+                width={1200}
+                height={1400}
+                fetchPriority="high"
+                loading="eager"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            {/* Card flutuante 1 — Bolsa exemplar */}
+            <div className="hidden sm:block absolute -left-2 sm:-left-6 top-8 md:top-16 rounded-2xl bg-white/95 backdrop-blur text-foreground shadow-[var(--shadow-elegant)] border border-white/40 p-4 w-56">
+              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                <GraduationCap className="h-3.5 w-3.5" style={{ color: "var(--brand-primary)" }} />
+                Administração
+              </div>
               <div
-                key={slide.id}
-                className="absolute top-6 right-2 rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-4 py-3 shadow-[var(--shadow-elegant)] animate-in fade-in slide-in-from-right-4 duration-500"
+                className="mt-1.5 inline-flex items-center rounded-md px-2 py-0.5 text-xs font-bold"
+                style={{
+                  backgroundColor: "var(--warning-soft)",
+                  color: "var(--warning-ink)",
+                }}
               >
-                <div className="text-[10px] uppercase tracking-wider text-hero-muted font-semibold">
-                  Destaque
-                </div>
-                <div className="mt-0.5 font-display font-extrabold text-lg leading-tight max-w-[200px]">
-                  {slide.highlight}
-                </div>
+                Bolsa de 65%
+              </div>
+              <div className="mt-2 text-xs text-muted-foreground line-through">
+                De R$ 749/mês
+              </div>
+              <div className="font-display text-xl font-extrabold" style={{ color: "var(--brand-primary)" }}>
+                R$ 262<span className="text-sm font-semibold text-foreground/70">/mês</span>
+              </div>
+            </div>
+
+            {/* Card flutuante 2 — Modalidade */}
+            <div className="hidden sm:block absolute -right-2 sm:-right-4 bottom-6 md:bottom-10 rounded-2xl bg-white/95 backdrop-blur text-foreground shadow-[var(--shadow-elegant)] border border-white/40 p-4 w-52">
+              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                <MonitorPlay className="h-3.5 w-3.5" style={{ color: "var(--brand-secondary)" }} />
+                Curso 100% online
+              </div>
+              <div className="mt-1 text-sm font-bold text-foreground">
+                Instituição parceira
+              </div>
+              <div className="mt-2 flex items-center gap-1.5 text-xs" style={{ color: "var(--success)" }}>
+                <Wifi className="h-3.5 w-3.5" />
+                Estude de onde estiver
               </div>
             </div>
           </div>
         </div>
-
-        {/* Controls */}
-        <div className="mt-8 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              aria-label="Slide anterior"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] backdrop-blur text-hero-foreground hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-primary transition"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => go(1)}
-              aria-label="Próximo slide"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] backdrop-blur text-hero-foreground hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-primary transition"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setUserPaused((v) => !v)}
-              aria-label={userPaused ? "Retomar rotação automática" : "Pausar rotação automática"}
-              aria-pressed={userPaused}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] backdrop-blur text-hero-foreground hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-primary transition"
-            >
-              {userPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2" role="tablist" aria-label="Selecionar slide">
-            {SLIDES.map((s, i) => (
-              <button
-                key={s.id}
-                role="tab"
-                aria-selected={i === index}
-                aria-label={`Ir para o slide ${i + 1}`}
-                onClick={() => goTo(i)}
-                className={cn(
-                  "h-2 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-primary",
-                  i === index ? "w-8 bg-primary" : "w-2 bg-white/30 hover:bg-white/50",
-                )}
-              />
-            ))}
-          </div>
-
-          <div className="hidden md:block text-xs text-hero-muted tabular-nums">
-            {String(index + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
-          </div>
-        </div>
       </div>
     </section>
-  );
-}
-
-/**
- * Compact search embedded inside the first slide.
- * Pauses carousel while the user is interacting.
- */
-function HeroSearch({ onFocusChange }: { onFocusChange: (paused: boolean) => void }) {
-  const navigate = useNavigate();
-  const [q, setQ] = useState("");
-  const [city, setCity] = useState("");
-  const [modality, setModality] = useState<string>("");
-
-  const isEad = modality === "EAD";
-
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    void trackEvent("hero_search_submit", {
-      entityType: "hero_search",
-      metadata: { q, city, modality },
-    });
-    navigate({
-      to: "/bolsas",
-      search: {
-        q: q.trim() || undefined,
-        city: !isEad && city.trim() ? city.trim() : undefined,
-        modality: modality || undefined,
-      },
-    });
-  }
-
-  return (
-    <form
-      onSubmit={submit}
-      onFocus={() => onFocusChange(true)}
-      onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node)) onFocusChange(false);
-      }}
-      className="mt-7 rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur p-3 md:p-3 shadow-[var(--shadow-elegant)]"
-      aria-label="Buscar bolsas"
-    >
-      <div className="grid gap-2 md:grid-cols-[1.3fr_1fr_1fr_auto]">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-hero-muted" />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Qual curso você procura?"
-            aria-label="Curso, instituição ou área"
-            className="h-12 pl-9 bg-white/95 text-foreground placeholder:text-muted-foreground border-transparent"
-          />
-        </div>
-        <div className="relative">
-          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-hero-muted" />
-          <Input
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder={isEad ? "Curso à distância" : "Onde você quer estudar?"}
-            disabled={isEad}
-            aria-label="Cidade"
-            className="h-12 pl-9 bg-white/95 text-foreground placeholder:text-muted-foreground border-transparent"
-          />
-        </div>
-        <Select value={modality || "ALL"} onValueChange={(v) => setModality(v === "ALL" ? "" : v)}>
-          <SelectTrigger
-            aria-label="Modalidade"
-            className="h-12 bg-white/95 text-foreground border-transparent"
-          >
-            <SelectValue placeholder="Modalidade" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">Todas as modalidades</SelectItem>
-            <SelectItem value="PRESENCIAL">Presencial</SelectItem>
-            <SelectItem value="SEMIPRESENCIAL">Semipresencial</SelectItem>
-            <SelectItem value="EAD">EAD</SelectItem>
-          </SelectContent>
-        </Select>
-        <Button type="submit" size="lg" className="h-12 px-6 font-semibold whitespace-nowrap">
-          Buscar bolsas
-        </Button>
-      </div>
-      <p className="mt-2 text-[11px] text-hero-muted">
-        Consulte as condições, disponibilidade e regras de manutenção de cada bolsa.
-      </p>
-    </form>
   );
 }
