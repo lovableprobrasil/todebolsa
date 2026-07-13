@@ -17,7 +17,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer, getPlatformStats } from "@/lib/scholarships";
 import { formatBRL, COURSE_LEVEL_LABEL } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics";
-import heroStudent from "@/assets/hero-student-card.webp";
+import heroStudent from "@/assets/hero-student-new.jpg";
 
 
 export const Route = createFileRoute("/")({
@@ -710,7 +710,7 @@ function CtaInstitution() {
             ))}
           </ul>
         </div>
-        <Button size="lg" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90 shrink-0" asChild>
+        <Button size="lg" className="shrink-0" asChild>
           <Link to="/para-instituicoes">Cadastrar instituição</Link>
         </Button>
       </div>

@@ -89,8 +89,8 @@ export function Header() {
               <Button variant="ghost" size="sm" asChild className="text-sm font-medium">
                 <Link to="/auth" search={{ tab: "login" }}>Entrar</Link>
               </Button>
-              <Button size="sm" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90 text-sm font-medium" asChild>
-                <Link to="/auth" search={{ tab: "signup" }}>Cadastrar</Link>
+              <Button size="sm" className="text-sm font-medium" asChild>
+                <Link to="/auth" search={{ tab: "signup" }}>Criar conta</Link>
               </Button>
             </>
           )}
@@ -137,8 +137,8 @@ export function Header() {
                   <Button variant="outline" asChild>
                     <Link to="/auth" search={{ tab: "login" }} onClick={() => setOpen(false)}>Entrar</Link>
                   </Button>
-                  <Button className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
-                    <Link to="/auth" search={{ tab: "signup" }} onClick={() => setOpen(false)}>Cadastrar</Link>
+                  <Button asChild>
+                    <Link to="/auth" search={{ tab: "signup" }} onClick={() => setOpen(false)}>Criar conta</Link>
                   </Button>
                 </>
               )}
