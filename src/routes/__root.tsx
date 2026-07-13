@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Tô de Bolsa — Bolsas de estudo com até 90% de desconto" },
       { name: "description", content: "Marketplace nacional de bolsas de estudo. Encontre bolsas em escolas, faculdades, técnicos, idiomas e mais — com até 90% de desconto e carteira de estudante digital UGE." },
       { name: "author", content: "Tô de Bolsa" },
-      { name: "theme-color", content: "#E8762B" },
+      { name: "theme-color", content: "#102A43" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { name: "apple-mobile-web-app-title", content: "Tô de Bolsa" },
@@ -107,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap",
       },
     ],
     scripts: [
