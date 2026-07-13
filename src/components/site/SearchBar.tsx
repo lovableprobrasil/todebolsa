@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CATEGORIES, KNOWLEDGE_AREAS, MODALITY_LABEL } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 
 const MODALITIES = ["PRESENCIAL", "SEMIPRESENCIAL", "EAD"] as const;
 
@@ -46,6 +47,16 @@ export function SearchBar({
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    void trackEvent("search_submit", {
+      entityType: "search",
+      metadata: {
+        level: level || null,
+        area: area || null,
+        modality: modality || null,
+        city: !isEad && city.trim() ? city.trim() : null,
+        q: query.trim() || null,
+      },
+    });
     navigate({
       to: "/bolsas",
       search: {

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer, getPlatformStats } from "@/lib/scholarships";
 import { formatBRL, COURSE_LEVEL_LABEL } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 import heroStudent from "@/assets/hero-student-card.webp";
 
 
@@ -485,6 +486,13 @@ function InstitutionsSection() {
               key={i.id}
               to="/instituicoes/$slug"
               params={{ slug: i.slug }}
+              onClick={() =>
+                void trackEvent("institution_click", {
+                  entityType: "institution",
+                  entityId: i.id,
+                  metadata: { slug: i.slug, trade_name: i.trade_name },
+                })
+              }
               className="group rounded-2xl border border-border bg-card p-4 flex flex-col hover:border-primary hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)] transition-all"
             >
               <div className="h-20 flex items-center justify-center mb-3">
@@ -541,7 +549,7 @@ function CoursesSection() {
               Cursos com bolsas de estudo
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Os cursos mais procurados — com desconto garantido em diversas instituições.
+              Os cursos mais procurados — descontos disponíveis em diversas instituições parceiras.
             </p>
           </div>
           <Button variant="outline" asChild>
@@ -575,6 +583,13 @@ function CoursesSection() {
                 key={c.name}
                 to="/bolsas"
                 search={{ q: c.name }}
+                onClick={() =>
+                  void trackEvent("course_click", {
+                    entityType: "course",
+                    entityId: c.name,
+                    metadata: { level: c.level },
+                  })
+                }
                 className="group rounded-2xl border border-border bg-card p-5 flex flex-col hover:border-primary hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)] transition-all"
               >
                 <div className="flex items-start justify-between gap-2 mb-4">
@@ -619,6 +634,12 @@ function CitiesSection() {
               key={city}
               to="/bolsas"
               search={{ city }}
+              onClick={() =>
+                void trackEvent("city_click", {
+                  entityType: "city",
+                  entityId: city,
+                })
+              }
               className="group rounded-2xl border border-border bg-card p-5 hover:border-primary hover:-translate-y-0.5 transition-all"
             >
               <div className="flex items-center gap-2 text-muted-foreground text-xs mb-2">

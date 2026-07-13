@@ -14,6 +14,7 @@ import {
   formatBRL,
 } from "@/lib/format";
 import type { ScholarshipListItem } from "@/lib/scholarships";
+import { trackEvent } from "@/lib/analytics";
 
 export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
   const course = s.course_offering.course;
@@ -119,12 +120,32 @@ export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
 
         <div className="px-5 pb-5 grid grid-cols-2 gap-2">
           <Button variant="outline" size="sm" asChild>
-            <Link to="/bolsas/$id" params={{ id: s.id }}>
+            <Link
+              to="/bolsas/$id"
+              params={{ id: s.id }}
+              onClick={() =>
+                void trackEvent("scholarship_click", {
+                  entityType: "scholarship",
+                  entityId: s.id,
+                  metadata: { cta: "details", institution: inst.trade_name },
+                })
+              }
+            >
               Ver detalhes
             </Link>
           </Button>
           <Button size="sm" asChild>
-            <Link to="/adquirir/$scholarshipId" params={{ scholarshipId: s.id }}>
+            <Link
+              to="/adquirir/$scholarshipId"
+              params={{ scholarshipId: s.id }}
+              onClick={() =>
+                void trackEvent("scholarship_click", {
+                  entityType: "scholarship",
+                  entityId: s.id,
+                  metadata: { cta: "acquire", institution: inst.trade_name },
+                })
+              }
+            >
               Garantir bolsa
             </Link>
           </Button>
