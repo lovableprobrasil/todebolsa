@@ -66,24 +66,51 @@ function HomePage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
+        {/* 1. Hero + busca principal */}
         <HeroCarousel />
         <HomeSearch />
 
+        {/* 2. Faixa de confiança */}
         <TrustBadges />
-        
-        <CategorySection />
-        <StatsBar />
+
+        {/* 3. Instituições parceiras */}
         <InstitutionsSection />
+
+        {/* 4. Categorias mais procuradas */}
+        <CategorySection />
+
+        {/* 5. Bolsas em destaque */}
         <FeaturedSection />
+
+        {/* Cursos com bolsas (extensão de destaques) */}
         <CoursesSection />
+
+        {/* 6. Como funciona */}
         <HowItWorks />
+
+        {/* 7. Carteira de Estudante UGE */}
         <UgeCallout />
+
+        {/* Benefícios da plataforma */}
         <BenefitsSection />
+
+        {/* 8. Avaliações / depoimentos */}
         <StudentTestimonials />
+
+        {/* 9. Bolsas por cidade */}
         <CitiesSection />
-        <FaqSection />
-        <BlogHomeSection />
+
+        {/* Números da plataforma */}
+        <StatsBar />
+
+        {/* 10. Chamada para instituições */}
         <CtaInstitution />
+
+        {/* 11. Perguntas frequentes */}
+        <FaqSection />
+
+        {/* Guia do estudante */}
+        <BlogHomeSection />
       </main>
       <Footer />
     </div>
