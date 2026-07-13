@@ -6,10 +6,11 @@ import { useAuth } from "@/lib/auth-context";
 import { NotificationsBell } from "@/components/site/NotificationsBell";
 
 const NAV = [
-  { to: "/bolsas", label: "Bolsas" },
-  { to: "/para-instituicoes", label: "Instituições" },
-  { to: "/guia", label: "Notícias" },
-  { to: "/faq", label: "FAQ" },
+  { to: "/bolsas", label: "Buscar bolsas" },
+  { to: "/bolsas", label: "Instituições parceiras" },
+  { to: "/faq", label: "Como funciona" },
+  { to: "/guia", label: "Guia do estudante" },
+  { to: "/para-instituicoes", label: "Para instituições" },
 ] as const;
 
 export function Header() {
