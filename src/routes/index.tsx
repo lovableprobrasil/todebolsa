@@ -583,6 +583,13 @@ function CoursesSection() {
                 key={c.name}
                 to="/bolsas"
                 search={{ q: c.name }}
+                onClick={() =>
+                  void trackEvent("course_click", {
+                    entityType: "course",
+                    entityId: c.name,
+                    metadata: { level: c.level },
+                  })
+                }
                 className="group rounded-2xl border border-border bg-card p-5 flex flex-col hover:border-primary hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)] transition-all"
               >
                 <div className="flex items-start justify-between gap-2 mb-4">
