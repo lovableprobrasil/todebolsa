@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, IdCard, ShieldCheck, Users, Award, Star, Percent, Search, Sparkles, Building2, MapPin, GraduationCap, BookOpen } from "lucide-react";
+import { ArrowRight, IdCard, ShieldCheck, Users, Award, Star, Percent, Search, Sparkles, Building2, MapPin, GraduationCap, BookOpen, CalendarClock, FileText, CheckCircle2 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CategoryGrid } from "@/components/site/CategoryGrid";
