@@ -348,10 +348,11 @@ function BenefitsSection() {
 }
 
 function InstitutionsSection() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["institutions", "best-offer"],
     queryFn: () => listInstitutionsBestOffer(10),
   });
+  const items = data ?? [];
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-20">
