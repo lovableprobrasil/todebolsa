@@ -5,14 +5,15 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SearchBar } from "@/components/site/SearchBar";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
+import { ScholarshipCardSkeleton } from "@/components/site/ScholarshipCardSkeleton";
+import { SectionState } from "@/components/site/SectionState";
 import { listScholarships, listInstitutionsLite } from "@/lib/scholarships";
 import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL, KNOWLEDGE_AREAS, AREA_LABEL } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { SlidersHorizontal, X, Star, ArrowUpDown, Search as SearchIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { SlidersHorizontal, X, ArrowUpDown, Search as SearchIcon, ChevronRight } from "lucide-react";
 
 type SortMode =
   | "relevance"
