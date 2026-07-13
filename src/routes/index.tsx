@@ -5,6 +5,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CategoryGrid } from "@/components/site/CategoryGrid";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
+import { ScholarshipCardSkeleton } from "@/components/site/ScholarshipCardSkeleton";
+import { SectionState } from "@/components/site/SectionState";
 import { SearchBar } from "@/components/site/SearchBar";
 import { TrustBadges } from "@/components/site/TrustBadges";
 import { StudentTestimonials } from "@/components/site/StudentTestimonials";
@@ -197,10 +199,12 @@ function StatsBar() {
 }
 
 function FeaturedSection() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["scholarships", "featured"],
     queryFn: () => listScholarships({ featuredOnly: true, limit: 6 }),
   });
+
+  const items = data ?? [];
 
   return (
     <section className="bg-secondary/40 py-14 md:py-20">
@@ -225,12 +229,27 @@ function FeaturedSection() {
         {isLoading ? (
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-[380px] rounded-2xl bg-muted animate-pulse" />
+              <ScholarshipCardSkeleton key={i} />
             ))}
           </div>
+        ) : isError ? (
+          <SectionState
+            variant="error"
+            title="Não foi possível carregar as bolsas em destaque"
+            description="Verifique sua conexão e tente novamente."
+            action={{ label: "Tentar novamente", onClick: () => void refetch() }}
+          />
+        ) : items.length === 0 ? (
+          <SectionState
+            variant="empty"
+            title="Nenhuma bolsa em destaque no momento"
+            description="Explore todas as ofertas disponíveis na busca completa."
+          />
         ) : (
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {data?.map((s) => <ScholarshipCard key={s.id} s={s} />)}
+            {items.map((s) => (
+              <ScholarshipCard key={s.id} s={s} />
+            ))}
           </div>
         )}
       </div>
@@ -329,10 +348,11 @@ function BenefitsSection() {
 }
 
 function InstitutionsSection() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["institutions", "best-offer"],
     queryFn: () => listInstitutionsBestOffer(10),
   });
+  const items = data ?? [];
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-20">
@@ -360,9 +380,22 @@ function InstitutionsSection() {
             <div key={i} className="h-[180px] rounded-2xl bg-muted animate-pulse" />
           ))}
         </div>
+      ) : isError ? (
+        <SectionState
+          variant="error"
+          title="Não foi possível carregar as instituições"
+          description="Tente novamente em instantes."
+          action={{ label: "Tentar novamente", onClick: () => void refetch() }}
+        />
+      ) : items.length === 0 ? (
+        <SectionState
+          variant="empty"
+          title="Nenhuma instituição parceira disponível ainda"
+          description="Volte em breve — novas parcerias entram toda semana."
+        />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {(data ?? []).map((i) => (
+          {items.map((i) => (
             <Link
               key={i.id}
               to="/instituicoes/$slug"
@@ -404,10 +437,11 @@ function InstitutionsSection() {
 }
 
 function CoursesSection() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["courses", "best-offer"],
     queryFn: () => listCoursesBestOffer(10),
   });
+  const items = data ?? [];
 
   return (
     <section className="bg-secondary/40 py-14 md:py-20">
@@ -436,9 +470,22 @@ function CoursesSection() {
               <div key={i} className="h-[170px] rounded-2xl bg-muted animate-pulse" />
             ))}
           </div>
+        ) : isError ? (
+          <SectionState
+            variant="error"
+            title="Não foi possível carregar os cursos"
+            description="Tente novamente em instantes."
+            action={{ label: "Tentar novamente", onClick: () => void refetch() }}
+          />
+        ) : items.length === 0 ? (
+          <SectionState
+            variant="empty"
+            title="Nenhum curso disponível ainda"
+            description="Novos cursos são publicados frequentemente. Volte em breve."
+          />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {(data ?? []).map((c) => (
+            {items.map((c) => (
               <Link
                 key={c.name}
                 to="/bolsas"
