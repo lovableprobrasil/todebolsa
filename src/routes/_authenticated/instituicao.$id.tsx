@@ -1063,6 +1063,10 @@ function ScholarshipFormDialog({
                 onChange={(e) => setF({ ...f, original_price: e.target.value })}
                 placeholder={isMonthly ? "Ex.: 1200,00" : "Ex.: 24000,00"}
               />
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Informe apenas a {isMonthly ? "mensalidade" : "mensalidade × duração (valor total do curso)"}. Taxas
+                de matrícula, material e demais taxas administrativas não devem ser incluídas.
+              </p>
             </FieldUI>
             <FieldUI label="Tipo de desconto">
               <SelectUI
@@ -1078,7 +1082,7 @@ function ScholarshipFormDialog({
               f.discount_type === "PERCENT" ? "Percentual de desconto (%)" : "Valor do desconto (R$)"
             }>
               <Input
-                type="number" min="0" step="0.01"
+                type="number" min="0" max={f.discount_type === "PERCENT" ? "100" : undefined} step="0.01"
                 value={f.discount_value}
                 onChange={(e) => setF({ ...f, discount_value: e.target.value })}
               />
