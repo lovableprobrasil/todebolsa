@@ -5,6 +5,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { CATEGORIES } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 
 const ICONS: Record<string, LucideIcon> = {
   GraduationCap, Award, Wrench, School, Backpack, Languages, Target,
