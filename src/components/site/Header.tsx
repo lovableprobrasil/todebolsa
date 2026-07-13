@@ -137,8 +137,9 @@ export function Header() {
                   <Button variant="outline" asChild>
                     <Link to="/auth" search={{ tab: "login" }} onClick={() => setOpen(false)}>Entrar</Link>
                   </Button>
-                  <Button className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" asChild>
-                    <Link to="/auth" search={{ tab: "signup" }} onClick={() => setOpen(false)}>Cadastrar</Link>
+                  <Button asChild>
+                    <Link to="/auth" search={{ tab: "signup" }} onClick={() => setOpen(false)}>Criar conta</Link>
+                  </Button>
                   </Button>
                 </>
               )}
