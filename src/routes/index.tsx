@@ -9,11 +9,13 @@ import { SearchBar } from "@/components/site/SearchBar";
 import { TrustBadges } from "@/components/site/TrustBadges";
 import { StudentTestimonials } from "@/components/site/StudentTestimonials";
 import { BlogHomeSection } from "@/components/site/BlogHomeSection";
+import { HeroCarousel } from "@/components/site/HeroCarousel";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer, getPlatformStats } from "@/lib/scholarships";
 import { formatBRL, COURSE_LEVEL_LABEL } from "@/lib/format";
 import heroStudent from "@/assets/hero-student-card.webp";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
