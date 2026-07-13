@@ -14,6 +14,7 @@ import {
   formatBRL,
 } from "@/lib/format";
 import type { ScholarshipListItem } from "@/lib/scholarships";
+import { trackEvent } from "@/lib/analytics";
 
 export function ScholarshipCard({ s }: { s: ScholarshipListItem }) {
   const course = s.course_offering.course;
