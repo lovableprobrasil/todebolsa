@@ -634,6 +634,12 @@ function CitiesSection() {
               key={city}
               to="/bolsas"
               search={{ city }}
+              onClick={() =>
+                void trackEvent("city_click", {
+                  entityType: "city",
+                  entityId: city,
+                })
+              }
               className="group rounded-2xl border border-border bg-card p-5 hover:border-primary hover:-translate-y-0.5 transition-all"
             >
               <div className="flex items-center gap-2 text-muted-foreground text-xs mb-2">
