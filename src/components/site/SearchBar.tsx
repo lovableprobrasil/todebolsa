@@ -47,6 +47,16 @@ export function SearchBar({
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    void trackEvent("search_submit", {
+      entityType: "search",
+      metadata: {
+        level: level || null,
+        area: area || null,
+        modality: modality || null,
+        city: !isEad && city.trim() ? city.trim() : null,
+        q: query.trim() || null,
+      },
+    });
     navigate({
       to: "/bolsas",
       search: {
