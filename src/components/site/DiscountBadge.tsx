@@ -23,7 +23,7 @@ export function DiscountBadge({
       )}
       style={{ backgroundImage: "var(--gradient-discount)" }}
     >
-      −{percent}% OFF
+      {percent}% de desconto
     </span>
   );
 }
