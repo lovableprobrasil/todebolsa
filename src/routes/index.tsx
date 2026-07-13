@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, IdCard, ShieldCheck, Users, Award, Star, Percent, Search, Sparkles, Building2, MapPin, GraduationCap, BookOpen } from "lucide-react";
+import { ArrowRight, IdCard, ShieldCheck, Users, Award, Star, Percent, Search, Sparkles, Building2, MapPin, GraduationCap, BookOpen, CalendarClock, FileText, CheckCircle2 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CategoryGrid } from "@/components/site/CategoryGrid";
@@ -259,20 +259,44 @@ function FeaturedSection() {
 
 function HowItWorks() {
   const steps = [
-    { n: "01", icon: Search, title: "Busque seu curso", text: "Pesquise por curso, cidade ou instituição e encontre a bolsa ideal." },
-    { n: "02", icon: Sparkles, title: "Compare ofertas", text: "Compare preços, descontos e avaliações para fazer a melhor escolha." },
-    { n: "03", icon: Award, title: "Garanta sua bolsa", text: "Reserve sua vaga com poucos cliques e comece sua jornada acadêmica." },
+    {
+      n: "01",
+      icon: Search,
+      title: "Encontre",
+      text: "Busque por curso, cidade, modalidade ou instituição e descubra bolsas disponíveis em todo o Brasil.",
+    },
+    {
+      n: "02",
+      icon: Sparkles,
+      title: "Compare",
+      text: "Veja mensalidade, desconto, avaliações e condições lado a lado antes de escolher a bolsa ideal para você.",
+    },
+    {
+      n: "03",
+      icon: Award,
+      title: "Garanta",
+      text: "Reserve sua vaga direto pela plataforma. Depois é só concluir a matrícula com a instituição parceira.",
+    },
   ];
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-20">
       <div className="text-center mb-10">
-        <h2 className="font-display text-3xl md:text-4xl font-extrabold">Como funciona</h2>
-        <p className="mt-3 text-muted-foreground">Em 3 passos simples você garante sua bolsa</p>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+          Como funciona
+        </span>
+        <h2 className="mt-3 font-display text-3xl md:text-4xl font-extrabold">
+          Encontre, compare e garanta sua bolsa
+        </h2>
+        <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
+          Três passos simples para descobrir a oportunidade certa. A finalização
+          do pagamento acontece em uma etapa separada, com dados, revisão e
+          confirmação.
+        </p>
       </div>
       <div className="grid gap-6 md:grid-cols-3">
         {steps.map((s) => (
           <div key={s.n} className="relative rounded-2xl border border-border bg-card p-6">
-            <div className="font-display text-5xl font-extrabold text-primary/20 leading-none">{s.n}</div>
+            <div className="font-display text-5xl font-extrabold text-primary/15 leading-none">{s.n}</div>
             <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary mt-4 mb-3">
               <s.icon className="h-5 w-5" />
             </span>
@@ -281,34 +305,95 @@ function HowItWorks() {
           </div>
         ))}
       </div>
+      <p className="mt-6 text-center text-xs text-muted-foreground">
+        Após reservar, o checkout ocorre em 4 etapas: dados, detalhes da bolsa,
+        pagamento e revisão.
+      </p>
     </section>
   );
 }
 
 function UgeCallout() {
+  const infos = [
+    {
+      icon: CheckCircle2,
+      title: "Quem pode emitir",
+      text: "Estudantes matriculados em instituições parceiras via Tô de Bolsa em cursos regulares reconhecidos.",
+    },
+    {
+      icon: GraduationCap,
+      title: "Cursos cobertos",
+      text: "Educação básica, técnico, graduação, pós-graduação, cursos livres e idiomas ofertados pelas parceiras.",
+    },
+    {
+      icon: CalendarClock,
+      title: "Emissão e validade",
+      text: "Emitida após a confirmação da matrícula, com validade anual conforme o vínculo com a instituição.",
+    },
+    {
+      icon: FileText,
+      title: "Documentos necessários",
+      text: "CPF, foto recente e comprovante de matrícula fornecido pela instituição parceira.",
+    },
+  ];
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14 md:pb-20">
       <div className="relative overflow-hidden rounded-3xl bg-hero text-hero-foreground p-8 md:p-12">
         <div aria-hidden className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
         <div aria-hidden className="absolute -left-10 bottom-0 h-60 w-60 rounded-full bg-accent/20 blur-3xl" />
-        <div className="relative grid md:grid-cols-[auto_1fr_auto] gap-6 items-center">
-          <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-accent text-accent-foreground shrink-0">
-            <IdCard className="h-8 w-8" />
-          </span>
+        <div className="relative grid gap-8 lg:grid-cols-[1fr_1.1fr] items-start">
           <div className="min-w-0">
-            <h3 className="font-display text-2xl md:text-3xl font-extrabold mb-2">
+            <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accent text-accent-foreground mb-4">
+              <IdCard className="h-7 w-7" />
+            </span>
+            <h3 className="font-display text-2xl md:text-3xl font-extrabold mb-3">
               Carteira de Estudante Digital — UGE
             </h3>
-            <p className="text-hero-muted max-w-2xl">
-              Ao realizar sua matrícula pelo Tô de Bolsa, você garante automaticamente a
-              <strong className="text-hero-foreground"> Carteira de Estudante Digital</strong> emitida pela
-              <strong className="text-hero-foreground"> UGE — União Geral dos Estudantes do Brasil</strong>.
-              Meia-entrada em cinemas, shows, teatros e muito mais!
+            <p className="text-hero-muted max-w-xl">
+              Ao concluir sua matrícula por uma instituição parceira via Tô de
+              Bolsa, você pode solicitar a{" "}
+              <strong className="text-hero-foreground">
+                Carteira de Estudante Digital
+              </strong>{" "}
+              emitida pela{" "}
+              <strong className="text-hero-foreground">
+                UGE — União Geral dos Estudantes do Brasil
+              </strong>
+              . Ela dá direito a meia-entrada em cinema, shows, teatros e
+              eventos culturais, conforme a Lei nº 12.933/2013.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button size="lg" className="shrink-0" asChild>
+                <Link to="/bolsas">Buscar bolsas</Link>
+              </Button>
+              <Button size="lg" variant="outline" className="shrink-0 bg-transparent border-hero-foreground/30 text-hero-foreground hover:bg-hero-foreground/10" asChild>
+                <Link to="/carteira-uge">Saiba mais sobre a UGE</Link>
+              </Button>
+            </div>
+            <p className="mt-4 text-xs text-hero-muted">
+              Emissão sujeita à confirmação de matrícula e ao envio dos
+              documentos exigidos pela UGE.
             </p>
           </div>
-          <Button size="lg" className="shrink-0" asChild>
-            <Link to="/bolsas">Quero minha bolsa</Link>
-          </Button>
+
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {infos.map((i) => (
+              <li
+                key={i.title}
+                className="rounded-2xl bg-hero-foreground/5 border border-hero-foreground/10 p-4"
+              >
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent/20 text-accent mb-2">
+                  <i.icon className="h-4 w-4" />
+                </span>
+                <h4 className="font-bold text-sm text-hero-foreground mb-1">
+                  {i.title}
+                </h4>
+                <p className="text-xs text-hero-muted leading-relaxed">
+                  {i.text}
+                </p>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
