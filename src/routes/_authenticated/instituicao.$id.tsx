@@ -870,6 +870,37 @@ function ScholarshipFormDialog({
   const isEad = f.modality === "EAD";
   const isMonthly = f.price_mode === "MONTHLY";
 
+  // ---- Validações (Fase 7) ----
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  if (f.original_price !== "" && original < 0) errors.push("O valor cheio não pode ser negativo.");
+  if (f.discount_value !== "" && value < 0) errors.push("O desconto não pode ser negativo.");
+  if (f.discount_type === "PERCENT" && value > 100) {
+    errors.push("O percentual de desconto não pode ser maior que 100%.");
+  }
+  if (f.discount_type === "FIXED" && original > 0 && value > original) {
+    errors.push("O desconto em R$ não pode ser maior que o valor cheio.");
+  }
+  if (original > 0 && value > 0 && finalPrice >= original) {
+    errors.push("O valor com bolsa precisa ser menor que o valor cheio.");
+  }
+  const effectivePercent =
+    f.discount_type === "PERCENT"
+      ? value
+      : original > 0
+      ? ((original - finalPrice) / original) * 100
+      : 0;
+  if (effectivePercent > 90 && effectivePercent <= 100) {
+    warnings.push(
+      "Desconto acima de 90%. Confirme com o time comercial se essa condição está correta antes de publicar.",
+    );
+  }
+  const hasBlockingError = errors.length > 0;
+  const installmentsNum = Number(f.installments_count) || 0;
+  const durationNum = Number(f.duration_value) || 0;
+  // Só calculamos economia total quando temos parcelas E, no modo mensal, duração confirmada.
+  const canShowTotals = installmentsNum > 0 && (!isMonthly || durationNum > 0);
+
   const save = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.rpc("institution_save_scholarship", {
