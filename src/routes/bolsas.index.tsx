@@ -5,14 +5,15 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SearchBar } from "@/components/site/SearchBar";
 import { ScholarshipCard } from "@/components/site/ScholarshipCard";
+import { ScholarshipCardSkeleton } from "@/components/site/ScholarshipCardSkeleton";
+import { SectionState } from "@/components/site/SectionState";
 import { listScholarships, listInstitutionsLite } from "@/lib/scholarships";
 import { CATEGORIES, COURSE_LEVEL_LABEL, MODALITY_LABEL, KNOWLEDGE_AREAS, AREA_LABEL } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { SlidersHorizontal, X, Star, ArrowUpDown, Search as SearchIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { SlidersHorizontal, X, ArrowUpDown, Search as SearchIcon, ChevronRight } from "lucide-react";
 
 type SortMode =
   | "relevance"
@@ -146,7 +147,7 @@ function BolsasPage() {
     [search, sort],
   );
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["scholarships", "list", filters],
     queryFn: () => listScholarships(filters),
   });
@@ -366,13 +367,18 @@ function BolsasPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="bg-gradient-to-b from-primary-soft/40 to-background border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="font-display text-3xl md:text-4xl font-extrabold mb-1">
+      <div className="bg-gradient-to-b from-primary-soft/50 via-background to-background border-b border-border">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+          <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Link to="/" className="hover:text-foreground">Início</Link>
+            <ChevronRight className="h-3 w-3" aria-hidden />
+            <span className="text-foreground font-medium">Buscar bolsas</span>
+          </nav>
+          <h1 className="font-display text-3xl md:text-4xl font-extrabold tracking-tight mb-2">
             Encontre sua bolsa de estudo
           </h1>
-          <p className="text-muted-foreground mb-6">
-            Compare cursos com bolsa e escolha pela melhor avaliação, menor preço ou maior desconto.
+          <p className="text-muted-foreground max-w-2xl mb-6">
+            Compare cursos com bolsa em instituições parceiras e escolha pela melhor avaliação, menor mensalidade ou maior desconto.
           </p>
           <SearchBar
             initialLevel={search.level}
@@ -469,9 +475,16 @@ function BolsasPage() {
           {isLoading ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-[380px] rounded-2xl bg-muted animate-pulse" />
+                <ScholarshipCardSkeleton key={i} />
               ))}
             </div>
+          ) : isError ? (
+            <SectionState
+              variant="error"
+              title="Não conseguimos carregar as bolsas"
+              description="Verifique sua conexão e tente novamente em instantes."
+              action={{ label: "Tentar novamente", onClick: () => refetch() }}
+            />
           ) : data && data.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {data.map((s) => (
@@ -479,15 +492,14 @@ function BolsasPage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-border p-12 text-center">
-              <p className="font-semibold mb-1">Nenhuma bolsa encontrada</p>
-              <p className="text-sm text-muted-foreground mb-4">
-                Tente remover alguns filtros ou ampliar sua busca.
-              </p>
-              <Button variant="outline" size="sm" onClick={clearAll}>
-                Limpar filtros
-              </Button>
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <div className="space-y-6">
+              <SectionState
+                variant="empty"
+                title="Nenhuma bolsa encontrada"
+                description="Tente remover alguns filtros ou ampliar sua busca por outra cidade, área ou nível de ensino."
+                action={{ label: "Limpar filtros", onClick: clearAll }}
+              />
+              <div className="flex flex-wrap justify-center gap-2">
                 {CATEGORIES.slice(0, 6).map((c) => (
                   <Link
                     key={c.slug}
