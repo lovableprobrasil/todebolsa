@@ -37,12 +37,20 @@
   --color-brand-blue-soft: var(--brand-blue-soft);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-ink: var(--warning-ink);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-highlight: var(--brand-highlight);
+  --color-brand-highlight-hover: var(--brand-highlight-hover);
+  --color-brand-secondary: var(--brand-secondary);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
   --color-hero: var(--hero-bg);
   --color-hero-foreground: var(--hero-foreground);
   --color-hero-muted: var(--hero-muted);
@@ -70,78 +78,92 @@
 :root {
   --radius: 0.875rem;
 
-  /* Background cinza-claro global (#F6F8FB) e superfícies brancas */
-  --background: oklch(0.977 0.005 250);
-  --foreground: oklch(0.24 0.05 260);
+  /* Brand palette — Tô de Bolsa 2026 (Edtech Indigo) */
+  --brand-ink: #0B1020;
+  --brand-primary: #4F46E5;
+  --brand-primary-hover: #4338CA;
+  --brand-secondary: #7C3AED;
+  --brand-highlight: #FBBF24;
+  --brand-highlight-hover: #F59E0B;
+  --brand-success: #14B8A6;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.05 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.05 260);
+  /* Neutros globais */
+  --background: #F8FAFC;
+  --foreground: #172033;
 
-  /* Turquesa — ação principal (#00766F) */
-  --primary: oklch(0.508 0.079 187);
-  --primary-foreground: oklch(1 0 0);
-  --primary-soft: oklch(0.95 0.04 187);
+  --card: #FFFFFF;
+  --card-foreground: #172033;
+  --popover: #FFFFFF;
+  --popover-foreground: #172033;
 
-  /* Azul navy — marca institucional (#102A43) */
-  --brand-blue: oklch(0.245 0.06 253);
-  --brand-blue-foreground: oklch(1 0 0);
-  --brand-blue-soft: oklch(0.95 0.02 253);
+  /* Primary = índigo (ação principal em fundos claros) */
+  --primary: #4F46E5;
+  --primary-foreground: #FFFFFF;
+  --primary-soft: #EEF2FF;
 
-  /* Hero — fundo navy profundo */
-  --hero-bg: oklch(0.22 0.06 253);
-  --hero-foreground: oklch(1 0 0);
-  --hero-muted: oklch(0.82 0.02 250);
+  /* Ink (azul-noturno) — banner, rodapé, seções institucionais */
+  --brand-blue: #0B1020;
+  --brand-blue-foreground: #FFFFFF;
+  --brand-blue-soft: #EEF2FF;
 
-  --secondary: oklch(0.965 0.008 250);
-  --secondary-foreground: oklch(0.28 0.05 260);
+  /* Hero — fundo institucional */
+  --hero-bg: #0B1020;
+  --hero-foreground: #FFFFFF;
+  --hero-muted: #CBD5E1;
 
-  /* Verde escuro para "sucesso/economia" (#168456) */
-  --success: oklch(0.55 0.13 158);
-  --success-foreground: oklch(1 0 0);
+  --secondary: #F1F5F9;
+  --secondary-foreground: #172033;
 
-  /* Amarelo destaque promocional (#F5B942) — uso restrito */
-  --warning: oklch(0.83 0.14 78);
-  --warning-foreground: oklch(0.28 0.05 60);
+  /* Sucesso = teal — reservado para estados positivos, nunca CTA principal */
+  --success: #0F766E;
+  --success-foreground: #FFFFFF;
+  --success-soft: #CCFBF1;
 
-  --muted: oklch(0.965 0.005 250);
-  --muted-foreground: oklch(0.55 0.02 260);
+  /* Amarelo destaque — CTA em fundo escuro, descontos, oportunidades */
+  --warning: #FBBF24;
+  --warning-foreground: #0B1020;
+  --warning-soft: #FEF3C7;
+  --warning-ink: #78350F;
 
-  /* Accent (âmbar) — apenas para destaques como Carteira UGE */
-  --accent: oklch(0.83 0.14 78);
-  --accent-foreground: oklch(0.28 0.05 60);
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
 
-  /* Danger (#C9362B) */
-  --destructive: oklch(0.575 0.19 27);
-  --destructive-foreground: oklch(1 0 0);
+  /* Accent = violeta secundário (gradientes discretos, decoração) */
+  --accent: #7C3AED;
+  --accent-foreground: #FFFFFF;
+  --accent-soft: #F3E8FF;
 
-  /* Borders/inputs (#DDE3EA) */
-  --border: oklch(0.905 0.008 250);
-  --input: oklch(0.905 0.008 250);
-  --ring: oklch(0.508 0.079 187);
+  /* Danger */
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
 
-  --chart-1: oklch(0.508 0.079 187);
-  --chart-2: oklch(0.245 0.06 253);
-  --chart-3: oklch(0.83 0.14 78);
-  --chart-4: oklch(0.55 0.13 158);
-  --chart-5: oklch(0.55 0.2 320);
+  /* Borders/inputs */
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #4F46E5;
 
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.24 0.05 260);
-  --sidebar-primary: oklch(0.508 0.079 187);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.95 0.04 187);
-  --sidebar-accent-foreground: oklch(0.28 0.08 187);
-  --sidebar-border: oklch(0.905 0.008 250);
-  --sidebar-ring: oklch(0.508 0.079 187);
+  --chart-1: #4F46E5;
+  --chart-2: #7C3AED;
+  --chart-3: #FBBF24;
+  --chart-4: #14B8A6;
+  --chart-5: #0B1020;
 
-  /* Gradientes e sombras semânticos — sutis */
-  --gradient-hero: linear-gradient(135deg, oklch(0.22 0.06 253) 0%, oklch(0.26 0.055 250) 60%, oklch(0.20 0.06 248) 100%);
-  --gradient-warm: linear-gradient(135deg, oklch(0.98 0.02 187) 0%, oklch(1 0 0) 100%);
-  --gradient-discount: linear-gradient(120deg, oklch(0.58 0.14 158), oklch(0.5 0.14 160));
-  --shadow-elegant: 0 10px 30px -14px color-mix(in oklab, var(--brand-blue) 30%, transparent);
-  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 20px -18px oklch(0 0 0 / 0.14);
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #172033;
+  --sidebar-primary: #4F46E5;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EEF2FF;
+  --sidebar-accent-foreground: #3730A3;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #4F46E5;
+
+  /* Gradientes e sombras semânticos */
+  --gradient-hero: linear-gradient(120deg, #0B1020 0%, #161A3A 55%, #312E81 100%);
+  --gradient-brand: linear-gradient(120deg, #4F46E5 0%, #7C3AED 100%);
+  --gradient-warm: linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 100%);
+  --gradient-discount: linear-gradient(120deg, #FBBF24 0%, #F59E0B 100%);
+  --shadow-elegant: 0 10px 30px -14px rgb(11 16 32 / 0.28);
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -18px rgb(15 23 42 / 0.18);
 }
 
 .dark {
