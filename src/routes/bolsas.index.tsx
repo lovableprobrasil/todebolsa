@@ -367,13 +367,18 @@ function BolsasPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="bg-gradient-to-b from-primary-soft/40 to-background border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="font-display text-3xl md:text-4xl font-extrabold mb-1">
+      <div className="bg-gradient-to-b from-primary-soft/50 via-background to-background border-b border-border">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+          <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Link to="/" className="hover:text-foreground">Início</Link>
+            <ChevronRight className="h-3 w-3" aria-hidden />
+            <span className="text-foreground font-medium">Buscar bolsas</span>
+          </nav>
+          <h1 className="font-display text-3xl md:text-4xl font-extrabold tracking-tight mb-2">
             Encontre sua bolsa de estudo
           </h1>
-          <p className="text-muted-foreground mb-6">
-            Compare cursos com bolsa e escolha pela melhor avaliação, menor preço ou maior desconto.
+          <p className="text-muted-foreground max-w-2xl mb-6">
+            Compare cursos com bolsa em instituições parceiras e escolha pela melhor avaliação, menor mensalidade ou maior desconto.
           </p>
           <SearchBar
             initialLevel={search.level}
