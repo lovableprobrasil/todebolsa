@@ -486,6 +486,13 @@ function InstitutionsSection() {
               key={i.id}
               to="/instituicoes/$slug"
               params={{ slug: i.slug }}
+              onClick={() =>
+                void trackEvent("institution_click", {
+                  entityType: "institution",
+                  entityId: i.id,
+                  metadata: { slug: i.slug, trade_name: i.trade_name },
+                })
+              }
               className="group rounded-2xl border border-border bg-card p-4 flex flex-col hover:border-primary hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)] transition-all"
             >
               <div className="h-20 flex items-center justify-center mb-3">
