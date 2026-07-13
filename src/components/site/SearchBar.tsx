@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CATEGORIES, KNOWLEDGE_AREAS, MODALITY_LABEL } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 
 const MODALITIES = ["PRESENCIAL", "SEMIPRESENCIAL", "EAD"] as const;
 
