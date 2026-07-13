@@ -199,10 +199,12 @@ function StatsBar() {
 }
 
 function FeaturedSection() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["scholarships", "featured"],
     queryFn: () => listScholarships({ featuredOnly: true, limit: 6 }),
   });
+
+  const items = data ?? [];
 
   return (
     <section className="bg-secondary/40 py-14 md:py-20">
@@ -227,12 +229,27 @@ function FeaturedSection() {
         {isLoading ? (
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-[380px] rounded-2xl bg-muted animate-pulse" />
+              <ScholarshipCardSkeleton key={i} />
             ))}
           </div>
+        ) : isError ? (
+          <SectionState
+            variant="error"
+            title="Não foi possível carregar as bolsas em destaque"
+            description="Verifique sua conexão e tente novamente."
+            action={{ label: "Tentar novamente", onClick: () => void refetch() }}
+          />
+        ) : items.length === 0 ? (
+          <SectionState
+            variant="empty"
+            title="Nenhuma bolsa em destaque no momento"
+            description="Explore todas as ofertas disponíveis na busca completa."
+          />
         ) : (
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {data?.map((s) => <ScholarshipCard key={s.id} s={s} />)}
+            {items.map((s) => (
+              <ScholarshipCard key={s.id} s={s} />
+            ))}
           </div>
         )}
       </div>
