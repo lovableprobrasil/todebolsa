@@ -1,87 +1,58 @@
-# Fluxo de Compra de Bolsas — Checkout Marketplace
+A demanda é grande e toca muitas áreas (design system, header, hero, busca, cards, página de resultados, validações, analytics). Para entregar com qualidade sem quebrar funcionalidades existentes, proponho executar em fases — cada fase é entregável, testável e reversível. Preciso da sua confirmação antes de começar, e da escolha de por onde iniciar.
 
-Reformulação do fluxo atual (`/reservas/$id`) em um **checkout de 4 etapas** inspirado em marketplaces educacionais, sem quebrar reservas, cartas de apresentação, pricing rules e painel admin já existentes.
+## Fase 1 — Novo Design System (base para tudo)
+- Atualizar `src/styles.css` com a nova paleta (navy #102A43, primary turquesa #00766F, highlight #F5B942, success, danger, background #F6F8FB, borders, textos).
+- Trocar tipografia para Manrope (títulos) + Inter (corpo) via `<link>` no `__root.tsx`.
+- Definir escala tipográfica (H1/H2/H3, preço) como utilitários/tokens.
+- Ajustar componentes base shadcn (Button, Card, Badge, Input) para refletir a nova paleta sem quebrar variantes existentes.
+- Remover gradientes pesados do hero atual e sombras exageradas.
 
-## Estado atual (o que já existe)
-- `reservations` + `pay_reservation` (pagamento simulado R$ 59,90).
-- `scholarship_letters` + `issue_scholarship_letter` (emitida após pagamento).
-- `marketplace_pricing_rules` com hierarquia global/instituição/curso/bolsa.
-- Auth Supabase (email/senha), `profiles`, `user_roles`.
-- Validação de CEP (`lookupCep`), CPF, `PasswordInput`.
-- E-mails transacionais (fila pgmq, templates React Email).
-- Stripe **não habilitado** (decisão anterior pendente). Vou manter pagamento simulado nesta entrega e deixar arquitetura pronta para Stripe/Pix/Boleto reais depois.
+## Fase 2 — Header
+- Reorganizar navegação: Buscar bolsas, Instituições parceiras, Como funciona, Guia do estudante, Para instituições, Entrar, Criar conta.
+- Header branco, compacto, fixo no scroll (desktop). Menu lateral acessível no mobile com CTA “Buscar bolsas” visível.
+- Separar claramente “Instituições parceiras” (estudantes) de “Para instituições” (B2B).
 
-## Escopo desta entrega (Entrega 1 — Checkout Core)
+## Fase 3 — Hero + Busca
+- Reduzir para 3 slides ativos com os títulos e CTAs solicitados.
+- Card de busca fixo sobreposto ao banner (curso, cidade, modalidade, nível) com labels visíveis; não perde dados entre slides; pausa no hover/foco/digitação; botão pausar/iniciar; setas + indicadores; swipe; respeita reduced-motion.
+- Substituir imagens por fotos de estudantes brasileiros diversos (gerar 3 novas). Remover carteira com logos de terceiros.
+- Faixa de confiança discreta logo abaixo com 4 selos (sem promessas absolutas).
 
-### Backend (1 migração)
-1. **`checkout_sessions`** — guarda progresso do checkout (logado ou anônimo via token), bolsa escolhida, dados pessoais, endereço, etapa atual, UTMs, expira em 7 dias. RLS: dono (auth.uid) OU `session_token` (acesso anônimo via RPC).
-2. **`checkout_acceptances`** — registro legal de cada aceite (termos, privacidade, condições da bolsa, contrato). Campos: user_id/lead_email, term_version, ip, user_agent, accepted_at, checkout_session_id.
-3. **`checkout_events`** — eventos de funil (view, start, fill_data, accept_terms, review, payment_init, payment_confirmed, abandoned). Para analytics.
-4. **Extensão `reservations`**: adicionar `checkout_session_id`, `payment_method` (PIX/BOLETO/CARD), `installments`, `utm_*`.
-5. **Extensão `marketplace_pricing_rules`**: campos `allow_pix`, `allow_boleto`, `allow_card`, `max_installments`, `min_installment_amount`, `interest_rate_pct`, `pix_expiration_minutes`, `boleto_due_days`, `reserve_before_payment`, `reservation_ttl_minutes`.
-6. **RPCs**:
-   - `checkout_start(scholarship_id, session_token)` — cria/retoma sessão.
-   - `checkout_save_step(session_id, step, payload)` — persiste progresso por etapa.
-   - `checkout_check_existing_account(email, cpf, phone)` — retorna `{exists, suggest_login}` sem vazar dados.
-   - `checkout_finalize(session_id, payment_method)` — cria user (se necessário via server fn admin), cria reservation, registra aceites, emite carta na confirmação.
+## Fase 4 — Homepage: reorganizar seções
+Ordem: Header → Hero+Busca → Instituições parceiras → Categorias → Bolsas em destaque → Como funciona → Carteira UGE → Avaliações → Bolsas por cidade → Para instituições → FAQ → Rodapé. Alternar fundos branco/cinza.
 
-### Server functions (`src/lib/checkout.functions.ts`)
-- `startCheckout`, `saveCheckoutStep`, `checkExistingAccount`, `finalizeCheckout`, `getCheckoutSession`.
-- Função admin (server-side) para criar conta confirmada pós-pagamento, reaproveitando padrão de `institution-application.ts`.
+## Fase 5 — Cards de bolsa
+- Redesenhar `ScholarshipCard` no novo padrão: “De R$ X · Por R$ Y/mês · Economize R$ Z · 60% de desconto” (sem “−60% OFF”).
+- Preço promocional com maior destaque que o percentual.
+- Texto discreto “Consulte as condições e regras de manutenção da bolsa.”
+- Selo amarelo apenas quando aplicável.
 
-### Frontend
-Nova rota `src/routes/checkout.$scholarshipId.tsx` com 4 etapas internas (state machine, sem mudar URL para preservar dados):
+## Fase 6 — Página de resultados `/bolsas`
+- Busca compacta no topo, contagem de resultados, chips de filtros ativos, botão limpar, ordenação.
+- Sidebar fixa no desktop, drawer no mobile com contador de filtros ativos.
+- Estados: loading (skeletons), vazio, erro, últimas vagas, curso novo, encerrada.
 
-```text
-┌──────────────────────────────────────────────────────┐
-│ [1 Dados] → [2 Bolsa+Termos] → [3 Revisão] → [4 Pag] │
-└──────────────────────────────────────────────────────┘
-```
+## Fase 7 — Validações de oferta (admin/instituição)
+- Bloquear preço negativo, desconto >100%, alertar >90%, exigir original > promocional.
+- Campos explícitos para periodicidade (mensal/total/semestral/parcelado) e diferenciar mensalidade × taxa × matrícula.
+- Não calcular economia anual quando duração/periodicidade não confirmadas.
 
-**Etapa 1 — Dados**: nome, CPF, telefone, WhatsApp, email + confirmação, senha + confirmação (oculta se já logado), CEP com auto-preenchimento, endereço. Verificação on-blur de conta existente → modal "Entrar e continuar".
+## Fase 8 — Como funciona + Carteira UGE
+- 3 passos de descoberta (Encontre / Compare / Garanta) separados dos 4 passos do checkout (Dados / Detalhes / Pagamento / Revisão).
+- Seção UGE reescrita: elegibilidade, cursos, emissão, validade, documentos. Remover “garantida” quando houver condicionantes.
 
-**Etapa 2 — Bolsa + Aceites**: card visual da bolsa (instituição, curso, valor original, desconto, valor com bolsa, taxa de adesão Tô de Bolsa, validade, vagas, regras). 4 checkboxes obrigatórios (termos, privacidade, condições, contrato) com links em modal/nova aba.
+## Fase 9 — Acessibilidade, performance e analytics
+- Focus ring, ARIA no carrossel, labels, alt texts, contraste AA.
+- WebP/AVIF, width/height, lazy-loading, skeletons.
+- Eventos via `trackEvent` já existente: banner view, troca manual, uso da busca, categoria, instituição, bolsa, filtro, cadastro, pagamento, compra.
 
-**Etapa 3 — Revisão**: resumo de dados pessoais + endereço + bolsa + aceites com botões "Editar" por seção. Sidebar fixa com total (desktop) / collapse (mobile).
+## Detalhes técnicos
+- Preservar rotas, integrações Supabase, checkout Stripe, RLS, server functions.
+- Sem alterações no schema do banco. Validações Fase 7 são client-side + server function existente (não migrations novas neste plano).
+- Componentes reutilizáveis em `src/components/site/` e `src/components/ui/` (variantes shadcn).
+- Nenhum dado inventado: instituições, avaliações, vagas e preços continuam vindo do banco.
 
-**Etapa 4 — Pagamento**: tabs Pix / Boleto / Cartão (filtradas pelas regras da bolsa). Pix mostra QR placeholder + copia-cola. Boleto mostra linha digitável + botão baixar. Cartão tem form com parcelas dinâmicas baseadas em `max_installments` e `min_installment_amount`. **Nesta entrega o pagamento continua simulado** (`pay_reservation`), mas o seletor de método e parcelas é real.
-
-**Tela de sucesso**: já existe (`/reservas/$id` em estado PAID com botão "Baixar Carta de Apresentação"); vou ajustar para incluir mensagem "Parabéns!", próximos passos, número do pedido.
-
-### Painel admin
-Adicionar aba "Regras de pagamento" em `/admin/configuracoes-comerciais` (já existe a rota): editar campos novos de `marketplace_pricing_rules` por escopo (global/instituição/curso/bolsa).
-
-### Componentes novos
-- `CheckoutStepper` (barra de progresso).
-- `CheckoutSummary` (sidebar com bolsa).
-- `ScholarshipDetailsCard` (etapa 2).
-- `AcceptanceCheckbox` (etapa 2).
-- `PaymentMethodTabs` + `PixPanel`, `BoletoPanel`, `CardPanel`.
-- `ExistingAccountModal`.
-
-### Analytics
-`trackEvent` já existe (`src/lib/analytics.ts`). Disparar em cada transição do stepper.
-
-### Recuperação de checkout abandonado
-- `checkout_sessions.updated_at` + `status='ABANDONED'` via cron diário (já temos pg_cron para emails).
-- Link de retomada: `/checkout/retomar?token={session_token}` carrega sessão e pula para `current_step`.
-- Email de recuperação após 24h (template novo `checkout-abandoned`).
-
-## Fora desta entrega (próximas)
-- **Stripe real** (Pix/cartão via Stripe Brasil) — depende decisão pendente.
-- **Boleto real** — depende provedor (Stripe Brasil ainda não suporta boleto bem; alternativa: Asaas/PagarMe).
-- **Tracking GA4/Meta Pixel** — só estrutura de eventos nesta entrega.
-- **CRM/WhatsApp** — depende connector.
-
-## Compatibilidade
-- Fluxo antigo `/reservas/$id` continua funcionando (rota mantida).
-- Botão "Quero esta bolsa" passa a apontar para `/checkout/$scholarshipId` em vez de criar reservation direto.
-- `reservations`, `scholarship_letters`, painel admin, notificações, documentos: **intactos**.
-
-## Confirmar antes de seguir
-1. **Pagamento real (Stripe/Pix)**: mantenho simulado nesta entrega (PR já gigante), Stripe entra em entrega seguinte — OK?
-2. **Boleto**: só UI nesta entrega (gera placeholder), integração real fica para quando definirmos provedor — OK?
-3. **Criar conta**: na confirmação do pagamento (não antes), conforme item 8 do prompt — OK?
-4. **Recuperação por email**: 24h após abandono — OK?
-
-Se sim, implemento a **Entrega 1** no próximo turno.
+## O que preciso de você
+1. Confirma a ordem das fases acima?
+2. Posso começar pela **Fase 1 (Design System) + Fase 2 (Header) + Fase 3 (Hero/Busca)** em uma primeira entrega — é a base visível e destrava as demais? Ou prefere outra ordem?
+3. As Fases 5–7 (cards, resultados, validações) podem ficar para uma segunda rodada, depois que você aprovar o novo visual?
