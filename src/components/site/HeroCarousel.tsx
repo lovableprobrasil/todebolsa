@@ -27,8 +27,6 @@ import { useNavigate } from "@tanstack/react-router";
 import heroSlide1 from "@/assets/hero-slide-1.jpg";
 import heroSlide2 from "@/assets/hero-slide-2.jpg";
 import heroSlide3 from "@/assets/hero-slide-3.jpg";
-import heroSlide4 from "@/assets/hero-slide-4.jpg";
-import heroSlide5 from "@/assets/hero-slide-5.jpg";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics";
 
@@ -48,91 +46,58 @@ type Slide = {
 
 const SLIDES: Slide[] = [
   {
-    id: "principal",
-    eyebrow: "Bolsas com até 90% de desconto",
-    eyebrowIcon: Percent,
-    title: (
-      <>
-        As melhores bolsas de estudo{" "}
-        <span className="text-primary">estão aqui</span>
-      </>
-    ),
-    text: "Encontre faculdades e instituições reconhecidas e economize na mensalidade durante todo o curso.",
-    primary: { label: "Encontrar minha bolsa", to: "/bolsas" },
-    secondary: { label: "Ver todas as ofertas", to: "/bolsas" },
-    highlight: "Marketplace nacional de bolsas de estudo",
-    accent: "primary",
-    image: heroSlide1,
-    imageAlt: "Estudantes brasileiros de diferentes idades sorrindo em frente a uma universidade moderna",
-  },
-  {
-    id: "economia",
-    eyebrow: "Educação de qualidade com economia real",
-    eyebrowIcon: TrendingUp,
-    title: (
-      <>
-        Estude mais{" "}
-        <span className="text-primary">pagando menos</span>
-      </>
-    ),
-    text: "Compare bolsas, cursos e instituições e escolha a oportunidade que combina com seus objetivos e seu orçamento.",
-    primary: { label: "Buscar bolsas", to: "/bolsas" },
-    highlight: "Compare cursos e mensalidades em segundos",
-    accent: "primary",
-    image: heroSlide2,
-    imageAlt: "Mulher estudando em casa no notebook, comparando bolsas de estudo",
-  },
-  {
-    id: "facilidade",
-    eyebrow: "Processo 100% online e sem burocracia",
-    eyebrowIcon: Sparkles,
-    title: (
-      <>
-        Sua bolsa <span className="text-primary">sem burocracia</span>
-      </>
-    ),
-    text: "Escolha o curso, confirme seus dados e garanta sua oportunidade de forma simples, rápida e digital.",
-    primary: { label: "Quero minha bolsa", to: "/bolsas" },
-    secondary: { label: "Como funciona", to: "/faq" },
-    highlight: "Contratação rápida · Sem filas · Sem processos complicados",
-    accent: "brand-blue",
-    image: heroSlide3,
-    imageAlt: "Jovem sorrindo utilizando o celular para contratar sua bolsa de estudos",
-  },
-  {
-    id: "desconto",
-    eyebrow: "Desconto que acompanha sua formação",
-    eyebrowIcon: ShieldCheck,
-    title: (
-      <>
-        Desconto durante{" "}
-        <span className="text-primary">toda a sua formação</span>
-      </>
-    ),
-    text: "Encontre bolsas com mensalidade reduzida ao longo do curso, conforme as regras de cada oferta.",
-    primary: { label: "Conhecer as bolsas", to: "/bolsas" },
-    highlight: "Planeje hoje a economia da sua formação",
-    accent: "primary",
-    image: heroSlide4,
-    imageAlt: "Família celebrando a formatura com toga e diploma no campus",
-  },
-  {
-    id: "transformacao",
-    eyebrow: "Graduação, pós, técnico, idiomas e mais",
+    id: "encontre",
+    eyebrow: "Marketplace de bolsas de estudo",
     eyebrowIcon: GraduationCap,
     title: (
       <>
-        O próximo passo da sua carreira{" "}
-        <span className="text-primary">começa aqui</span>
+        Encontre a bolsa ideal para{" "}
+        <span className="text-primary">transformar seu futuro</span>
       </>
     ),
-    text: "Transforme seus planos em realidade com cursos para todas as fases da vida e todos os perfis.",
-    primary: { label: "Escolher meu curso", to: "/bolsas" },
-    secondary: { label: "Explorar instituições", to: "/bolsas" },
-    highlight: "Diversidade de cursos, modalidades e instituições",
+    text: "Compare cursos e instituições e economize na mensalidade durante sua formação.",
+    primary: { label: "Encontrar minha bolsa", to: "/bolsas" },
+    secondary: { label: "Ver como funciona", to: "/faq" },
+    highlight: "Bolsas com descontos de até 90%",
+    accent: "primary",
+    image: heroSlide1,
+    imageAlt: "Estudantes brasileiros diversos em frente a uma universidade",
+  },
+  {
+    id: "economia",
+    eyebrow: "Economia real na mensalidade",
+    eyebrowIcon: TrendingUp,
+    title: (
+      <>
+        Economize na mensalidade durante sua{" "}
+        <span className="text-primary">formação</span>
+      </>
+    ),
+    text: "Planeje seus estudos com bolsas verificadas e mensalidades reduzidas em instituições parceiras.",
+    primary: { label: "Encontrar minha bolsa", to: "/bolsas" },
+    secondary: { label: "Ver como funciona", to: "/faq" },
+    highlight: "Compare preços e regras de manutenção com clareza",
+    accent: "primary",
+    image: heroSlide2,
+    imageAlt: "Estudante brasileira estudando em casa no notebook",
+  },
+  {
+    id: "instituicoes",
+    eyebrow: "Instituições parceiras verificadas",
+    eyebrowIcon: ShieldCheck,
+    title: (
+      <>
+        As melhores instituições e oportunidades{" "}
+        <span className="text-primary">estão aqui</span>
+      </>
+    ),
+    text: "Faculdades, escolas, técnicos, idiomas e mais — cadastrados e validados pelo Tô de Bolsa.",
+    primary: { label: "Encontrar minha bolsa", to: "/bolsas" },
+    secondary: { label: "Ver como funciona", to: "/faq" },
+    highlight: "Qualidade educacional e diversidade de opções",
     accent: "brand-blue",
-    image: heroSlide5,
-    imageAlt: "Grupo diverso de estudantes e profissionais em frente a uma instituição de ensino",
+    image: heroSlide3,
+    imageAlt: "Jovem brasileiro usando o celular para pesquisar cursos",
   },
 ];
 
