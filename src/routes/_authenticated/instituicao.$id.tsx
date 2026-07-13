@@ -1085,10 +1085,9 @@ function ScholarshipFormDialog({
             </FieldUI>
           </div>
 
-          {original > 0 && value > 0 && (() => {
-            const installments = Number(f.installments_count) || 0;
-            const total = isMonthly ? finalPrice * (installments || 1) : finalPrice;
-            const totalOriginal = isMonthly ? original * (installments || 1) : original;
+          {original > 0 && value > 0 && !hasBlockingError && (() => {
+            const total = isMonthly ? finalPrice * installmentsNum : finalPrice;
+            const totalOriginal = isMonthly ? original * installmentsNum : original;
             return (
               <div className="rounded-lg bg-secondary p-3 text-sm space-y-1">
                 <div>
@@ -1098,20 +1097,39 @@ function ScholarshipFormDialog({
                   {isMonthly ? "/mês" : ""}
                   {original > finalPrice && (
                     <span className="ml-2 text-muted-foreground">
-                      ({Math.round(((original - finalPrice) / original) * 100)}% OFF)
+                      ({Math.round(effectivePercent)}% OFF)
                     </span>
                   )}
                 </div>
-                {installments > 0 && (
+                {canShowTotals ? (
                   <div className="text-muted-foreground text-xs">
-                    Total {isMonthly ? "em " + installments + " mensalidades" : "em " + installments + "x"}:
+                    Total {isMonthly ? "em " + installmentsNum + " mensalidades" : "em " + installmentsNum + "x"}:
                     {" "}<strong className="text-foreground">{formatBRL(total)}</strong>
                     {totalOriginal > total && ` (economia de ${formatBRL(totalOriginal - total)})`}
                   </div>
+                ) : (
+                  <p className="text-[11px] text-muted-foreground">
+                    Informe a duração e a quantidade de parcelas para calcular o total e a economia da oferta.
+                  </p>
                 )}
               </div>
             );
           })()}
+
+          {errors.length > 0 && (
+            <div className="rounded-lg border border-destructive/40 bg-destructive/5 text-destructive p-3 text-sm space-y-1">
+              {errors.map((msg) => (
+                <p key={msg}>{msg}</p>
+              ))}
+            </div>
+          )}
+          {warnings.length > 0 && (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-400 p-3 text-sm space-y-1">
+              {warnings.map((msg) => (
+                <p key={msg}>{msg}</p>
+              ))}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldUI label="Validade da oferta (opcional)">
@@ -1138,6 +1156,7 @@ function ScholarshipFormDialog({
             onClick={() => save.mutate()}
             disabled={
               save.isPending ||
+              hasBlockingError ||
               !f.title.trim() ||
               !f.original_price ||
               !f.discount_value ||
