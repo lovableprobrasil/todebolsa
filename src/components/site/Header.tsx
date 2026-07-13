@@ -140,7 +140,6 @@ export function Header() {
                   <Button asChild>
                     <Link to="/auth" search={{ tab: "signup" }} onClick={() => setOpen(false)}>Criar conta</Link>
                   </Button>
-                  </Button>
                 </>
               )}
             </div>
