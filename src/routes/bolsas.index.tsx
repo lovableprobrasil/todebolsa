@@ -147,7 +147,7 @@ function BolsasPage() {
     [search, sort],
   );
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["scholarships", "list", filters],
     queryFn: () => listScholarships(filters),
   });
