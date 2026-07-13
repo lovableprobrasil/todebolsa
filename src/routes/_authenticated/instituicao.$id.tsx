@@ -870,6 +870,37 @@ function ScholarshipFormDialog({
   const isEad = f.modality === "EAD";
   const isMonthly = f.price_mode === "MONTHLY";
 
+  // ---- Validações (Fase 7) ----
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  if (f.original_price !== "" && original < 0) errors.push("O valor cheio não pode ser negativo.");
+  if (f.discount_value !== "" && value < 0) errors.push("O desconto não pode ser negativo.");
+  if (f.discount_type === "PERCENT" && value > 100) {
+    errors.push("O percentual de desconto não pode ser maior que 100%.");
+  }
+  if (f.discount_type === "FIXED" && original > 0 && value > original) {
+    errors.push("O desconto em R$ não pode ser maior que o valor cheio.");
+  }
+  if (original > 0 && value > 0 && finalPrice >= original) {
+    errors.push("O valor com bolsa precisa ser menor que o valor cheio.");
+  }
+  const effectivePercent =
+    f.discount_type === "PERCENT"
+      ? value
+      : original > 0
+      ? ((original - finalPrice) / original) * 100
+      : 0;
+  if (effectivePercent > 90 && effectivePercent <= 100) {
+    warnings.push(
+      "Desconto acima de 90%. Confirme com o time comercial se essa condição está correta antes de publicar.",
+    );
+  }
+  const hasBlockingError = errors.length > 0;
+  const installmentsNum = Number(f.installments_count) || 0;
+  const durationNum = Number(f.duration_value) || 0;
+  // Só calculamos economia total quando temos parcelas E, no modo mensal, duração confirmada.
+  const canShowTotals = installmentsNum > 0 && (!isMonthly || durationNum > 0);
+
   const save = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.rpc("institution_save_scholarship", {
@@ -1032,6 +1063,10 @@ function ScholarshipFormDialog({
                 onChange={(e) => setF({ ...f, original_price: e.target.value })}
                 placeholder={isMonthly ? "Ex.: 1200,00" : "Ex.: 24000,00"}
               />
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Informe apenas a {isMonthly ? "mensalidade" : "mensalidade × duração (valor total do curso)"}. Taxas
+                de matrícula, material e demais taxas administrativas não devem ser incluídas.
+              </p>
             </FieldUI>
             <FieldUI label="Tipo de desconto">
               <SelectUI
@@ -1047,17 +1082,16 @@ function ScholarshipFormDialog({
               f.discount_type === "PERCENT" ? "Percentual de desconto (%)" : "Valor do desconto (R$)"
             }>
               <Input
-                type="number" min="0" step="0.01"
+                type="number" min="0" max={f.discount_type === "PERCENT" ? "100" : undefined} step="0.01"
                 value={f.discount_value}
                 onChange={(e) => setF({ ...f, discount_value: e.target.value })}
               />
             </FieldUI>
           </div>
 
-          {original > 0 && value > 0 && (() => {
-            const installments = Number(f.installments_count) || 0;
-            const total = isMonthly ? finalPrice * (installments || 1) : finalPrice;
-            const totalOriginal = isMonthly ? original * (installments || 1) : original;
+          {original > 0 && value > 0 && !hasBlockingError && (() => {
+            const total = isMonthly ? finalPrice * installmentsNum : finalPrice;
+            const totalOriginal = isMonthly ? original * installmentsNum : original;
             return (
               <div className="rounded-lg bg-secondary p-3 text-sm space-y-1">
                 <div>
@@ -1067,20 +1101,39 @@ function ScholarshipFormDialog({
                   {isMonthly ? "/mês" : ""}
                   {original > finalPrice && (
                     <span className="ml-2 text-muted-foreground">
-                      ({Math.round(((original - finalPrice) / original) * 100)}% OFF)
+                      ({Math.round(effectivePercent)}% OFF)
                     </span>
                   )}
                 </div>
-                {installments > 0 && (
+                {canShowTotals ? (
                   <div className="text-muted-foreground text-xs">
-                    Total {isMonthly ? "em " + installments + " mensalidades" : "em " + installments + "x"}:
+                    Total {isMonthly ? "em " + installmentsNum + " mensalidades" : "em " + installmentsNum + "x"}:
                     {" "}<strong className="text-foreground">{formatBRL(total)}</strong>
                     {totalOriginal > total && ` (economia de ${formatBRL(totalOriginal - total)})`}
                   </div>
+                ) : (
+                  <p className="text-[11px] text-muted-foreground">
+                    Informe a duração e a quantidade de parcelas para calcular o total e a economia da oferta.
+                  </p>
                 )}
               </div>
             );
           })()}
+
+          {errors.length > 0 && (
+            <div className="rounded-lg border border-destructive/40 bg-destructive/5 text-destructive p-3 text-sm space-y-1">
+              {errors.map((msg) => (
+                <p key={msg}>{msg}</p>
+              ))}
+            </div>
+          )}
+          {warnings.length > 0 && (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-400 p-3 text-sm space-y-1">
+              {warnings.map((msg) => (
+                <p key={msg}>{msg}</p>
+              ))}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldUI label="Validade da oferta (opcional)">
@@ -1107,6 +1160,7 @@ function ScholarshipFormDialog({
             onClick={() => save.mutate()}
             disabled={
               save.isPending ||
+              hasBlockingError ||
               !f.title.trim() ||
               !f.original_price ||
               !f.discount_value ||
