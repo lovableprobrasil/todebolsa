@@ -437,10 +437,11 @@ function InstitutionsSection() {
 }
 
 function CoursesSection() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["courses", "best-offer"],
     queryFn: () => listCoursesBestOffer(10),
   });
+  const items = data ?? [];
 
   return (
     <section className="bg-secondary/40 py-14 md:py-20">
@@ -469,9 +470,22 @@ function CoursesSection() {
               <div key={i} className="h-[170px] rounded-2xl bg-muted animate-pulse" />
             ))}
           </div>
+        ) : isError ? (
+          <SectionState
+            variant="error"
+            title="Não foi possível carregar os cursos"
+            description="Tente novamente em instantes."
+            action={{ label: "Tentar novamente", onClick: () => void refetch() }}
+          />
+        ) : items.length === 0 ? (
+          <SectionState
+            variant="empty"
+            title="Nenhum curso disponível ainda"
+            description="Novos cursos são publicados frequentemente. Volte em breve."
+          />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {(data ?? []).map((c) => (
+            {items.map((c) => (
               <Link
                 key={c.name}
                 to="/bolsas"
