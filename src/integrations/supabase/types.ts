@@ -2746,6 +2746,20 @@ export type Database = {
           trade_name: string
         }[]
       }
+      admin_list_institutions: {
+        Args: never
+        Returns: {
+          cnpj: string
+          created_at: string
+          email: string
+          id: string
+          is_featured: boolean
+          phone: string
+          slug: string
+          status: Database["public"]["Enums"]["institution_status"]
+          trade_name: string
+        }[]
+      }
       admin_list_users: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
         Returns: {
@@ -3044,6 +3058,15 @@ export type Database = {
       }
       increment_news_share: { Args: { _slug: string }; Returns: undefined }
       increment_news_view: { Args: { _slug: string }; Returns: undefined }
+      institution_contact_info: {
+        Args: { p_institution_id: string }
+        Returns: {
+          cnpj: string
+          email: string
+          id: string
+          phone: string
+        }[]
+      }
       institution_delete_scholarship: {
         Args: { p_scholarship_id: string }
         Returns: undefined

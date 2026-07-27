@@ -108,15 +108,31 @@ function ManageInstitutionPage() {
 // ---------------- Profile Tab ----------------
 function ProfileTab({ inst }: { inst: any }) {
   const qc = useQueryClient();
+
+  // Dados de contato (e-mail/telefone) só são acessíveis via função segura
+  const { data: contact } = useQuery({
+    queryKey: ["institution-contact", inst.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("institution_contact_info", { p_institution_id: inst.id });
+      if (error) throw error;
+      return (data ?? [])[0] ?? null;
+    },
+  });
+
   const [f, setF] = useState({
     trade_name: inst.trade_name ?? "",
     legal_name: inst.legal_name ?? "",
-    email: inst.email ?? "",
-    phone: inst.phone ?? "",
+    email: "",
+    phone: "",
     website: inst.website ?? "",
     description: inst.description ?? "",
     logo_url: inst.logo_url ?? "",
   });
+
+  useEffect(() => {
+    if (contact) setF((prev) => ({ ...prev, email: contact.email ?? "", phone: contact.phone ?? "" }));
+  }, [contact]);
+
   const save = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("institutions").update(f).eq("id", inst.id);
@@ -124,6 +140,7 @@ function ProfileTab({ inst }: { inst: any }) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["institution", inst.id] });
+      qc.invalidateQueries({ queryKey: ["institution-contact", inst.id] });
       toast.success("Perfil atualizado");
     },
     onError: (e: Error) => toast.error(e.message),
