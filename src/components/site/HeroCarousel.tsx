@@ -281,7 +281,7 @@ export function HeroCarousel({
 }
 
 export function MicrobannersSection() {
-  const [activeLevel, setActiveLevel] = useState<CampaignLevel>("GRADUACAO");
+  const { activeLevel } = useCampaignStore();
 
   const { data: campaign, isLoading } = useQuery({
     queryKey: ["homepage-microbanners", activeLevel],
