@@ -69,8 +69,21 @@ function HomePage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        {/* 1. Hero + busca principal */}
-        <HeroCarousel />
+        {/* 1. Banner principal de campanha em área própria */}
+        <HeroCarousel showSearch={false} />
+
+        <div className="h-6 md:h-10" /> {/* Espaçamento visual 24px-40px */}
+
+        {/* 2. Caixa de busca com abas integradas */}
+        <div className="relative z-20 mx-auto w-full max-w-[1180px] px-4">
+          <HeroCarousel onlySearch={true} />
+        </div>
+
+        <div className="h-7 md:h-10" /> {/* Espaçamento visual 28px-40px */}
+
+        {/* 3. Microbanners */}
+        <MicrobannersSection />
+
 
         {/* 2. Faixa de confiança */}
         <TrustBadges />
