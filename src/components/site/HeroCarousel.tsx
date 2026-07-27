@@ -85,39 +85,19 @@ export function HeroCarousel() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-brand-ink text-white">
-      {/* Dynamic Background Gradient */}
-      <div 
-        className="absolute inset-0 opacity-40 transition-colors duration-500"
-        style={{ 
-          background: activeLevel === 'GRADUACAO' ? 'radial-gradient(circle at top right, #4F46E5, transparent)' : 
-                      activeLevel === 'POS_GRADUACAO' ? 'radial-gradient(circle at top right, #312E81, transparent)' :
-                      activeLevel === 'TECNICO' ? 'radial-gradient(circle at top right, #7C3AED, transparent)' :
-                      'radial-gradient(circle at top right, #4F46E5, transparent)'
-        }} 
-      />
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 pb-16 md:pt-12 md:pb-24">
-        {/* Navigation Tabs */}
-        <div className="flex overflow-x-auto no-scrollbar gap-2 mb-8 pb-2 border-b border-white/10">
-          {levels.map((l) => (
-            <button
-              key={l.id}
-              role="tab"
-              aria-selected={activeLevel === l.id}
-              onClick={() => handleLevelChange(l.id)}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-sm font-bold whitespace-nowrap transition-all border-b-2",
-                activeLevel === l.id 
-                  ? "bg-white/10 border-brand-highlight text-brand-highlight" 
-                  : "border-transparent text-white/60 hover:text-white hover:bg-white/5"
-              )}
-            >
-              <l.icon className="h-4 w-4" />
-              {l.label}
-            </button>
-          ))}
-        </div>
+    <section className="relative bg-brand-ink text-white">
+      {/* 1. BANNER PROMOCIONAL ROTATIVO (Container principal) */}
+      <div className="relative mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 pt-8 pb-32 md:pt-12 md:pb-40">
+        {/* Dynamic Background Gradient (Behind Banner Content) */}
+        <div 
+          className="absolute inset-0 opacity-40 transition-colors duration-500 rounded-3xl overflow-hidden pointer-events-none"
+          style={{ 
+            background: activeLevel === 'GRADUACAO' ? 'radial-gradient(circle at top right, #4F46E5, transparent)' : 
+                        activeLevel === 'POS_GRADUACAO' ? 'radial-gradient(circle at top right, #312E81, transparent)' :
+                        activeLevel === 'TECNICO' ? 'radial-gradient(circle at top right, #7C3AED, transparent)' :
+                        'radial-gradient(circle at top right, #4F46E5, transparent)'
+          }} 
+        />
 
         <div className="grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-14 items-center min-h-[400px]">
           {/* Main Banner Content */}
@@ -137,7 +117,7 @@ export function HeroCarousel() {
                   </span>
                 )}
                 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-white">
                   {activeBanner.title}
                 </h1>
                 
@@ -175,7 +155,6 @@ export function HeroCarousel() {
                     <button
                       key={i}
                       onClick={() => setCurrentSlide(i)}
-
                       className={cn(
                         "h-1.5 rounded-full transition-all",
                         currentSlide === i ? "w-6 bg-brand-highlight" : "w-1.5 bg-white/30"
@@ -194,44 +173,65 @@ export function HeroCarousel() {
               </div>
             )}
           </div>
-
-          {/* Search Form Card (Overlay) */}
-          <div className="relative lg:mt-0 mt-8 z-20">
-             <div className="bg-white rounded-3xl p-1 shadow-2xl">
-               <div className="bg-white rounded-[2.8rem] p-6 md:p-8 text-brand-ink">
-                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                   Onde quer estudar?
-                 </h2>
-                 <SearchBar 
-                   initialLevel={activeLevel === 'ESCOLAS' ? 'FUNDAMENTAL' : activeLevel}
-                   showLevelChips={false}
-                 />
-               </div>
-             </div>
-          </div>
         </div>
 
-        {/* 3 Microbanners below */}
-        <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* 2. CARD DE BUSCA SOBREPOSTO AO BANNER (Abaixo do conteúdo do banner no grid, mas posicionado com absolute/negative margin) */}
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 w-full max-w-[1040px] px-4 z-20">
+          <div className="bg-white rounded-[18px] shadow-2xl overflow-hidden border border-brand-ink/5">
+            {/* BARRA DE ABAS INTEGRADA */}
+            <div role="tablist" className="flex overflow-x-auto no-scrollbar bg-[#0B1020]">
+              {levels.map((l) => (
+                <button
+                  key={l.id}
+                  role="tab"
+                  aria-selected={activeLevel === l.id}
+                  onClick={() => handleLevelChange(l.id)}
+                  className={cn(
+                    "flex-1 flex flex-col items-center justify-center gap-2 px-4 py-4 text-xs font-bold transition-all border-r border-white/5 last:border-r-0 min-w-[100px]",
+                    activeLevel === l.id 
+                      ? "bg-white text-brand-highlight" 
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  )}
+                >
+                  <l.icon className={cn("h-5 w-5", activeLevel === l.id ? "text-brand-highlight" : "text-white/50")} />
+                  <span className="whitespace-nowrap">{l.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* CORPO DO FORMULÁRIO */}
+            <div className="p-6 md:p-10 text-brand-ink">
+              <SearchBar 
+                activeLevel={activeLevel}
+                initialLevel={activeLevel === 'ESCOLAS' ? 'MEDIO' : activeLevel}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. TRÊS MICROBANNERS (Abaixo do conjunto banner + busca) */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-16">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
              Array.from({ length: 3 }).map((_, i) => (
-               <div key={i} className="h-24 bg-white/5 rounded-2xl animate-pulse" />
+               <div key={i} className="h-28 bg-white/5 rounded-2xl animate-pulse" />
              ))
           ) : campaign?.micro_banners?.map((mb) => (
             <Link 
               key={mb.id}
               to={mb.cta_url || "/bolsas"}
-              className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 p-5 hover:bg-white/10 transition-all flex items-center justify-between"
+              className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 p-6 hover:bg-white/10 transition-all flex items-center justify-between"
             >
               <div>
                 <h3 className="font-bold text-lg mb-1">{mb.title}</h3>
-                <p className="text-sm text-white/60">{mb.description}</p>
-                <span className="mt-3 inline-flex items-center text-xs font-bold text-brand-highlight group-hover:underline">
+                <p className="text-sm text-white/60 line-clamp-2">{mb.description}</p>
+                <span className="mt-4 inline-flex items-center text-xs font-bold text-brand-highlight group-hover:underline">
                   {mb.cta_label || "Ver bolsas"}
                   <ArrowRight className="h-3 w-3 ml-1" />
                 </span>
               </div>
-              <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center text-brand-highlight">
+              <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center text-brand-highlight ml-4 shrink-0">
                 <MonitorPlay className="h-6 w-6" />
               </div>
             </Link>
