@@ -71,7 +71,6 @@ function HomePage() {
       <main className="flex-1">
         {/* 1. Hero + busca principal */}
         <HeroCarousel />
-        <HomeSearch />
 
         {/* 2. Faixa de confiança */}
         <TrustBadges />
