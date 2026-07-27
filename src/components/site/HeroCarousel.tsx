@@ -21,7 +21,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { CampaignLevel } from "@/lib/homepage/campaigns";
 import { SearchBar } from "./SearchBar";
 
-export function HeroCarousel() {
+export function HeroCarousel({ 
+  showSearch = true, 
+  onlySearch = false 
+}: { 
+  showSearch?: boolean; 
+  onlySearch?: boolean 
+}) {
   const [activeLevel, setActiveLevel] = useState<CampaignLevel>("GRADUACAO");
   const [currentSlide, setCurrentSlide] = useState(0);
 
