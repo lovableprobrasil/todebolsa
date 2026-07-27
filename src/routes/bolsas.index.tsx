@@ -386,7 +386,7 @@ function BolsasPage() {
             initialModality={search.modality}
             initialQuery={search.q}
             initialCity={search.city}
-            showLevelChips={false}
+            
           />
         </div>
       </div>
