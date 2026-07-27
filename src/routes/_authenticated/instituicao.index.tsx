@@ -41,7 +41,7 @@ function InstitutionPortalIndex() {
     queryFn: async () => {
       const { data } = await supabase
         .from("institutions")
-        .select("id, slug, trade_name, status, logo_url, email, created_at")
+        .select("id, slug, trade_name, status, logo_url, created_at")
         .in("id", institutionAdminOf)
         .order("created_at", { ascending: false });
       return data ?? [];
@@ -122,7 +122,7 @@ function InstitutionPortalIndex() {
                         <Icon className="h-3 w-3 mr-1" /> {meta.label}
                       </Badge>
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1 truncate">{i.email ?? "—"}</div>
+                    <div className="text-xs text-muted-foreground mt-1 truncate">/{i.slug}</div>
                   </div>
                   <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                 </div>

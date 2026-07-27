@@ -41,10 +41,7 @@ function AdminInstitutions() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-institutions"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("institutions")
-        .select("id, trade_name, slug, status, is_featured, email, phone, created_at")
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.rpc("admin_list_institutions");
       if (error) throw error;
       return data ?? [];
     },
