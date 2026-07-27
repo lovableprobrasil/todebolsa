@@ -238,35 +238,39 @@ export function HeroCarousel({
           
           {/* Carousel Controls */}
           {campaign?.main_banners && campaign.main_banners.length > 1 && (
-            <div className="absolute bottom-8 left-8 md:left-16 flex items-center gap-4 z-20">
+            <>
+              {/* Lateral Arrows */}
               <button 
                 onClick={prevSlide}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all backdrop-blur-sm border border-white/5"
+                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/25 transition-all backdrop-blur-md border border-white/10 z-30 group hidden sm:flex items-center justify-center"
                 aria-label="Anterior"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
               </button>
-              <div className="flex gap-1.5">
+              
+              <button 
+                onClick={nextSlide}
+                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/25 transition-all backdrop-blur-md border border-white/10 z-30 group hidden sm:flex items-center justify-center"
+                aria-label="Próximo"
+              >
+                <ChevronRight className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
+              </button>
+
+              {/* Centralized Dots */}
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30">
                 {campaign.main_banners.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentSlide(i)}
                     className={cn(
-                      "h-1.5 rounded-full transition-all duration-500",
-                      currentSlide === i ? "w-8 bg-brand-highlight" : "w-1.5 bg-white/20"
+                      "h-2 rounded-full transition-all duration-500 shadow-sm",
+                      currentSlide === i ? "w-8 bg-brand-highlight" : "w-2 bg-white/30 hover:bg-white/50"
                     )}
                     aria-label={`Ir para slide ${i + 1}`}
                   />
                 ))}
               </div>
-              <button 
-                onClick={nextSlide}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all backdrop-blur-sm border border-white/5"
-                aria-label="Próximo"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
+            </>
           )}
         </div>
       </div>
