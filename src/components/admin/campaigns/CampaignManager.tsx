@@ -292,14 +292,12 @@ export function CampaignManager() {
                             <div className="text-xs text-muted-foreground">{b.cta_label}</div>
                           </div>
                           <div className="flex gap-2">
-                             <Button variant="ghost" size="icon"><Settings2 className="h-4 w-4" /></Button>
-                             <Button variant="ghost" size="icon" className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                             <BannerEditDialog banner={b} type="micro" />
+                             <Button variant="ghost" size="icon" className="text-destructive" onClick={() => deleteBannerMutation.mutate({ id: b.id, type: 'micro' })}><Trash2 className="h-4 w-4" /></Button>
                           </div>
                         </div>
                       ))}
-                      <Button variant="outline" className="w-full dashed border-2 border-dashed h-12">
-                        <Plus className="h-4 w-4 mr-2" /> Novo Microbanner
-                      </Button>
+                      <BannerEditDialog type="micro" />
                     </CardContent>
                   </Card>
                 </div>
