@@ -11,7 +11,7 @@ import { SearchBar } from "@/components/site/SearchBar";
 import { TrustBadges } from "@/components/site/TrustBadges";
 import { StudentTestimonials } from "@/components/site/StudentTestimonials";
 import { BlogHomeSection } from "@/components/site/BlogHomeSection";
-import { HeroCarousel } from "@/components/site/HeroCarousel";
+import { HeroCarousel, MicrobannersSection } from "@/components/site/HeroCarousel";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { listScholarships, listFaqs, listInstitutionsBestOffer, listCoursesBestOffer, getPlatformStats } from "@/lib/scholarships";
