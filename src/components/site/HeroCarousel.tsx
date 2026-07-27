@@ -77,10 +77,11 @@ export function HeroCarousel() {
     { id: "POS_GRADUACAO", label: "Pós-graduação", icon: Award },
     { id: "TECNICO", label: "Técnico", icon: Briefcase },
     { id: "ESCOLAS", label: "Escolas", icon: School },
-    { id: "CURSOS_LIVRES", label: "Cursos Profissionalizantes", icon: BookOpen },
+    { id: "PROFISSIONALIZANTE", label: "Profissionalizante", icon: BookOpen },
     { id: "EJA", label: "EJA", icon: GraduationCap },
+    { id: "CURSO_LIVRE", label: "Cursos Livres", icon: Sparkles },
     { id: "IDIOMAS", label: "Idiomas", icon: Languages },
-    { id: "OUTROS", label: "Outros Cursos", icon: Sparkles },
+    { id: "OUTROS", label: "Mais cursos", icon: Play },
   ];
 
   return (
