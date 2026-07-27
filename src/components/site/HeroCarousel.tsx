@@ -140,24 +140,24 @@ export function HeroCarousel() {
               </div>
             ) : null}
             
-            {/* Carousel Controls */}
+            {/* Carousel Controls - Repositioned for visibility */}
             {campaign?.main_banners && campaign.main_banners.length > 1 && (
-              <div className="flex items-center gap-3 mt-10">
+              <div className="flex items-center gap-3 mt-10 lg:pl-8">
                 <button 
                   onClick={prevSlide}
-                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/5 active:scale-95"
                   aria-label="Slide anterior"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
-                <div className="flex gap-1.5">
+                <div className="flex gap-2">
                   {campaign.main_banners.map((_, i) => (
                     <button
                       key={i}
                       onClick={() => setCurrentSlide(i)}
                       className={cn(
-                        "h-1.5 rounded-full transition-all",
-                        currentSlide === i ? "w-6 bg-brand-highlight" : "w-1.5 bg-white/30"
+                        "h-2 rounded-full transition-all duration-300",
+                        currentSlide === i ? "w-8 bg-brand-highlight shadow-[0_0_10px_rgba(255,204,0,0.4)]" : "w-2 bg-white/30 hover:bg-white/50"
                       )}
                       aria-label={`Ir para slide ${i + 1}`}
                     />
@@ -165,7 +165,7 @@ export function HeroCarousel() {
                 </div>
                 <button 
                   onClick={nextSlide}
-                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/5 active:scale-95"
                   aria-label="Próximo slide"
                 >
                   <ChevronRight className="h-5 w-5" />
