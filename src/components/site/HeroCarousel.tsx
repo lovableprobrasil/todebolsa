@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { 
   ArrowRight, 
@@ -20,9 +20,27 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CampaignLevel } from "@/lib/homepage/campaigns";
 import { SearchBar } from "./SearchBar";
+import { create } from "zustand";
 
-export function HeroCarousel() {
-  const [activeLevel, setActiveLevel] = useState<CampaignLevel>("GRADUACAO");
+// Store simples para sincronizar o nível entre componentes
+interface CampaignStore {
+  activeLevel: CampaignLevel;
+  setActiveLevel: (level: CampaignLevel) => void;
+}
+
+const useCampaignStore = create<CampaignStore>((set) => ({
+  activeLevel: "GRADUACAO",
+  setActiveLevel: (level: CampaignLevel) => set({ activeLevel: level }),
+}));
+
+export function HeroCarousel({ 
+  showSearch = true, 
+  onlySearch = false 
+}: { 
+  showSearch?: boolean; 
+  onlySearch?: boolean 
+}) {
+  const { activeLevel, setActiveLevel } = useCampaignStore();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Load campaign for the active education level
@@ -96,181 +114,243 @@ export function HeroCarousel() {
     setCurrentSlide((prev) => (prev - 1 + campaign.main_banners.length) % campaign.main_banners.length);
   };
 
-  return (
-    <section className="relative bg-brand-ink text-white overflow-hidden">
-      {/* 1. BANNER PROMOCIONAL ROTATIVO (Container principal) */}
-      <div className="relative mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 pt-10 pb-40 md:pt-16 md:pb-52">
-        {/* Dynamic Background Gradient (Behind Banner Content) */}
-        <div 
-          className="absolute inset-0 opacity-40 transition-colors duration-500 rounded-3xl overflow-hidden pointer-events-none"
-          style={{ 
-            background: activeLevel === 'GRADUACAO' ? 'radial-gradient(circle at top right, #3b82f6, transparent)' : 
-                        activeLevel === 'POS_GRADUACAO' ? 'radial-gradient(circle at top right, #6366f1, transparent)' :
-                        activeLevel === 'TECNICO' ? 'radial-gradient(circle at top right, #8b5cf6, transparent)' :
-                        activeLevel === 'ESCOLAS' ? 'radial-gradient(circle at top right, #f59e0b, transparent)' :
-                        'radial-gradient(circle at top right, #3b82f6, transparent)'
-          }} 
-        />
-
-        <div className="grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-14 items-center min-h-[420px]">
-          {/* Main Banner Content */}
-          <div className="relative z-10 lg:pl-10">
-            {isLoading ? (
-              <div className="animate-pulse space-y-4">
-                <div className="h-6 w-32 bg-white/10 rounded" />
-                <div className="h-16 w-full bg-white/10 rounded" />
-                <div className="h-8 w-2/3 bg-white/10 rounded" />
-              </div>
-            ) : activeBanner ? (
-              <div className="fade-in">
-                {activeBanner.badge && (
-                  <span className="inline-flex items-center gap-2 rounded-full bg-brand-highlight text-brand-ink px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.1em] mb-6">
-                    <Sparkles className="h-3 w-3" />
-                    {activeBanner.badge}
-                  </span>
-                )}
-                
-                <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-black leading-[1.05] tracking-tight text-white drop-shadow-md">
-                  {activeBanner.title}
-                </h1>
-                
-                <p className="mt-8 text-xl text-white/90 max-w-xl font-medium leading-relaxed">
-                  {activeBanner.description}
-                </p>
-
-                <div className="mt-10 flex flex-wrap gap-4">
-                  <Button
-                    size="lg"
-                    className="bg-brand-highlight text-brand-ink hover:bg-brand-highlight/90 font-black px-10 h-14 rounded-xl shadow-xl shadow-brand-highlight/20 transition-all hover:scale-105 active:scale-95 text-base"
-                    asChild
-                  >
-                    <Link to={activeBanner.cta_url || "/bolsas"}>
-                      {activeBanner.cta_label || "Ver bolsas"}
-                      <ArrowRight className="h-5 w-5 ml-2" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            ) : (
-               <div className="fade-in">
-                  <h1 className="text-4xl sm:text-5xl lg:text-[64px] font-black leading-[1.05] tracking-tight text-white">
-                    Sua bolsa de estudos está aqui
-                  </h1>
-                  <p className="mt-8 text-xl text-white/90 max-w-xl font-medium">
-                    Encontre as melhores oportunidades com descontos exclusivos em todo o Brasil.
-                  </p>
-               </div>
-            )}
-            
-            {/* Carousel Controls */}
-            {campaign?.main_banners && campaign.main_banners.length > 1 && (
-              <div className="flex items-center gap-4 mt-12 lg:pl-2">
-                <button 
-                  onClick={prevSlide}
-                  className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/5 backdrop-blur-sm active:scale-90"
-                  aria-label="Slide anterior"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                <div className="flex gap-2">
-                  {campaign.main_banners.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrentSlide(i)}
-                      className={cn(
-                        "h-2 rounded-full transition-all duration-500",
-                        currentSlide === i ? "w-10 bg-brand-highlight shadow-[0_0_15px_rgba(255,204,0,0.5)]" : "w-2 bg-white/20 hover:bg-white/40"
-                      )}
-                      aria-label={`Ir para slide ${i + 1}`}
-                    />
-                  ))}
-                </div>
-                <button 
-                  onClick={nextSlide}
-                  className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/5 backdrop-blur-sm active:scale-90"
-                  aria-label="Próximo slide"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
-            )}
-          </div>
+  if (onlySearch) {
+    return (
+      <div className="bg-white rounded-[24px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] overflow-hidden border border-brand-ink/5 scholarship-search-card">
+        {/* Education Level Tabs - Integrated Header */}
+        <div role="tablist" className="flex overflow-x-auto no-scrollbar bg-[#0f172a] education-level-tabs">
+          {levels.map((l, idx) => (
+            <button
+              key={l.id}
+              role="tab"
+              aria-selected={activeLevel === l.id}
+              onClick={() => handleLevelChange(l.id)}
+              className={cn(
+                "flex-1 flex flex-col items-center justify-center gap-2.5 px-6 py-5 text-xs font-black transition-all border-r border-white/5 last:border-r-0 min-w-[115px] relative group",
+                activeLevel === l.id 
+                  ? "bg-white text-brand-blue" 
+                  : "bg-[#172033] text-white/60 hover:text-white hover:bg-white/5",
+                idx === 0 && "rounded-tl-[24px]",
+                idx === levels.length - 1 && "rounded-tr-[24px]"
+              )}
+            >
+              <l.icon className={cn("h-6 w-6 transition-transform group-hover:scale-110", activeLevel === l.id ? "text-brand-blue" : "text-white/40")} />
+              <span className="whitespace-nowrap tracking-tight uppercase text-[10px]">{l.label}</span>
+              {activeLevel === l.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-blue" />
+              )}
+            </button>
+          ))}
         </div>
 
-        {/* 2. CARD DE BUSCA SOBREPOSTO AO BANNER */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 w-full max-w-[1100px] px-4 z-20">
-          <div className="bg-white rounded-[24px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] overflow-hidden border border-brand-ink/5">
-            {/* BARRA DE ABAS INTEGRADA - Estilo Quero Bolsa */}
-            <div role="tablist" className="flex overflow-x-auto no-scrollbar bg-[#0f172a]">
-              {levels.map((l) => (
-                <button
-                  key={l.id}
-                  role="tab"
-                  aria-selected={activeLevel === l.id}
-                  onClick={() => handleLevelChange(l.id)}
-                  className={cn(
-                    "flex-1 flex flex-col items-center justify-center gap-2.5 px-6 py-5 text-xs font-black transition-all border-r border-white/5 last:border-r-0 min-w-[115px] relative group",
-                    activeLevel === l.id 
-                      ? "bg-white text-brand-blue" 
-                      : "text-white/60 hover:text-white hover:bg-white/5"
-                  )}
-                >
-                  <l.icon className={cn("h-6 w-6 transition-transform group-hover:scale-110", activeLevel === l.id ? "text-brand-blue" : "text-white/40")} />
-                  <span className="whitespace-nowrap tracking-tight uppercase text-[10px]">{l.label}</span>
-                  {activeLevel === l.id && (
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-blue" />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* CORPO DO FORMULÁRIO */}
-            <div className="p-8 md:p-12 text-brand-ink">
-              <SearchBar 
-                activeLevel={activeLevel}
-              />
-            </div>
-          </div>
+        {/* Search Form Body */}
+        <div className="p-8 md:p-12 text-brand-ink search-form-body">
+          <SearchBar 
+            activeLevel={activeLevel}
+          />
         </div>
       </div>
+    );
+  }
 
-      {/* 3. MICROBANNERS */}
-      <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 pt-44 pb-20">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {isLoading ? (
-             Array.from({ length: 3 }).map((_, i) => (
-               <div key={i} className="h-32 bg-white/5 rounded-2xl animate-pulse border border-white/10" />
-             ))
-          ) : campaign?.micro_banners && campaign.micro_banners.length > 0 ? (
-            campaign.micro_banners.map((mb) => (
-              <Link 
-                key={mb.id}
-                to={mb.cta_url || "/bolsas"}
-                className="group relative overflow-hidden rounded-2xl bg-[#172033]/50 border border-white/10 p-7 hover:bg-[#1e293b]/60 transition-all duration-300 flex items-center justify-between shadow-sm hover:shadow-xl hover:-translate-y-1 backdrop-blur-sm"
-              >
-                <div className="pr-4">
-                  <h3 className="font-black text-lg mb-2 text-white group-hover:text-brand-highlight transition-colors">{mb.title}</h3>
-                  <p className="text-sm text-white/60 line-clamp-2 leading-relaxed mb-4">{mb.description}</p>
-                  <span className="inline-flex items-center text-xs font-black text-brand-highlight uppercase tracking-wider">
-                    {mb.cta_label || "Ver bolsas"}
-                    <ArrowRight className="h-3.5 w-3.5 ml-2 transition-transform group-hover:translate-x-1" />
-                  </span>
-                </div>
-                <div className="h-14 w-14 rounded-2xl bg-white/10 flex items-center justify-center text-brand-highlight group-hover:bg-brand-highlight group-hover:text-brand-ink transition-all duration-300 shrink-0 shadow-inner">
-                  <MonitorPlay className="h-7 w-7" />
-                </div>
-              </Link>
-            ))
+  return (
+    <section className="relative overflow-hidden campaign-hero bg-[#0f172a]">
+      {/* 1. BANNER PROMOCIONAL ROTATIVO */}
+      <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        <div className="relative overflow-hidden rounded-[32px] bg-brand-ink min-h-[360px] md:min-h-[460px] group">
+          {/* Background Image / Gradient */}
+          {activeBanner?.image_desktop ? (
+            <div className="absolute inset-0">
+              <img 
+                src={activeBanner.image_desktop} 
+                alt={activeBanner.alt_text || ""}
+                className="w-full h-full object-cover"
+                style={{ 
+                  objectPosition: (activeBanner.theme as any)?.focalPoint || 'center right' 
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-ink via-brand-ink/80 to-transparent" />
+            </div>
           ) : (
-            // Fallback microbanners if none in DB
-            [1, 2, 3].map((i) => (
-              <div key={i} className="rounded-2xl bg-white/5 border border-white/10 p-7 flex items-center justify-between opacity-50">
-                <div className="h-20 w-full animate-pulse bg-white/10 rounded" />
+            <div 
+              className="absolute inset-0 opacity-60 transition-colors duration-500"
+              style={{ 
+                background: activeLevel === 'GRADUACAO' ? 'radial-gradient(circle at top right, #3b82f6, transparent)' : 
+                            activeLevel === 'POS_GRADUACAO' ? 'radial-gradient(circle at top right, #6366f1, transparent)' :
+                            activeLevel === 'TECNICO' ? 'radial-gradient(circle at top right, #8b5cf6, transparent)' :
+                            activeLevel === 'ESCOLAS' ? 'radial-gradient(circle at top right, #f59e0b, transparent)' :
+                            'radial-gradient(circle at top right, #3b82f6, transparent)'
+              }} 
+            />
+          )}
+
+          <div className="relative z-10 grid lg:grid-cols-[1.2fr_1fr] gap-10 items-center p-8 md:p-16 h-full">
+            {/* Banner Content */}
+            <div className="fade-in max-w-xl">
+              {isLoading ? (
+                <div className="animate-pulse space-y-4">
+                  <div className="h-6 w-32 bg-white/10 rounded" />
+                  <div className="h-16 w-full bg-white/10 rounded" />
+                  <div className="h-8 w-2/3 bg-white/10 rounded" />
+                </div>
+              ) : activeBanner ? (
+                <>
+                  {activeBanner.badge && (
+                    <span className="inline-flex items-center gap-2 rounded-full bg-brand-highlight text-brand-ink px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.1em] mb-6">
+                      <Sparkles className="h-3 w-3" />
+                      {activeBanner.badge}
+                    </span>
+                  )}
+                  
+                  <h1 className="text-3xl sm:text-5xl lg:text-[56px] font-black leading-[1.1] tracking-tight text-white drop-shadow-sm">
+                    {activeBanner.title}
+                  </h1>
+                  
+                  <p className="mt-6 text-lg md:text-xl text-white/90 font-medium leading-relaxed line-clamp-3">
+                    {activeBanner.description}
+                  </p>
+
+                  <div className="mt-8">
+                    <Button
+                      size="lg"
+                      className="bg-brand-highlight text-brand-ink hover:bg-brand-highlight/90 font-black px-8 h-12 rounded-xl shadow-xl shadow-brand-highlight/10 transition-all hover:scale-105 active:scale-95"
+                      asChild
+                    >
+                      <Link to={activeBanner.cta_url || "/bolsas"}>
+                        {activeBanner.cta_label || "Ver bolsas"}
+                        <ArrowRight className="h-5 w-5 ml-2" />
+                      </Link>
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h1 className="text-3xl sm:text-5xl lg:text-[56px] font-black leading-[1.1] text-white">
+                    Sua bolsa de estudos está aqui
+                  </h1>
+                  <p className="mt-6 text-lg text-white/90">
+                    Encontre as melhores oportunidades com descontos exclusivos em todo o Brasil.
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+          
+          {/* Carousel Controls */}
+          {campaign?.main_banners && campaign.main_banners.length > 1 && (
+            <div className="absolute bottom-8 left-8 md:left-16 flex items-center gap-4 z-20">
+              <button 
+                onClick={prevSlide}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all backdrop-blur-sm border border-white/5"
+                aria-label="Anterior"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <div className="flex gap-1.5">
+                {campaign.main_banners.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentSlide(i)}
+                    className={cn(
+                      "h-1.5 rounded-full transition-all duration-500",
+                      currentSlide === i ? "w-8 bg-brand-highlight" : "w-1.5 bg-white/20"
+                    )}
+                    aria-label={`Ir para slide ${i + 1}`}
+                  />
+                ))}
               </div>
-            ))
+              <button 
+                onClick={nextSlide}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all backdrop-blur-sm border border-white/5"
+                aria-label="Próximo"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           )}
         </div>
       </div>
+
+      {showSearch && (
+        <div className="mx-auto w-full max-w-[1100px] px-4 -mt-16 md:-mt-24 relative z-20">
+          {/* Redundancy check if not split */}
+        </div>
+      )}
     </section>
+  );
+}
+
+export function MicrobannersSection() {
+  const { activeLevel } = useCampaignStore();
+
+  const { data: campaign, isLoading } = useQuery({
+    queryKey: ["homepage-microbanners", activeLevel],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("homepage_campaign_groups")
+        .select(`
+          *,
+          micro_banners:homepage_micro_banners(*)
+        `)
+        .eq("education_level", activeLevel)
+        .eq("status", "ACTIVE")
+        .maybeSingle();
+      
+      if (error) throw error;
+      if (data?.micro_banners) {
+        data.micro_banners.sort((a: any, b: any) => (a.display_order || 0) - (b.display_order || 0));
+      }
+      return data;
+    }
+  });
+
+  // Listener para sincronizar o nível ativo vindo da busca se necessário
+  // Por simplicidade, as seções da home podem observar a mesma store ou context se necessário.
+  // Como as abas estão na busca, vamos precisar de uma forma de notificar a home.
+
+  return (
+    <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 pb-10">
+      <div className="grid gap-6 md:grid-cols-3">
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="aspect-[2/1] bg-muted animate-pulse rounded-2xl" />
+          ))
+        ) : campaign?.micro_banners && campaign.micro_banners.length > 0 ? (
+          campaign.micro_banners.slice(0, 3).map((mb) => (
+            <Link 
+              key={mb.id}
+              to={mb.cta_url || "/bolsas"}
+              className="group relative overflow-hidden rounded-2xl aspect-[2/1] bg-muted border border-border shadow-sm hover:shadow-xl transition-all duration-300"
+            >
+              {mb.image_desktop ? (
+                <img src={mb.image_desktop} alt={mb.alt_text || ""} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-brand-ink/5 flex items-center justify-center">
+                   <div className="text-center p-4">
+                     <h3 className="font-black text-lg text-brand-ink">{mb.title}</h3>
+                     <p className="text-xs text-muted-foreground mt-1">{mb.description}</p>
+                   </div>
+                </div>
+              )}
+              {/* Overlay with CTA */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
+                <h3 className="text-white font-black text-lg">{mb.title}</h3>
+                <p className="text-white/80 text-sm mb-3 line-clamp-1">{mb.description}</p>
+                <span className="text-brand-highlight font-black text-xs uppercase flex items-center gap-2">
+                  {mb.cta_label || "Ver mais"}
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </div>
+            </Link>
+          ))
+        ) : (
+          [1, 2, 3].map((i) => (
+            <div key={i} className="aspect-[2/1] rounded-2xl border border-dashed border-border flex items-center justify-center bg-muted/20 opacity-40">
+              <span className="text-xs font-medium">Microbanner {i}</span>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
   );
 }
