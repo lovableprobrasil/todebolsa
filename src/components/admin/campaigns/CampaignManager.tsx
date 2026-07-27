@@ -38,12 +38,12 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { CampaignLevel } from "@/lib/homepage/campaigns";
 
 export function CampaignManager() {
-  const [activeTab, setActiveTab] = useState<CampaignLevel>("GRADUACAO");
-  const { toast } = useToast();
+  const activeTab = useState<CampaignLevel>("GRADUACAO")[0];
+  const setActiveTab = useState<CampaignLevel>("GRADUACAO")[1];
   const queryClient = useQueryClient();
 
   const { data: campaign, isLoading } = useQuery({
@@ -75,7 +75,7 @@ export function CampaignManager() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-campaign"] });
-      toast({ title: "Campanha atualizada com sucesso!" });
+      toast.success("Campanha atualizada com sucesso!");
     }
   });
 
