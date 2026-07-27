@@ -342,5 +342,3 @@ export function MicrobannersSection() {
     </div>
   );
 }
-
-}
