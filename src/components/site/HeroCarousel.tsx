@@ -84,7 +84,9 @@ export function HeroCarousel({
     { id: "OUTROS", label: "Mais cursos", icon: Play },
   ];
 
-  const activeBanner = campaign?.main_banners?.[currentSlide];
+  const activeBanner = (campaign?.main_banners && campaign.main_banners.length > 0) 
+    ? campaign.main_banners[currentSlide % campaign.main_banners.length] 
+    : null;
 
   useEffect(() => {
     setCurrentSlide(0);
@@ -162,11 +164,15 @@ export function HeroCarousel({
           <div className="absolute inset-0">
             {activeBanner?.image_desktop ? (
               <img 
+                key={activeBanner.id}
                 src={activeBanner.image_desktop} 
                 alt={activeBanner.alt_text || ""}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-opacity duration-500"
                 style={{ 
                   objectPosition: (activeBanner.theme as any)?.focalPoint || 'center' 
+                }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1523050335392-93851179ae22?auto=format&fit=crop&q=80&w=1200';
                 }}
               />
             ) : (
@@ -317,6 +323,9 @@ export function MicrobannersSection() {
                     src={mb.image_desktop} 
                     alt={mb.alt_text || ""} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1523050335392-93851179ae22?auto=format&fit=crop&q=80&w=600';
+                    }}
                   />
                   {/* Microbanner Text Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
