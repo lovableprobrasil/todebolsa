@@ -905,6 +905,205 @@ export type Database = {
           },
         ]
       }
+      homepage_campaign_groups: {
+        Row: {
+          audience: Json | null
+          created_at: string | null
+          education_level: string
+          end_date: string | null
+          id: string
+          location: Json | null
+          priority: number | null
+          recommendation_configuration: Json | null
+          search_configuration: Json | null
+          start_date: string | null
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          audience?: Json | null
+          created_at?: string | null
+          education_level: string
+          end_date?: string | null
+          id?: string
+          location?: Json | null
+          priority?: number | null
+          recommendation_configuration?: Json | null
+          search_configuration?: Json | null
+          start_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          audience?: Json | null
+          created_at?: string | null
+          education_level?: string
+          end_date?: string | null
+          id?: string
+          location?: Json | null
+          priority?: number | null
+          recommendation_configuration?: Json | null
+          search_configuration?: Json | null
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      homepage_main_banners: {
+        Row: {
+          alt_text: string | null
+          badge: string | null
+          campaign_group_id: string | null
+          created_at: string | null
+          cta_label: string | null
+          cta_url: string | null
+          description: string | null
+          display_order: number | null
+          end_date: string | null
+          filters: Json | null
+          id: string
+          image_desktop: string | null
+          image_mobile: string | null
+          start_date: string | null
+          status: string
+          target_id: string | null
+          target_type: string | null
+          theme: Json | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          badge?: string | null
+          campaign_group_id?: string | null
+          created_at?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          display_order?: number | null
+          end_date?: string | null
+          filters?: Json | null
+          id?: string
+          image_desktop?: string | null
+          image_mobile?: string | null
+          start_date?: string | null
+          status?: string
+          target_id?: string | null
+          target_type?: string | null
+          theme?: Json | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          badge?: string | null
+          campaign_group_id?: string | null
+          created_at?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          display_order?: number | null
+          end_date?: string | null
+          filters?: Json | null
+          id?: string
+          image_desktop?: string | null
+          image_mobile?: string | null
+          start_date?: string | null
+          status?: string
+          target_id?: string | null
+          target_type?: string | null
+          theme?: Json | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homepage_main_banners_campaign_group_id_fkey"
+            columns: ["campaign_group_id"]
+            isOneToOne: false
+            referencedRelation: "homepage_campaign_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      homepage_micro_banners: {
+        Row: {
+          alt_text: string | null
+          campaign_group_id: string | null
+          created_at: string | null
+          cta_label: string | null
+          cta_url: string | null
+          description: string | null
+          display_order: number | null
+          end_date: string | null
+          filters: Json | null
+          id: string
+          image_desktop: string | null
+          image_mobile: string | null
+          start_date: string | null
+          status: string
+          target_id: string | null
+          target_type: string | null
+          theme: Json | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          campaign_group_id?: string | null
+          created_at?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          display_order?: number | null
+          end_date?: string | null
+          filters?: Json | null
+          id?: string
+          image_desktop?: string | null
+          image_mobile?: string | null
+          start_date?: string | null
+          status?: string
+          target_id?: string | null
+          target_type?: string | null
+          theme?: Json | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          campaign_group_id?: string | null
+          created_at?: string | null
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string | null
+          display_order?: number | null
+          end_date?: string | null
+          filters?: Json | null
+          id?: string
+          image_desktop?: string | null
+          image_mobile?: string | null
+          start_date?: string | null
+          status?: string
+          target_id?: string | null
+          target_type?: string | null
+          theme?: Json | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homepage_micro_banners_campaign_group_id_fkey"
+            columns: ["campaign_group_id"]
+            isOneToOne: false
+            referencedRelation: "homepage_campaign_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institution_application_documents: {
         Row: {
           application_id: string
