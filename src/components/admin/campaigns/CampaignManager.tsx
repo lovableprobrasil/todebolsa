@@ -78,6 +78,124 @@ export function CampaignManager() {
     }
   });
 
+  const deleteBannerMutation = useMutation({
+    mutationFn: async ({ id, type }: { id: string; type: 'main' | 'micro' }) => {
+      const table = type === 'main' ? 'homepage_main_banners' : 'homepage_micro_banners';
+      const { error } = await supabase
+        .from(table)
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-campaign"] });
+      toast.success("Banner removido!");
+    }
+  });
+
+  function BannerEditDialog({ banner, type = 'main' }: { banner?: any; type?: 'main' | 'micro' }) {
+    const isNew = !banner;
+    const [formData, setFormData] = useState(banner || {
+      title: "",
+      description: "",
+      cta_label: "Ver bolsas",
+      cta_url: "/bolsas",
+      badge: "",
+      image_desktop: "",
+      image_mobile: "",
+      theme: { focalPoint: "center right" },
+      status: "ACTIVE",
+      display_order: 0,
+      group_id: campaign?.id
+    });
+
+    const saveMutation = useMutation({
+      mutationFn: async (data: any) => {
+        const table = type === 'main' ? 'homepage_main_banners' : 'homepage_micro_banners';
+        if (isNew) {
+          const { error } = await supabase.from(table).insert([data]);
+          if (error) throw error;
+        } else {
+          const { id, created_at, ...updateData } = data;
+          const { error } = await supabase.from(table).update(updateData).eq('id', banner.id);
+          if (error) throw error;
+        }
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-campaign"] });
+        toast.success(isNew ? "Criado com sucesso!" : "Atualizado com sucesso!");
+      }
+    });
+
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant={isNew ? "outline" : "ghost"} size={isNew ? "default" : "icon"} className={isNew ? "w-full dashed border-2 border-dashed h-12" : ""}>
+            {isNew ? <><Plus className="h-4 w-4 mr-2" /> {type === 'main' ? 'Novo Banner Principal' : 'Novo Microbanner'}</> : <Settings2 className="h-4 w-4" />}
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isNew ? "Novo" : "Editar"} {type === 'main' ? "Banner" : "Microbanner"}</DialogTitle>
+            <DialogDescription>Configure os detalhes visuais e o destino.</DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label>Título</Label>
+                <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+              </div>
+              <div className="grid gap-2">
+                <Label>Selo (Badge)</Label>
+                <Input value={formData.badge} onChange={e => setFormData({...formData, badge: e.target.value})} placeholder="Ex: Oferta Limitada" />
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label>Descrição</Label>
+              <Textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label>Texto do Botão (CTA)</Label>
+                <Input value={formData.cta_label} onChange={e => setFormData({...formData, cta_label: e.target.value})} />
+              </div>
+              <div className="grid gap-2">
+                <Label>URL de Destino</Label>
+                <Input value={formData.cta_url} onChange={e => setFormData({...formData, cta_url: e.target.value})} />
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label>URL Imagem Desktop (IA ou Link)</Label>
+              <div className="flex gap-2">
+                <Input value={formData.image_desktop} onChange={e => setFormData({...formData, image_desktop: e.target.value})} placeholder="https://..." />
+                <Button variant="secondary" onClick={() => toast.info("Funcionalidade de geração de imagem via IA em breve!")}>
+                  <ImageIcon className="h-4 w-4 mr-2" /> Gerar IA
+                </Button>
+              </div>
+            </div>
+
+            {type === 'main' && (
+              <div className="grid gap-2">
+                <Label>Ponto Focal (CSS object-position)</Label>
+                <Input value={formData.theme?.focalPoint} onChange={e => setFormData({...formData, theme: { ...formData.theme, focalPoint: e.target.value }})} placeholder="center right" />
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button onClick={() => saveMutation.mutate(formData)} disabled={saveMutation.isPending}>
+              {saveMutation.isPending ? "Salvando..." : "Salvar Alterações"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   const levels: { id: CampaignLevel; label: string }[] = [
     { id: "GRADUACAO", label: "Graduação" },
     { id: "POS_GRADUACAO", label: "Pós-graduação" },
