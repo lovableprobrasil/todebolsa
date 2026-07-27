@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { 
   ArrowRight, 
@@ -20,6 +20,18 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CampaignLevel } from "@/lib/homepage/campaigns";
 import { SearchBar } from "./SearchBar";
+import { create } from "zustand";
+
+// Store simples para sincronizar o nível entre componentes
+interface CampaignStore {
+  activeLevel: CampaignLevel;
+  setActiveLevel: (level: CampaignLevel) => void;
+}
+
+const useCampaignStore = create<CampaignStore>((set) => ({
+  activeLevel: "GRADUACAO",
+  setActiveLevel: (level) => set({ activeLevel: level }),
+}));
 
 export function HeroCarousel({ 
   showSearch = true, 
