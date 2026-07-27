@@ -158,82 +158,38 @@ export function HeroCarousel({
       {/* 1. BANNER PROMOCIONAL ROTATIVO */}
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 py-10 md:py-16">
         <div className="relative overflow-hidden rounded-[32px] bg-brand-ink min-h-[360px] md:min-h-[460px] group">
-          {/* Background Image / Gradient */}
-          {activeBanner?.image_desktop ? (
-            <div className="absolute inset-0">
+          {/* Full-image Banner Content */}
+          <div className="absolute inset-0">
+            {activeBanner?.image_desktop ? (
               <img 
                 src={activeBanner.image_desktop} 
                 alt={activeBanner.alt_text || ""}
                 className="w-full h-full object-cover"
                 style={{ 
-                  objectPosition: (activeBanner.theme as any)?.focalPoint || 'center right' 
+                  objectPosition: (activeBanner.theme as any)?.focalPoint || 'center' 
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-ink via-brand-ink/80 to-transparent" />
-            </div>
-          ) : (
-            <div 
-              className="absolute inset-0 opacity-60 transition-colors duration-500"
-              style={{ 
-                background: activeLevel === 'GRADUACAO' ? 'radial-gradient(circle at top right, #3b82f6, transparent)' : 
-                            activeLevel === 'POS_GRADUACAO' ? 'radial-gradient(circle at top right, #6366f1, transparent)' :
-                            activeLevel === 'TECNICO' ? 'radial-gradient(circle at top right, #8b5cf6, transparent)' :
-                            activeLevel === 'ESCOLAS' ? 'radial-gradient(circle at top right, #f59e0b, transparent)' :
-                            'radial-gradient(circle at top right, #3b82f6, transparent)'
-              }} 
-            />
-          )}
-
-          <div className="relative z-10 grid lg:grid-cols-[1.2fr_1fr] gap-10 items-center p-8 md:p-16 h-full">
-            {/* Banner Content */}
-            <div className="fade-in max-w-xl">
-              {isLoading ? (
-                <div className="animate-pulse space-y-4">
-                  <div className="h-6 w-32 bg-white/10 rounded" />
-                  <div className="h-16 w-full bg-white/10 rounded" />
-                  <div className="h-8 w-2/3 bg-white/10 rounded" />
-                </div>
-              ) : activeBanner ? (
-                <>
-                  {activeBanner.badge && (
-                    <span className="inline-flex items-center gap-2 rounded-full bg-brand-highlight text-brand-ink px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.1em] mb-6">
-                      <Sparkles className="h-3 w-3" />
-                      {activeBanner.badge}
-                    </span>
-                  )}
-                  
-                  <h1 className="text-3xl sm:text-5xl lg:text-[56px] font-black leading-[1.1] tracking-tight text-white drop-shadow-sm">
-                    {activeBanner.title}
-                  </h1>
-                  
-                  <p className="mt-6 text-lg md:text-xl text-white/90 font-medium leading-relaxed line-clamp-3">
-                    {activeBanner.description}
-                  </p>
-
-                  <div className="mt-8">
-                    <Button
-                      size="lg"
-                      className="bg-brand-highlight text-brand-ink hover:bg-brand-highlight/90 font-black px-8 h-12 rounded-xl shadow-xl shadow-brand-highlight/10 transition-all hover:scale-105 active:scale-95"
-                      asChild
-                    >
-                      <Link to={activeBanner.cta_url || "/bolsas"}>
-                        {activeBanner.cta_label || "Ver bolsas"}
-                        <ArrowRight className="h-5 w-5 ml-2" />
-                      </Link>
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <h1 className="text-3xl sm:text-5xl lg:text-[56px] font-black leading-[1.1] text-white">
-                    Sua bolsa de estudos está aqui
-                  </h1>
-                  <p className="mt-6 text-lg text-white/90">
-                    Encontre as melhores oportunidades com descontos exclusivos em todo o Brasil.
-                  </p>
-                </>
-              )}
-            </div>
+            ) : (
+              <div 
+                className="w-full h-full opacity-60 transition-colors duration-500"
+                style={{ 
+                  background: activeLevel === 'GRADUACAO' ? 'radial-gradient(circle at top right, #3b82f6, transparent)' : 
+                              activeLevel === 'POS_GRADUACAO' ? 'radial-gradient(circle at top right, #6366f1, transparent)' :
+                              activeLevel === 'TECNICO' ? 'radial-gradient(circle at top right, #8b5cf6, transparent)' :
+                              activeLevel === 'ESCOLAS' ? 'radial-gradient(circle at top right, #f59e0b, transparent)' :
+                              'radial-gradient(circle at top right, #3b82f6, transparent)'
+                }} 
+              />
+            )}
+            
+            {/* Overlay link to make the whole banner clickable */}
+            {activeBanner && (
+              <Link 
+                to={activeBanner.cta_url || "/bolsas"} 
+                className="absolute inset-0 z-20 cursor-pointer"
+                aria-label={activeBanner.title}
+              />
+            )}
           </div>
           
           {/* Carousel Controls */}
@@ -327,7 +283,11 @@ export function MicrobannersSection() {
               className="group relative overflow-hidden rounded-2xl aspect-[2/1] bg-muted border border-border shadow-sm hover:shadow-xl transition-all duration-300"
             >
               {mb.image_desktop ? (
-                <img src={mb.image_desktop} alt={mb.alt_text || ""} className="w-full h-full object-cover" />
+                <img 
+                  src={mb.image_desktop} 
+                  alt={mb.alt_text || ""} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                />
               ) : (
                 <div className="w-full h-full bg-brand-ink/5 flex items-center justify-center">
                    <div className="text-center p-4">
@@ -336,15 +296,6 @@ export function MicrobannersSection() {
                    </div>
                 </div>
               )}
-              {/* Overlay with CTA */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
-                <h3 className="text-white font-black text-lg">{mb.title}</h3>
-                <p className="text-white/80 text-sm mb-3 line-clamp-1">{mb.description}</p>
-                <span className="text-brand-highlight font-black text-xs uppercase flex items-center gap-2">
-                  {mb.cta_label || "Ver mais"}
-                  <ArrowRight className="h-4 w-4" />
-                </span>
-              </div>
             </Link>
           ))
         ) : (
