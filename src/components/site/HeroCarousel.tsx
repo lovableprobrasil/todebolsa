@@ -182,6 +182,35 @@ export function HeroCarousel({
               />
             )}
             
+            {/* Dynamic Text Overlay - Design Sinistro */}
+            {activeBanner && (
+              <div className="absolute inset-0 z-10 flex flex-col justify-center p-8 md:p-16 bg-gradient-to-r from-black/60 via-black/20 to-transparent pointer-events-none">
+                <div className="max-w-2xl transition-all duration-700 transform translate-y-0 opacity-100">
+                  {activeBanner.badge && (
+                    <span className="inline-block px-4 py-1.5 mb-6 text-xs font-black tracking-widest uppercase bg-brand-highlight text-brand-ink rounded-full animate-bounce">
+                      {activeBanner.badge}
+                    </span>
+                  )}
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[0.9] mb-4 tracking-tighter drop-shadow-2xl">
+                    {activeBanner.title.split(' - ')[0]}
+                    <span className="block text-brand-highlight mt-2">
+                      {activeBanner.title.split(' - ')[1] || ''}
+                    </span>
+                  </h2>
+                  {activeBanner.description && (
+                    <p className="text-lg md:text-xl text-white/90 font-medium max-w-lg mb-8 drop-shadow-md">
+                      {activeBanner.description}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-4">
+                     <div className="h-12 px-8 rounded-full bg-brand-highlight text-brand-ink font-black flex items-center justify-center group-hover:scale-105 transition-transform">
+                        {activeBanner.cta_label || 'GARANTIR BOLSA'}
+                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             {/* Overlay link to make the whole banner clickable */}
             {activeBanner && (
               <Link 
@@ -283,11 +312,24 @@ export function MicrobannersSection() {
               className="group relative overflow-hidden rounded-2xl aspect-[2/1] bg-muted border border-border shadow-sm hover:shadow-xl transition-all duration-300"
             >
               {mb.image_desktop ? (
-                <img 
-                  src={mb.image_desktop} 
-                  alt={mb.alt_text || ""} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                />
+                <>
+                  <img 
+                    src={mb.image_desktop} 
+                    alt={mb.alt_text || ""} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                  />
+                  {/* Microbanner Text Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                    <h3 className="text-white font-black text-lg leading-tight drop-shadow-lg group-hover:text-brand-highlight transition-colors">
+                      {mb.title}
+                    </h3>
+                    {mb.description && (
+                      <p className="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-1 drop-shadow-md">
+                        {mb.description}
+                      </p>
+                    )}
+                  </div>
+                </>
               ) : (
                 <div className="w-full h-full bg-brand-ink/5 flex items-center justify-center">
                    <div className="text-center p-4">
