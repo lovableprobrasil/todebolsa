@@ -42,8 +42,7 @@ import { toast } from "sonner";
 import { CampaignLevel } from "@/lib/homepage/campaigns";
 
 export function CampaignManager() {
-  const activeTab = useState<CampaignLevel>("GRADUACAO")[0];
-  const setActiveTab = useState<CampaignLevel>("GRADUACAO")[1];
+  const [activeTab, setActiveTab] = useState<CampaignLevel>("GRADUACAO");
   const queryClient = useQueryClient();
 
   const { data: campaign, isLoading } = useQuery({
