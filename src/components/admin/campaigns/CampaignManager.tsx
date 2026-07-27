@@ -84,8 +84,11 @@ export function CampaignManager() {
     { id: "POS_GRADUACAO", label: "Pós-graduação" },
     { id: "TECNICO", label: "Técnico" },
     { id: "ESCOLAS", label: "Escolas" },
-    { id: "CURSOS_LIVRES", label: "Cursos Livres" },
+    { id: "PROFISSIONALIZANTE", label: "Profissionalizante" },
+    { id: "EJA", label: "EJA" },
+    { id: "CURSO_LIVRE", label: "Cursos Livres" },
     { id: "IDIOMAS", label: "Idiomas" },
+    { id: "OUTROS", label: "Outros" },
   ];
 
   if (isLoading) return <div className="h-64 animate-pulse bg-muted rounded-2xl" />;

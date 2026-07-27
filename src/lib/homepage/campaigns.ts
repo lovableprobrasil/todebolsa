@@ -5,9 +5,10 @@ export type CampaignLevel =
   | "POS_GRADUACAO" 
   | "TECNICO" 
   | "ESCOLAS" 
-  | "CURSOS_LIVRES" 
-  | "IDIOMAS"
+  | "PROFISSIONALIZANTE"
   | "EJA"
+  | "CURSO_LIVRE" 
+  | "IDIOMAS"
   | "OUTROS";
 
 export interface HomepageCampaign {

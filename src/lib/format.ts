@@ -50,16 +50,12 @@ export const CATEGORIES = [
   { slug: "GRADUACAO", label: "Graduação", icon: "GraduationCap", placeholder: "Digite o curso de graduação desejado" },
   { slug: "POS_GRADUACAO", label: "Pós-Graduação", icon: "Award", placeholder: "Digite a pós-graduação desejada" },
   { slug: "TECNICO", label: "Curso Técnico", icon: "Wrench", placeholder: "Digite o curso técnico desejado" },
-  { slug: "MEDIO", label: "Escolas — Médio", icon: "School", placeholder: "Digite a série, segmento ou nome da escola" },
-  { slug: "FUNDAMENTAL", label: "Escolas — Fundamental", icon: "Backpack", placeholder: "Digite a série ou nome da escola" },
-  { slug: "IDIOMAS", label: "Idiomas", icon: "Languages", placeholder: "Digite o idioma desejado" },
-  { slug: "PREPARATORIO", label: "Preparatórios", icon: "Target", placeholder: "Digite o preparatório desejado" },
+  { slug: "ESCOLAS", label: "Escolas", icon: "School", placeholder: "Digite a série, segmento ou nome da escola" },
   { slug: "PROFISSIONALIZANTE", label: "Profissionalizantes", icon: "Briefcase", placeholder: "Digite o curso profissionalizante" },
   { slug: "EJA", label: "EJA", icon: "BookOpen", placeholder: "Digite a modalidade EJA desejada" },
-  { slug: "PRE_VESTIBULAR", label: "Pré-Vestibular", icon: "Lightbulb", placeholder: "Digite o curso pré-vestibular" },
-  { slug: "MESTRADO", label: "Mestrado", icon: "Microscope", placeholder: "Digite a área do mestrado" },
-  { slug: "MBA", label: "MBA", icon: "TrendingUp", placeholder: "Digite o MBA desejado" },
   { slug: "CURSO_LIVRE", label: "Cursos Livres", icon: "Sparkles", placeholder: "Digite o curso livre desejado" },
+  { slug: "IDIOMAS", label: "Idiomas", icon: "Languages", placeholder: "Digite o idioma desejado" },
+  { slug: "OUTROS", label: "Outros Cursos", icon: "Target", placeholder: "Digite o preparatório ou curso desejado" },
 ] as const;
 
 export const KNOWLEDGE_AREAS = [
