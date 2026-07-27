@@ -160,7 +160,7 @@ export function HeroCarousel() {
             ) : null}
             
             {/* Carousel Controls */}
-            {campaign?.main_banners?.length > 1 && (
+            {campaign?.main_banners && campaign.main_banners.length > 1 && (
               <div className="flex items-center gap-3 mt-10">
                 <button 
                   onClick={prevSlide}
@@ -174,6 +174,7 @@ export function HeroCarousel() {
                     <button
                       key={i}
                       onClick={() => setCurrentSlide(i)}
+
                       className={cn(
                         "h-1.5 rounded-full transition-all",
                         currentSlide === i ? "w-6 bg-brand-highlight" : "w-1.5 bg-white/30"
