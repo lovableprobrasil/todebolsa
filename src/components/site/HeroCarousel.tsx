@@ -154,7 +154,7 @@ export function HeroCarousel({
                 alt={activeBanner.alt_text || ""}
                 className="w-full h-full object-cover"
                 style={{ 
-                  objectPosition: activeBanner.theme?.focalPoint || 'center right' 
+                  objectPosition: (activeBanner.theme as any)?.focalPoint || 'center right' 
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-brand-ink via-brand-ink/80 to-transparent" />
