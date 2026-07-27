@@ -269,9 +269,7 @@ export function CampaignManager() {
                           </div>
                         </div>
                       ))}
-                      <Button variant="outline" className="w-full dashed border-2 border-dashed h-12">
-                        <Plus className="h-4 w-4 mr-2" /> Novo Banner Principal
-                      </Button>
+                      <BannerEditDialog />
                     </CardContent>
                   </Card>
 
