@@ -62,6 +62,8 @@ export async function getCampaignByLevel(level: CampaignLevel): Promise<Homepage
     `)
     .eq("education_level", level)
     .eq("status", "ACTIVE")
+    .limit(1, { foreignTable: "homepage_main_banners" })
+    .limit(3, { foreignTable: "homepage_micro_banners" })
     .order("display_order", { foreignTable: "homepage_main_banners", ascending: true })
     .order("display_order", { foreignTable: "homepage_micro_banners", ascending: true })
     .maybeSingle();
