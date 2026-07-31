@@ -192,13 +192,13 @@ export function HeroCarousel() {
                       aria-selected={active}
                       onClick={() => handleLevelChange(l.id)}
                       className={cn(
-                        "flex min-w-[130px] flex-1 items-center justify-center gap-2 whitespace-nowrap px-4 py-4 text-[15px] font-bold transition-colors",
+                        "flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap px-3 py-4 text-[13px] font-bold transition-colors lg:text-[14px]",
                         active
                           ? "bg-card text-primary"
                           : "text-white/85 hover:bg-white/10 hover:text-white",
                       )}
                     >
-                      <l.icon className="h-[18px] w-[18px]" />
+                      <l.icon className="h-4 w-4 shrink-0" />
                       {l.label}
                     </button>
                   );
