@@ -246,59 +246,45 @@ export function MicrobannersSection() {
   // Como as abas estão na busca, vamos precisar de uma forma de notificar a home.
 
   return (
-    <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 pb-10">
-      <div className="grid gap-6 md:grid-cols-3">
+    <div className="mx-auto max-w-[1240px] px-4 pb-2 pt-5 sm:px-6 lg:px-8">
+      <div className="grid gap-5 md:grid-cols-3">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="aspect-[2/1] bg-muted animate-pulse rounded-2xl" />
+            <div key={i} className="aspect-[2/1] animate-pulse rounded-xl bg-muted" />
           ))
         ) : campaign?.micro_banners && campaign.micro_banners.length > 0 ? (
           campaign.micro_banners.slice(0, 3).map((mb) => (
-            <Link 
+            <Link
               key={mb.id}
               to={mb.cta_url || "/bolsas"}
-              className="group relative overflow-hidden rounded-2xl aspect-[2/1] bg-muted border border-border shadow-sm hover:shadow-xl transition-all duration-300"
+              aria-label={mb.alt_text || mb.title || "Ver bolsas"}
+              className="group relative aspect-[2/1] overflow-hidden rounded-xl bg-muted transition-shadow hover:shadow-[var(--shadow-card)]"
             >
               {mb.image_desktop ? (
-                <>
-                  <img 
-                    src={mb.image_desktop} 
-                    alt={mb.alt_text || ""} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1523050335392-93851179ae22?auto=format&fit=crop&q=80&w=600';
-                    }}
-                  />
-                  {/* Microbanner Text Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                    <h3 className="text-white font-black text-lg leading-tight drop-shadow-lg group-hover:text-brand-highlight transition-colors">
-                      {mb.title}
-                    </h3>
-                    {mb.description && (
-                      <p className="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-1 drop-shadow-md">
-                        {mb.description}
-                      </p>
-                    )}
-                  </div>
-                </>
+                <img
+                  src={mb.image_desktop}
+                  alt={mb.alt_text || mb.title || ""}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "https://images.unsplash.com/photo-1523050335392-93851179ae22?auto=format&fit=crop&q=80&w=800";
+                  }}
+                />
               ) : (
-                <div className="w-full h-full bg-brand-ink/5 flex items-center justify-center">
-                   <div className="text-center p-4">
-                     <h3 className="font-black text-lg text-brand-ink">{mb.title}</h3>
-                     <p className="text-xs text-muted-foreground mt-1">{mb.description}</p>
-                   </div>
+                <div className="flex h-full w-full items-center justify-center bg-brand-ink/5 p-4 text-center">
+                  <div>
+                    <h3 className="font-display text-lg font-extrabold text-brand-ink">{mb.title}</h3>
+                    <p className="mt-1 text-xs text-muted-foreground">{mb.description}</p>
+                  </div>
                 </div>
               )}
             </Link>
           ))
-        ) : (
-          [1, 2, 3].map((i) => (
-            <div key={i} className="aspect-[2/1] rounded-2xl border border-dashed border-border flex items-center justify-center bg-muted/20 opacity-40">
-              <span className="text-xs font-medium">Microbanner {i}</span>
-            </div>
-          ))
-        )}
+        ) : null}
       </div>
     </div>
+
   );
 }
