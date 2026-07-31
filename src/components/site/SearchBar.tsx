@@ -1,25 +1,29 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { MapPin, Search, Calendar, Clock, BookOpen, GraduationCap, Briefcase, Award, Languages, Sparkles } from "lucide-react";
+import { MapPin, Search, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { MODALITY_LABEL } from "@/lib/format";
+import { Checkbox } from "@/components/ui/checkbox";
 import { trackEvent } from "@/lib/analytics";
 import { CampaignLevel } from "@/lib/homepage/campaigns";
 
-const MODALITIES = ["PRESENCIAL", "SEMIPRESENCIAL", "EAD"] as const;
+const MODALITIES = [
+  { id: "PRESENCIAL", label: "Presencial" },
+  { id: "SEMIPRESENCIAL", label: "Semi" },
+  { id: "EAD", label: "EaD" },
+] as const;
+
+const MAX_PRICE = 12000;
+
+function formatPrice(v: number) {
+  return v >= MAX_PRICE
+    ? `R$ ${MAX_PRICE.toLocaleString("pt-BR")}/mês`
+    : `R$ ${v.toLocaleString("pt-BR")}/mês`;
+}
 
 export function SearchBar({
   initialLevel,
   activeLevel,
-  initialArea,
   initialModality,
   initialCity,
   initialQuery,
@@ -32,225 +36,147 @@ export function SearchBar({
   initialQuery?: string;
 }) {
   const navigate = useNavigate();
-  const [area, setArea] = useState<string>(initialArea ?? "");
-  const [modality, setModality] = useState<string>(initialModality ?? "");
   const [city, setCity] = useState<string>(initialCity ?? "");
   const [query, setQuery] = useState<string>(initialQuery ?? "");
+  const [institution, setInstitution] = useState("");
+  const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE);
+  const [modalities, setModalities] = useState<string[]>(
+    initialModality ? [initialModality] : ["PRESENCIAL", "SEMIPRESENCIAL", "EAD"],
+  );
 
-  const isEad = modality === "EAD";
+  const onlyEad = modalities.length === 1 && modalities[0] === "EAD";
 
   useEffect(() => {
-    if (isEad && city) setCity("");
-  }, [isEad, city]);
+    if (onlyEad && city) setCity("");
+  }, [onlyEad, city]);
+
+  function toggleModality(id: string) {
+    setModalities((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
+    );
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    const modality = modalities.length === 1 ? modalities[0] : undefined;
     void trackEvent("search_submit", {
       entityType: "search",
       metadata: {
         level: activeLevel || initialLevel || null,
-        area: area || null,
-        modality: modality || null,
-        city: !isEad && city.trim() ? city.trim() : null,
+        modality: modality ?? null,
+        city: !onlyEad && city.trim() ? city.trim() : null,
         q: query.trim() || null,
+        maxPrice: maxPrice < MAX_PRICE ? maxPrice : null,
       },
     });
     navigate({
       to: "/bolsas",
       search: {
         level: activeLevel || initialLevel || undefined,
-        area: area || undefined,
-        modality: modality || undefined,
-        city: !isEad && city.trim() ? city.trim() : undefined,
-        q: query.trim() || undefined,
+        modality,
+        city: !onlyEad && city.trim() ? city.trim() : undefined,
+        q: [query.trim(), institution.trim()].filter(Boolean).join(" ") || undefined,
+        maxPrice: maxPrice < MAX_PRICE ? maxPrice : undefined,
       },
     });
   }
 
-  // Dynamic content based on level
-  const getFieldConfig = () => {
-    switch (activeLevel) {
-      case "POS_GRADUACAO":
-        return {
-          queryLabel: "Qual curso você quer estudar?",
-          queryPlaceholder: "Ex: MBA em Gestão, Especialização...",
-          areaLabel: "Área de especialização",
-          showArea: true
-        };
-      case "TECNICO":
-        return {
-          queryLabel: "Qual curso técnico você procura?",
-          queryPlaceholder: "Ex: Técnico em Enfermagem, Informática...",
-          areaLabel: "Eixo tecnológico",
-          showArea: true
-        };
-      case "ESCOLAS":
-        return {
-          queryLabel: "Qual etapa de ensino você procura?",
-          queryPlaceholder: "Ex: Ensino Médio, Fundamental II...",
-          areaLabel: "Tipo de escola",
-          showArea: false,
-          cityLabel: "Cidade ou bairro"
-        };
-      case "PROFISSIONALIZANTE":
-        return {
-          queryLabel: "Qual profissão você quer aprender?",
-          queryPlaceholder: "Ex: Cabeleireiro, Confeiteiro...",
-          areaLabel: "Área profissional",
-          showArea: true
-        };
-      case "EJA":
-        return {
-          queryLabel: "Qual etapa deseja concluir?",
-          queryPlaceholder: "Ex: Ensino Médio EJA, Fundamental...",
-          areaLabel: "Turno preferido",
-          showArea: false
-        };
-      case "IDIOMAS":
-        return {
-          queryLabel: "Qual idioma você quer aprender?",
-          queryPlaceholder: "Ex: Inglês, Espanhol, Francês...",
-          areaLabel: "Nível de conhecimento",
-          showArea: false
-        };
-      case "CURSO_LIVRE":
-        return {
-          queryLabel: "O que você quer aprender?",
-          queryPlaceholder: "Ex: Excel, Fotografia, Marketing...",
-          areaLabel: "Área de interesse",
-          showArea: true
-        };
-      case "OUTROS":
-        return {
-          queryLabel: "Qual curso você procura?",
-          queryPlaceholder: "Ex: Pré-vestibular, Concurso...",
-          areaLabel: "Tipo de formação",
-          showArea: true
-        };
-      default:
-        return {
-          queryLabel: "Qual curso você quer estudar?",
-          queryPlaceholder: "Digite o nome do curso",
-          areaLabel: "Área de interesse",
-          showArea: true
-        };
-    }
-  };
-
-  const config = getFieldConfig();
+  const queryLabel =
+    activeLevel === "ESCOLAS"
+      ? "Qual etapa de ensino você procura?"
+      : activeLevel === "IDIOMAS"
+        ? "Qual idioma você quer aprender?"
+        : "Qual curso você quer estudar?";
 
   return (
-    <form onSubmit={submit} className="space-y-6">
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {/* Campo 1: Curso/Etapa */}
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-brand-ink/70 ml-1">
-            {config.queryLabel}
-          </label>
+    <form onSubmit={submit} className="space-y-5">
+      <div className="grid items-end gap-4 lg:grid-cols-[1fr_1fr_1fr_auto]">
+        <Field label={queryLabel}>
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Filtre por curso"
+            className="h-12 rounded-md border-input bg-background text-[15px]"
+          />
+        </Field>
+
+        <Field label="Prefere alguma instituição?">
           <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-ink/30" />
+            <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={config.queryPlaceholder}
-              className="h-14 pl-11 rounded-xl border-brand-ink/10 focus:border-brand-highlight focus:ring-brand-highlight/20 bg-gray-50/50"
+              value={institution}
+              onChange={(e) => setInstitution(e.target.value)}
+              placeholder="Filtre por instituição"
+              className="h-12 rounded-md border-input bg-background pl-9 text-[15px]"
             />
           </div>
-        </div>
+        </Field>
 
-        {/* Campo 2: Instituição (Opcional mas no prompt está como Campo 2) */}
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-brand-ink/70 ml-1">
-            Prefere alguma instituição?
-          </label>
+        <Field label="Em que cidade quer estudar?">
           <div className="relative">
-            <BookOpen className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-ink/30" />
-            <Input
-              placeholder="Digite o nome da instituição"
-              className="h-14 pl-11 rounded-xl border-brand-ink/10 focus:border-brand-highlight focus:ring-brand-highlight/20 bg-gray-50/50"
-            />
-          </div>
-        </div>
-
-        {/* Campo 3: Cidade */}
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-brand-ink/70 ml-1">
-            {config.cityLabel || "Onde você quer estudar?"}
-          </label>
-          <div className="relative">
-            <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-ink/30" />
+            <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder={isEad ? "Curso à distância" : "Cidade ou estado"}
-              disabled={isEad}
-              className="h-14 pl-11 rounded-xl border-brand-ink/10 focus:border-brand-highlight focus:ring-brand-highlight/20 bg-gray-50/50"
+              placeholder={onlyEad ? "Curso a distância" : "Cidade ou estado"}
+              disabled={onlyEad}
+              className="h-12 rounded-md border-input bg-background pl-9 text-[15px]"
             />
           </div>
-        </div>
+        </Field>
+
+        <Button
+          type="submit"
+          className="h-12 w-full rounded-md px-8 text-[15px] font-bold lg:w-auto"
+        >
+          <Search className="mr-1 h-4 w-4 lg:hidden" />
+          Buscar
+        </Button>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4 items-end">
-        {/* Preço máximo */}
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-brand-ink/70 ml-1">
-            Até quanto pode pagar?
-          </label>
-          <Select>
-            <SelectTrigger className="h-14 rounded-xl border-brand-ink/10 bg-gray-50/50">
-              <SelectValue placeholder="Qualquer valor" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="500">Até R$ 500 /mês</SelectItem>
-              <SelectItem value="1000">Até R$ 1.000 /mês</SelectItem>
-              <SelectItem value="1500">Até R$ 1.500 /mês</SelectItem>
-              <SelectItem value="2000">Até R$ 2.000 /mês</SelectItem>
-            </SelectContent>
-          </Select>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-1 items-center gap-4">
+          <span className="shrink-0 text-[15px] text-brand-ink">Até quanto pode pagar?</span>
+          <input
+            type="range"
+            min={200}
+            max={MAX_PRICE}
+            step={100}
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(Number(e.target.value))}
+            aria-label="Valor máximo da mensalidade"
+            className="h-1.5 max-w-[280px] flex-1 cursor-pointer appearance-none rounded-full bg-border accent-primary"
+            style={{
+              background: `linear-gradient(to right, var(--color-primary) ${((maxPrice - 200) / (MAX_PRICE - 200)) * 100}%, var(--color-border) ${((maxPrice - 200) / (MAX_PRICE - 200)) * 100}%)`,
+            }}
+          />
+          <span className="shrink-0 text-[15px] font-medium text-brand-ink">
+            {formatPrice(maxPrice)}
+          </span>
         </div>
 
-        {/* Modalidade */}
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-brand-ink/70 ml-1">
-            Modalidade
-          </label>
-          <Select value={modality || "ALL"} onValueChange={(v) => setModality(v === "ALL" ? "" : v)}>
-            <SelectTrigger className="h-14 rounded-xl border-brand-ink/10 bg-gray-50/50">
-              <SelectValue placeholder="Todas" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">Todas</SelectItem>
-              {MODALITIES.map((m) => (
-                <SelectItem key={m} value={m}>
-                  {MODALITY_LABEL[m]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Filtros Extras (apenas ilustrativo por agora) */}
-        <div className="space-y-2 lg:col-span-1">
-          <label className="text-sm font-bold text-brand-ink/70 ml-1">
-            {config.areaLabel}
-          </label>
-          <Select>
-            <SelectTrigger className="h-14 rounded-xl border-brand-ink/10 bg-gray-50/50">
-              <SelectValue placeholder="Todas as opções" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">Todas as opções</SelectItem>
-              <SelectItem value="FEAT">Mais procurados</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="lg:col-span-1">
-          <Button type="submit" size="lg" className="h-14 w-full rounded-xl bg-brand-highlight text-brand-ink hover:bg-brand-highlight/90 font-bold shadow-lg shadow-brand-highlight/20 transition-all hover:scale-[1.02]">
-            Buscar bolsas
-          </Button>
+        <div className="flex flex-wrap items-center gap-5">
+          <span className="text-[15px] text-brand-ink">Modalidade:</span>
+          {MODALITIES.map((m) => (
+            <label key={m.id} className="flex cursor-pointer items-center gap-2 text-[15px]">
+              <Checkbox
+                checked={modalities.includes(m.id)}
+                onCheckedChange={() => toggleModality(m.id)}
+              />
+              {m.label}
+            </label>
+          ))}
         </div>
       </div>
     </form>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <label className="block text-[15px] text-brand-ink">{label}</label>
+      {children}
+    </div>
   );
 }
