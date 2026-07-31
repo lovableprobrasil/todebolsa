@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://todebolsa.lovable.app/" },
-      { rel: "preload", as: "image", href: heroStudent, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: heroStudent },
     ],
     scripts: [
       {
