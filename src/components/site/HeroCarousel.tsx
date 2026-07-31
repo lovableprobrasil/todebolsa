@@ -311,7 +311,11 @@ export function MicrobannersSection() {
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-ink/85 via-brand-ink/45 to-transparent" />
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex max-w-[70%] flex-col justify-center gap-1.5 px-5">
                     {mb.description && (
-                      <span className="w-fit rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide">
+                      <span
+                        className="w-fit rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide"
+                        style={{ background: "var(--brand-highlight)", color: "var(--brand-ink)" }}
+                      >
+
                         {mb.description}
                       </span>
                     )}
