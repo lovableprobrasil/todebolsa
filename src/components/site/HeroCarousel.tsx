@@ -143,7 +143,7 @@ export function HeroCarousel() {
                 <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-brand-ink/90 via-brand-ink/60 to-transparent" />
                 <div className="pointer-events-none absolute inset-y-0 left-0 z-20 flex max-w-[62%] flex-col justify-center gap-2 px-6 sm:px-10 md:max-w-[55%]">
                   {activeBanner.badge && (
-                    <span className="w-fit rounded-full bg-brand-mint px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-brand-ink">
+                    <span className="w-fit rounded-full bg-accent px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-accent-foreground">
                       {activeBanner.badge}
                     </span>
                   )}
@@ -307,7 +307,7 @@ export function MicrobannersSection() {
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-ink/85 via-brand-ink/45 to-transparent" />
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex max-w-[70%] flex-col justify-center gap-1.5 px-5">
                     {mb.description && (
-                      <span className="w-fit rounded-full bg-brand-mint px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-brand-ink">
+                      <span className="w-fit rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-accent-foreground">
                         {mb.description}
                       </span>
                     )}
