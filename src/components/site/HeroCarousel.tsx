@@ -33,14 +33,9 @@ const useCampaignStore = create<CampaignStore>((set) => ({
   setActiveLevel: (level: CampaignLevel) => set({ activeLevel: level }),
 }));
 
-export function HeroCarousel({ 
-  showSearch = true, 
-  onlySearch = false 
-}: { 
-  showSearch?: boolean; 
-  onlySearch?: boolean 
-}) {
+export function HeroCarousel() {
   const { activeLevel, setActiveLevel } = useCampaignStore();
+
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Load campaign for the active education level
