@@ -139,12 +139,34 @@ export function HeroCarousel() {
             )}
 
             {activeBanner && (
-              <Link
-                to={activeBanner.cta_url || "/bolsas"}
-                className="absolute inset-0 z-20"
-                aria-label={activeBanner.title}
-              />
+              <>
+                <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-brand-ink/90 via-brand-ink/60 to-transparent" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 z-20 flex max-w-[62%] flex-col justify-center gap-2 px-6 sm:px-10 md:max-w-[55%]">
+                  {activeBanner.badge && (
+                    <span className="w-fit rounded-full bg-brand-mint px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-brand-ink">
+                      {activeBanner.badge}
+                    </span>
+                  )}
+                  <h2 className="font-display text-2xl font-extrabold leading-tight text-white sm:text-3xl md:text-4xl">
+                    {activeBanner.title}
+                  </h2>
+                  {activeBanner.description && (
+                    <p className="hidden max-w-md text-sm text-white/85 sm:block">{activeBanner.description}</p>
+                  )}
+                  {activeBanner.cta_label && (
+                    <span className="mt-1 w-fit rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground">
+                      {activeBanner.cta_label}
+                    </span>
+                  )}
+                </div>
+                <Link
+                  to={activeBanner.cta_url || "/bolsas"}
+                  className="absolute inset-0 z-20"
+                  aria-label={activeBanner.title}
+                />
+              </>
             )}
+
 
             {banners.length > 1 && (
               <>
