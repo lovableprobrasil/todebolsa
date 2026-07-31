@@ -72,11 +72,11 @@ export function HeroCarousel() {
     { id: "POS_GRADUACAO", label: "Pós-graduação", icon: Award },
     { id: "TECNICO", label: "Técnico", icon: Briefcase },
     { id: "ESCOLAS", label: "Escolas", icon: School },
-    { id: "PROFISSIONALIZANTE", label: "Profissionalizante", icon: BookOpen },
+    { id: "PROFISSIONALIZANTE", label: "Profissional.", icon: BookOpen },
     { id: "EJA", label: "EJA", icon: GraduationCap },
     { id: "CURSO_LIVRE", label: "Cursos Livres", icon: Sparkles },
     { id: "IDIOMAS", label: "Idiomas", icon: Languages },
-    { id: "OUTROS", label: "Mais cursos", icon: Play },
+    { id: "OUTROS", label: "Mais", icon: Play },
   ];
 
   const activeBanner = (campaign?.main_banners && campaign.main_banners.length > 0) 
@@ -192,7 +192,7 @@ export function HeroCarousel() {
                       aria-selected={active}
                       onClick={() => handleLevelChange(l.id)}
                       className={cn(
-                        "flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap px-3 py-4 text-[13px] font-bold transition-colors lg:text-[14px]",
+                        "flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-4 text-[13px] font-bold transition-colors lg:text-[14px]",
                         active
                           ? "bg-card text-primary"
                           : "text-white/85 hover:bg-white/10 hover:text-white",
