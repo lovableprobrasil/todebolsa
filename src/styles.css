@@ -6,12 +6,14 @@
 
 /*
  * Tô de Bolsa — Design System
- * Laranja (energia/oportunidade) + Azul confiável (educação) + cinza + branco.
+ * Azul de ação (#304FFE) + roxo de campanha (#6E30FF) + verde menta de destaque.
+ * Superfícies claras, cartões brancos, tipografia Red Hat.
  */
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Manrope", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Red Hat Text", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Red Hat Display", "Red Hat Text", ui-sans-serif, system-ui, sans-serif;
+
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -76,95 +78,96 @@
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 0.75rem;
 
-  /* Brand palette — Tô de Bolsa 2026 (Edtech Indigo) */
-  --brand-ink: #0B1020;
-  --brand-primary: #4F46E5;
-  --brand-primary-hover: #4338CA;
-  --brand-secondary: #7C3AED;
-  --brand-highlight: #FBBF24;
-  --brand-highlight-hover: #F59E0B;
-  --brand-success: #14B8A6;
+  /* Brand palette — Tô de Bolsa (marketplace de bolsas) */
+  --brand-ink: #13171A;
+  --brand-primary: #304FFE;
+  --brand-primary-hover: #2340E0;
+  --brand-secondary: #6E30FF;
+  --brand-highlight: #00D6A4;
+  --brand-highlight-hover: #00BE92;
+  --brand-success: #00A37C;
 
   /* Neutros globais */
-  --background: #F8FAFC;
-  --foreground: #172033;
+  --background: #F5F7FA;
+  --foreground: #13171A;
 
   --card: #FFFFFF;
-  --card-foreground: #172033;
+  --card-foreground: #13171A;
   --popover: #FFFFFF;
-  --popover-foreground: #172033;
+  --popover-foreground: #13171A;
 
-  /* Primary = índigo (ação principal em fundos claros) */
-  --primary: #4F46E5;
+  /* Primary = azul de ação */
+  --primary: #304FFE;
   --primary-foreground: #FFFFFF;
-  --primary-soft: #EEF2FF;
+  --primary-soft: #E8EDFF;
 
-  /* Ink (azul-noturno) — banner, rodapé, seções institucionais */
-  --brand-blue: #0B1020;
+  /* Ink institucional — rodapé, faixas, banners escuros */
+  --brand-blue: #143182;
   --brand-blue-foreground: #FFFFFF;
-  --brand-blue-soft: #EEF2FF;
+  --brand-blue-soft: #E8EDFF;
 
-  /* Hero — fundo institucional */
-  --hero-bg: #0B1020;
+  /* Hero — campanha roxa */
+  --hero-bg: #6E30FF;
   --hero-foreground: #FFFFFF;
-  --hero-muted: #CBD5E1;
+  --hero-muted: #DED0FF;
 
-  --secondary: #F1F5F9;
-  --secondary-foreground: #172033;
+  --secondary: #F3F4F6;
+  --secondary-foreground: #13171A;
 
-  /* Sucesso = teal — reservado para estados positivos, nunca CTA principal */
-  --success: #0F766E;
+  /* Sucesso = verde menta de destaque */
+  --success: #00A37C;
   --success-foreground: #FFFFFF;
-  --success-soft: #CCFBF1;
+  --success-soft: #D6FBF1;
 
-  /* Amarelo destaque — CTA em fundo escuro, descontos, oportunidades */
-  --warning: #FBBF24;
-  --warning-foreground: #0B1020;
-  --warning-soft: #FEF3C7;
-  --warning-ink: #78350F;
+  /* Amarelo destaque — descontos, selos */
+  --warning: #FFC043;
+  --warning-foreground: #13171A;
+  --warning-soft: #FFF3D6;
+  --warning-ink: #8A5A00;
 
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
 
-  /* Accent = violeta secundário (gradientes discretos, decoração) */
-  --accent: #7C3AED;
+  /* Accent = roxo de campanha */
+  --accent: #6E30FF;
   --accent-foreground: #FFFFFF;
-  --accent-soft: #F3E8FF;
+  --accent-soft: #F1EAFF;
 
   /* Danger */
-  --destructive: #DC2626;
+  --destructive: #E11D48;
   --destructive-foreground: #FFFFFF;
 
   /* Borders/inputs */
-  --border: #E2E8F0;
-  --input: #E2E8F0;
-  --ring: #4F46E5;
+  --border: #E5E7EB;
+  --input: #D5D9E0;
+  --ring: #304FFE;
 
-  --chart-1: #4F46E5;
-  --chart-2: #7C3AED;
-  --chart-3: #FBBF24;
-  --chart-4: #14B8A6;
-  --chart-5: #0B1020;
+  --chart-1: #304FFE;
+  --chart-2: #6E30FF;
+  --chart-3: #00D6A4;
+  --chart-4: #FFC043;
+  --chart-5: #143182;
 
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #172033;
-  --sidebar-primary: #4F46E5;
+  --sidebar-foreground: #13171A;
+  --sidebar-primary: #304FFE;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EEF2FF;
-  --sidebar-accent-foreground: #3730A3;
-  --sidebar-border: #E2E8F0;
-  --sidebar-ring: #4F46E5;
+  --sidebar-accent: #E8EDFF;
+  --sidebar-accent-foreground: #143182;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #304FFE;
 
   /* Gradientes e sombras semânticos */
-  --gradient-hero: linear-gradient(120deg, #0B1020 0%, #161A3A 55%, #312E81 100%);
-  --gradient-brand: linear-gradient(120deg, #4F46E5 0%, #7C3AED 100%);
-  --gradient-warm: linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 100%);
-  --gradient-discount: linear-gradient(120deg, #FBBF24 0%, #F59E0B 100%);
-  --shadow-elegant: 0 10px 30px -14px rgb(11 16 32 / 0.28);
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -18px rgb(15 23 42 / 0.18);
+  --gradient-hero: linear-gradient(120deg, #6E30FF 0%, #5A1FE0 55%, #4A15C4 100%);
+  --gradient-brand: linear-gradient(120deg, #304FFE 0%, #6E30FF 100%);
+  --gradient-warm: linear-gradient(135deg, #F1EAFF 0%, #FFFFFF 100%);
+  --gradient-discount: linear-gradient(120deg, #00D6A4 0%, #00A37C 100%);
+  --shadow-elegant: 0 12px 32px -16px rgb(19 23 26 / 0.28);
+  --shadow-card: 0 1px 2px rgb(19 23 26 / 0.05), 0 8px 24px -20px rgb(19 23 26 / 0.2);
 }
+
 
 .dark {
   --background: oklch(0.16 0.03 260);
