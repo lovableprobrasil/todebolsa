@@ -64,19 +64,11 @@ function HomePage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {/* 1. Banner de campanha */}
-        <HeroCarousel showSearch={false} />
+        {/* 1. Banner de campanha com busca embutida */}
+        <HeroCarousel />
 
-        <div className="h-6 md:h-10" />
+        {/* 2. Microbanners da campanha */}
 
-        {/* 2. Caixa de busca com abas de nível de ensino */}
-        <div className="relative z-20 mx-auto w-full max-w-[1180px] px-4">
-          <HeroCarousel onlySearch={true} />
-        </div>
-
-        <div className="h-7 md:h-10" />
-
-        {/* 3. Microbanners da campanha */}
         <MicrobannersSection />
 
         {/* 4. Prateleiras de conteúdo */}
