@@ -302,7 +302,23 @@ export function MicrobannersSection() {
                   </div>
                 </div>
               )}
+              {mb.image_desktop && (
+                <>
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-ink/85 via-brand-ink/45 to-transparent" />
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex max-w-[70%] flex-col justify-center gap-1.5 px-5">
+                    {mb.description && (
+                      <span className="w-fit rounded-full bg-brand-mint px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-brand-ink">
+                        {mb.description}
+                      </span>
+                    )}
+                    <h3 className="font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                      {mb.title}
+                    </h3>
+                  </div>
+                </>
+              )}
             </Link>
+
           ))
         ) : null}
       </div>
