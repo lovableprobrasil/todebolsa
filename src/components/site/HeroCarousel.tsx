@@ -111,164 +111,111 @@ export function HeroCarousel() {
     setCurrentSlide((prev) => (prev - 1 + campaign.main_banners.length) % campaign.main_banners.length);
   };
 
-  if (onlySearch) {
-    return (
-      <div className="bg-white rounded-[24px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] overflow-hidden border border-brand-ink/5 scholarship-search-card">
-        {/* Education Level Tabs - Integrated Header */}
-        <div role="tablist" className="flex overflow-x-auto no-scrollbar bg-[#0f172a] education-level-tabs">
-          {levels.map((l, idx) => (
-            <button
-              key={l.id}
-              role="tab"
-              aria-selected={activeLevel === l.id}
-              onClick={() => handleLevelChange(l.id)}
-              className={cn(
-                "flex-1 flex flex-col items-center justify-center gap-2.5 px-6 py-5 text-xs font-black transition-all border-r border-white/5 last:border-r-0 min-w-[115px] relative group",
-                activeLevel === l.id 
-                  ? "bg-white text-brand-blue" 
-                  : "bg-[#172033] text-white/60 hover:text-white hover:bg-white/5",
-                idx === 0 && "rounded-tl-[24px]",
-                idx === levels.length - 1 && "rounded-tr-[24px]"
-              )}
-            >
-              <l.icon className={cn("h-6 w-6 transition-transform group-hover:scale-110", activeLevel === l.id ? "text-brand-blue" : "text-white/40")} />
-              <span className="whitespace-nowrap tracking-tight uppercase text-[10px]">{l.label}</span>
-              {activeLevel === l.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-blue" />
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Search Form Body */}
-        <div className="p-8 md:p-12 text-brand-ink search-form-body">
-          <SearchBar 
-            activeLevel={activeLevel}
-          />
-        </div>
-      </div>
-    );
-  }
+  const banners = campaign?.main_banners ?? [];
 
   return (
-    <section className="relative overflow-hidden campaign-hero bg-[#0f172a]">
-      {/* 1. BANNER PROMOCIONAL ROTATIVO */}
-      <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-        <div className="relative overflow-hidden rounded-[32px] bg-brand-ink min-h-[360px] md:min-h-[460px] group">
-          {/* Full-image Banner Content */}
-          <div className="absolute inset-0">
+    <section className="bg-background">
+      <div className="mx-auto max-w-[1240px] px-4 pt-8 sm:px-6 lg:px-8">
+        {/* Bloco único: banner de campanha + caixa de busca embutida */}
+        <div className="relative overflow-hidden rounded-2xl bg-brand-blue">
+          {/* Banner rotativo */}
+          <div className="relative h-[240px] md:h-[300px]">
             {activeBanner?.image_desktop ? (
-              <img 
+              <img
                 key={activeBanner.id}
-                src={activeBanner.image_desktop} 
-                alt={activeBanner.alt_text || ""}
-                className="w-full h-full object-cover transition-opacity duration-500"
-                style={{ 
-                  objectPosition: (activeBanner.theme as any)?.focalPoint || 'center' 
-                }}
+                src={activeBanner.image_desktop}
+                alt={activeBanner.alt_text || activeBanner.title || ""}
+                className="h-full w-full object-cover transition-opacity duration-500"
+                style={{ objectPosition: (activeBanner.theme as any)?.focalPoint || "center" }}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1523050335392-93851179ae22?auto=format&fit=crop&q=80&w=1200';
+                  (e.target as HTMLImageElement).src =
+                    "https://images.unsplash.com/photo-1523050335392-93851179ae22?auto=format&fit=crop&q=80&w=1600";
                 }}
               />
+            ) : isLoading ? (
+              <div className="h-full w-full animate-pulse bg-brand-blue/60" />
             ) : (
-              <div 
-                className="w-full h-full opacity-60 transition-colors duration-500"
-                style={{ 
-                  background: activeLevel === 'GRADUACAO' ? 'radial-gradient(circle at top right, #3b82f6, transparent)' : 
-                              activeLevel === 'POS_GRADUACAO' ? 'radial-gradient(circle at top right, #6366f1, transparent)' :
-                              activeLevel === 'TECNICO' ? 'radial-gradient(circle at top right, #8b5cf6, transparent)' :
-                              activeLevel === 'ESCOLAS' ? 'radial-gradient(circle at top right, #f59e0b, transparent)' :
-                              'radial-gradient(circle at top right, #3b82f6, transparent)'
-                }} 
-              />
+              <div className="h-full w-full bg-[image:var(--gradient-hero)]" />
             )}
-            
-            {/* Dynamic Text Overlay - Design Sinistro */}
+
             {activeBanner && (
-              <div className="absolute inset-0 z-10 flex flex-col justify-center p-8 md:p-16 bg-gradient-to-r from-black/60 via-black/20 to-transparent pointer-events-none">
-                <div className="max-w-2xl transition-all duration-700 transform translate-y-0 opacity-100">
-                  {activeBanner.badge && (
-                    <span className="inline-block px-4 py-1.5 mb-6 text-xs font-black tracking-widest uppercase bg-brand-highlight text-brand-ink rounded-full animate-bounce">
-                      {activeBanner.badge}
-                    </span>
-                  )}
-                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[0.9] mb-4 tracking-tighter drop-shadow-2xl">
-                    {activeBanner.title.split(' - ')[0]}
-                    <span className="block text-brand-highlight mt-2">
-                      {activeBanner.title.split(' - ')[1] || ''}
-                    </span>
-                  </h2>
-                  {activeBanner.description && (
-                    <p className="text-lg md:text-xl text-white/90 font-medium max-w-lg mb-8 drop-shadow-md">
-                      {activeBanner.description}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-4">
-                     <div className="h-12 px-8 rounded-full bg-brand-highlight text-brand-ink font-black flex items-center justify-center group-hover:scale-105 transition-transform">
-                        {activeBanner.cta_label || 'GARANTIR BOLSA'}
-                     </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Overlay link to make the whole banner clickable */}
-            {activeBanner && (
-              <Link 
-                to={activeBanner.cta_url || "/bolsas"} 
-                className="absolute inset-0 z-20 cursor-pointer"
+              <Link
+                to={activeBanner.cta_url || "/bolsas"}
+                className="absolute inset-0 z-20"
                 aria-label={activeBanner.title}
               />
             )}
-          </div>
-          
-          {/* Carousel Controls */}
-          {campaign?.main_banners && campaign.main_banners.length > 1 && (
-            <>
-              {/* Lateral Arrows */}
-              <button 
-                onClick={prevSlide}
-                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/25 transition-all backdrop-blur-md border border-white/10 z-30 group hidden sm:flex items-center justify-center"
-                aria-label="Anterior"
-              >
-                <ChevronLeft className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
-              </button>
-              
-              <button 
-                onClick={nextSlide}
-                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/25 transition-all backdrop-blur-md border border-white/10 z-30 group hidden sm:flex items-center justify-center"
-                aria-label="Próximo"
-              >
-                <ChevronRight className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
-              </button>
 
-              {/* Centralized Dots */}
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30">
-                {campaign.main_banners.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentSlide(i)}
-                    className={cn(
-                      "h-2 rounded-full transition-all duration-500 shadow-sm",
-                      currentSlide === i ? "w-8 bg-brand-highlight" : "w-2 bg-white/30 hover:bg-white/50"
-                    )}
-                    aria-label={`Ir para slide ${i + 1}`}
-                  />
-                ))}
+            {banners.length > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  aria-label="Banner anterior"
+                  className="absolute left-4 top-1/2 z-30 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/25 text-white backdrop-blur-sm transition-colors hover:bg-black/45 sm:flex"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  aria-label="Próximo banner"
+                  className="absolute right-4 top-1/2 z-30 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/25 text-white backdrop-blur-sm transition-colors hover:bg-black/45 sm:flex"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+                <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2">
+                  {banners.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentSlide(i)}
+                      aria-label={`Ir para o banner ${i + 1}`}
+                      className={cn(
+                        "h-2 rounded-full transition-all",
+                        currentSlide === i ? "w-7 bg-white" : "w-2 bg-white/50 hover:bg-white/80",
+                      )}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Caixa de busca embutida no banner */}
+          <div className="p-3 sm:p-5">
+            <div className="overflow-hidden rounded-lg bg-card">
+              <div role="tablist" className="no-scrollbar flex overflow-x-auto bg-brand-ink">
+                {levels.map((l) => {
+                  const active = activeLevel === l.id;
+                  return (
+                    <button
+                      key={l.id}
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => handleLevelChange(l.id)}
+                      className={cn(
+                        "flex min-w-[130px] flex-1 items-center justify-center gap-2 whitespace-nowrap px-4 py-4 text-[15px] font-bold transition-colors",
+                        active
+                          ? "bg-card text-primary"
+                          : "text-white/85 hover:bg-white/10 hover:text-white",
+                      )}
+                    >
+                      <l.icon className="h-[18px] w-[18px]" />
+                      {l.label}
+                    </button>
+                  );
+                })}
               </div>
-            </>
-          )}
+
+              <div className="p-5 md:p-6">
+                <SearchBar activeLevel={activeLevel} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      {showSearch && (
-        <div className="mx-auto w-full max-w-[1100px] px-4 -mt-16 md:-mt-24 relative z-20">
-          {/* Redundancy check if not split */}
-        </div>
-      )}
     </section>
   );
 }
+
 
 export function MicrobannersSection() {
   const { activeLevel } = useCampaignStore();
